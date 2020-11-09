@@ -42,7 +42,7 @@ public class Resources {
   public static final String SERVER_IP = "127.0.0.1"; // = DEFAULT_SERVER_IP;
 
   /** Your team number. */
-  public static final int TEAM_NUMBER = 0; // TODO
+  public static final int TEAM_NUMBER = 7;
 
   /** Enables printing of debug info from the WiFi class. */
   public static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
