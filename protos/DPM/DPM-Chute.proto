@@ -1,0 +1,147 @@
+#VRML_SIM R2020a utf8
+# ECSE211 (DPM) marker shape Proto by Olivier St-Martin Cormier
+# license: Creative Commons Attribution 4.0 International Public License
+# license url: https://creativecommons.org/licenses/by/4.0/legalcode
+# Units are meters
+
+PROTO DPM-Chute [
+ field SFString   name          "chute"  #Individual Name of the bridge, should be unique
+ field SFVec2f    position   1 1   # Position of the block in tile coordinates
+ field SFRotation rotation      0 0 1 0       # Rotation of the block
+
+ field SFFloat height 0.1
+ field SFFloat wallthickness 0.01
+ 
+ field SFBool     doubleWidth  FALSE 
+ field SFBool     doubleLength  FALSE 
+ 
+ hiddenField SFFloat    tileSize     0.3048
+    ]
+{
+  %{
+   local h = fields.height.value
+   local ts = fields.tileSize.value
+   local wt = fields.wallthickness.value
+   local position = fields.position.value
+  }%
+  Transform {
+    translation %{=position.y*ts+ts/2}% 0 %{=position.x*ts+ts/2}%
+    rotation IS rotation
+    children [
+    
+    
+
+      SolidBox{
+        name "%{=fields.name.value..'wall1'}%"
+        translation 0 %{=h/2}% %{=-ts/2 + wt/2}%
+        size %{=ts}% %{=h}% %{=wt}%
+        appearance PBRAppearance {
+          baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+          normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+          normalMapFactor 0.8
+          occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+          metalness 0
+          roughness 1
+        }
+      }
+      
+      SolidBox{
+        name "%{=fields.name.value..'wall2'}%"
+        %{ if(fields.doubleWidth.value) then }%
+          translation 0 %{=h/2}% %{=ts+ts/2 - wt/2}%
+        %{ else }%
+          translation 0 %{=h/2}% %{=ts/2 - wt/2}%
+        %{ end }%
+        size %{=ts}% %{=h}% %{=wt}%
+        appearance PBRAppearance {
+          baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+          normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+          normalMapFactor 0.8
+          occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+          metalness 0
+          roughness 1
+        }
+      }
+      
+      SolidBox{
+        name "%{=fields.name.value..'wall3'}%"
+        %{ if(fields.doubleWidth.value) then }%
+          translation %{=ts/2 - wt/2}% %{=h/2}% %{=ts/2}%
+          size %{=wt}% %{=h}% %{=2*ts-wt*2}%
+        %{ else }%
+          translation %{=ts/2 - wt/2}% %{=h/2}% 0
+          size %{=wt}% %{=h}% %{=ts-wt*2}%
+        %{ end }%
+        appearance PBRAppearance {
+          baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+          normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+          normalMapFactor 0.8
+          occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+          metalness 0
+          roughness 1
+        }
+      }
+      
+      SolidBox{
+        name "%{=fields.name.value..'wall4'}%"
+        %{ if(fields.doubleWidth.value) then }%
+          translation %{=-ts/2 + wt/2}% %{=h/2}% %{=ts/2}%
+          size %{=wt}% %{=h}% %{=ts+ts-wt*2}%
+        %{ else }%
+          translation %{=-ts/2 + wt/2}% %{=h/2}% 0
+          size %{=wt}% %{=h}% %{=ts-wt*2}%
+        %{ end }%
+        appearance PBRAppearance {
+          baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+          normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+          normalMapFactor 0.8
+          occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+          metalness 0
+          roughness 1
+        }
+      }
+      
+      
+      %{
+       if(fields.doubleLength.value) then
+         rampangle = math.atan(h/(2*ts))
+         ramplength = h/math.sin(rampangle)
+         horizontaloffset = wt*math.sin(rampangle)/2
+         xOffset = -ts/2
+       else
+         rampangle = math.atan(h/ts)
+         ramplength = h/math.sin(rampangle)
+         horizontaloffset = wt*math.sin(rampangle)/2
+         xOffset = 0
+       end
+      }%
+      SolidBox{
+        name "%{=fields.name.value..'ramp'}%"
+        #We remove wt/2 so that the top edge of the ramp is flush with the floor and the top of the walls
+        rotation 0 0 1 %{=rampangle+1.57}%
+        
+        %{ if(fields.doubleWidth.value) then }%
+          translation %{=-ts + xOffset}% %{=h/2 - wt/2}% %{=ts/2}%
+          size %{=wt}% %{=ramplength+horizontaloffset*2}% %{=2*ts}%
+        %{ else }%
+          translation %{=-ts + xOffset}% %{=h/2 - wt/2}% 0
+          size %{=wt}% %{=ramplength+horizontaloffset*2}% %{=ts}%
+        %{ end }%
+        
+        
+
+        contactMaterial "DPM-Tile"
+        appearance PBRAppearance {
+          baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+          normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+          normalMapFactor 0.8
+          occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+          metalness 0
+          roughness 1
+        }
+      }
+    
+
+    ]
+  }
+}

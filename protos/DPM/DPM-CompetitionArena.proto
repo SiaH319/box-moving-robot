@@ -1,0 +1,407 @@
+#VRML_SIM R2020a utf8
+# license: Copyright Cyberbotics Ltd. Licensed for use only with Webots.
+# license url: https://cyberbotics.com/webots_assets_license
+# tags: static
+# DPM Arena Floor
+
+PROTO DPM-CompetitionArena [
+  field SFString   name     "arena"
+  field SFFloat    tileBorderSize   0.005
+  
+  field SFFloat    wallHeight      0.15                   # Defines the height of the walls.
+  field SFFloat    wallThickness   0.01                   # Defines the thickness of the walls.
+  field MFNode     children        []            # Add object (obstacles) to the world here
+  
+  #Fields that control the state of the floor
+  hiddenField SFColor tileColor_0_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_0 0
+  hiddenField SFColor tileColor_0_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_1 0
+  hiddenField SFColor tileColor_0_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_2 0
+  hiddenField SFColor tileColor_0_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_3 0
+  hiddenField SFColor tileColor_0_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_4 0
+  hiddenField SFColor tileColor_0_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_5 0
+  hiddenField SFColor tileColor_0_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_6 0
+  hiddenField SFColor tileColor_0_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_7 0
+  hiddenField SFColor tileColor_0_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_0_8 0
+  hiddenField SFColor tileColor_1_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_0 0
+  hiddenField SFColor tileColor_1_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_1 0
+  hiddenField SFColor tileColor_1_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_2 0
+  hiddenField SFColor tileColor_1_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_3 0
+  hiddenField SFColor tileColor_1_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_4 0
+  hiddenField SFColor tileColor_1_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_5 0
+  hiddenField SFColor tileColor_1_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_6 0
+  hiddenField SFColor tileColor_1_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_7 0
+  hiddenField SFColor tileColor_1_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_1_8 0
+  hiddenField SFColor tileColor_2_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_0 0
+  hiddenField SFColor tileColor_2_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_1 0
+  hiddenField SFColor tileColor_2_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_2 0
+  hiddenField SFColor tileColor_2_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_3 0
+  hiddenField SFColor tileColor_2_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_4 0
+  hiddenField SFColor tileColor_2_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_5 0
+  hiddenField SFColor tileColor_2_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_6 0
+  hiddenField SFColor tileColor_2_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_7 0
+  hiddenField SFColor tileColor_2_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_2_8 0
+  hiddenField SFColor tileColor_3_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_0 0
+  hiddenField SFColor tileColor_3_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_1 0
+  hiddenField SFColor tileColor_3_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_2 0
+  hiddenField SFColor tileColor_3_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_3 0
+  hiddenField SFColor tileColor_3_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_4 0
+  hiddenField SFColor tileColor_3_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_5 0
+  hiddenField SFColor tileColor_3_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_6 0
+  hiddenField SFColor tileColor_3_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_7 0
+  hiddenField SFColor tileColor_3_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_3_8 0
+  hiddenField SFColor tileColor_4_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_0 0
+  hiddenField SFColor tileColor_4_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_1 0
+  hiddenField SFColor tileColor_4_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_2 0
+  hiddenField SFColor tileColor_4_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_3 0
+  hiddenField SFColor tileColor_4_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_4 0
+  hiddenField SFColor tileColor_4_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_5 0
+  hiddenField SFColor tileColor_4_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_6 0
+  hiddenField SFColor tileColor_4_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_7 0
+  hiddenField SFColor tileColor_4_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_4_8 0
+  hiddenField SFColor tileColor_5_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_0 0
+  hiddenField SFColor tileColor_5_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_1 0
+  hiddenField SFColor tileColor_5_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_2 0
+  hiddenField SFColor tileColor_5_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_3 0
+  hiddenField SFColor tileColor_5_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_4 0
+  hiddenField SFColor tileColor_5_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_5 0
+  hiddenField SFColor tileColor_5_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_6 0
+  hiddenField SFColor tileColor_5_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_7 0
+  hiddenField SFColor tileColor_5_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_5_8 0
+  hiddenField SFColor tileColor_6_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_0 0
+  hiddenField SFColor tileColor_6_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_1 0
+  hiddenField SFColor tileColor_6_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_2 0
+  hiddenField SFColor tileColor_6_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_3 0
+  hiddenField SFColor tileColor_6_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_4 0
+  hiddenField SFColor tileColor_6_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_5 0
+  hiddenField SFColor tileColor_6_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_6 0
+  hiddenField SFColor tileColor_6_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_7 0
+  hiddenField SFColor tileColor_6_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_6_8 0
+  hiddenField SFColor tileColor_7_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_0 0
+  hiddenField SFColor tileColor_7_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_1 0
+  hiddenField SFColor tileColor_7_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_2 0
+  hiddenField SFColor tileColor_7_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_3 0
+  hiddenField SFColor tileColor_7_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_4 0
+  hiddenField SFColor tileColor_7_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_5 0
+  hiddenField SFColor tileColor_7_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_6 0
+  hiddenField SFColor tileColor_7_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_7 0
+  hiddenField SFColor tileColor_7_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_7_8 0
+  hiddenField SFColor tileColor_8_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_0 0
+  hiddenField SFColor tileColor_8_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_1 0
+  hiddenField SFColor tileColor_8_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_2 0
+  hiddenField SFColor tileColor_8_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_3 0
+  hiddenField SFColor tileColor_8_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_4 0
+  hiddenField SFColor tileColor_8_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_5 0
+  hiddenField SFColor tileColor_8_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_6 0
+  hiddenField SFColor tileColor_8_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_7 0
+  hiddenField SFColor tileColor_8_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_8_8 0
+  hiddenField SFColor tileColor_9_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_0 0
+  hiddenField SFColor tileColor_9_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_1 0
+  hiddenField SFColor tileColor_9_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_2 0
+  hiddenField SFColor tileColor_9_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_3 0
+  hiddenField SFColor tileColor_9_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_4 0
+  hiddenField SFColor tileColor_9_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_5 0
+  hiddenField SFColor tileColor_9_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_6 0
+  hiddenField SFColor tileColor_9_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_7 0
+  hiddenField SFColor tileColor_9_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_9_8 0
+  hiddenField SFColor tileColor_10_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_0 0
+  hiddenField SFColor tileColor_10_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_1 0
+  hiddenField SFColor tileColor_10_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_2 0
+  hiddenField SFColor tileColor_10_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_3 0
+  hiddenField SFColor tileColor_10_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_4 0
+  hiddenField SFColor tileColor_10_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_5 0
+  hiddenField SFColor tileColor_10_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_6 0
+  hiddenField SFColor tileColor_10_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_7 0
+  hiddenField SFColor tileColor_10_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_10_8 0
+  hiddenField SFColor tileColor_11_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_0 0
+  hiddenField SFColor tileColor_11_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_1 0
+  hiddenField SFColor tileColor_11_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_2 0
+  hiddenField SFColor tileColor_11_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_3 0
+  hiddenField SFColor tileColor_11_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_4 0
+  hiddenField SFColor tileColor_11_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_5 0
+  hiddenField SFColor tileColor_11_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_6 0
+  hiddenField SFColor tileColor_11_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_7 0
+  hiddenField SFColor tileColor_11_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_11_8 0
+  hiddenField SFColor tileColor_12_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_0 0
+  hiddenField SFColor tileColor_12_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_1 0
+  hiddenField SFColor tileColor_12_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_2 0
+  hiddenField SFColor tileColor_12_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_3 0
+  hiddenField SFColor tileColor_12_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_4 0
+  hiddenField SFColor tileColor_12_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_5 0
+  hiddenField SFColor tileColor_12_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_6 0
+  hiddenField SFColor tileColor_12_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_7 0
+  hiddenField SFColor tileColor_12_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_12_8 0
+  hiddenField SFColor tileColor_13_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_0 0
+  hiddenField SFColor tileColor_13_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_1 0
+  hiddenField SFColor tileColor_13_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_2 0
+  hiddenField SFColor tileColor_13_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_3 0
+  hiddenField SFColor tileColor_13_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_4 0
+  hiddenField SFColor tileColor_13_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_5 0
+  hiddenField SFColor tileColor_13_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_6 0
+  hiddenField SFColor tileColor_13_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_7 0
+  hiddenField SFColor tileColor_13_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_13_8 0
+  hiddenField SFColor tileColor_14_0 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_0 0
+  hiddenField SFColor tileColor_14_1 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_1 0
+  hiddenField SFColor tileColor_14_2 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_2 0
+  hiddenField SFColor tileColor_14_3 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_3 0
+  hiddenField SFColor tileColor_14_4 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_4 0
+  hiddenField SFColor tileColor_14_5 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_5 0
+  hiddenField SFColor tileColor_14_6 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_6 0
+  hiddenField SFColor tileColor_14_7 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_7 0
+  hiddenField SFColor tileColor_14_8 0.5 0.5 1
+  hiddenField SFFloat tileHeight_14_8 0
+  
+]
+{
+  %{
+    local tileSize = 0.3048
+    local nTiles = {x=15,y=9}
+    local floorSize = {x=nTiles.x*tileSize, y=nTiles.y*tileSize}
+    
+    local wallThickness = fields.wallThickness.value
+    local wallHeight = fields.wallHeight.value
+  }%
+  Group {
+    children [
+    #Tiles
+    %{ for x = 0,math.floor(nTiles.x)-1 do }%
+      %{ for y = 0,math.floor(nTiles.y)-1 do }%
+        DPM-CubeTile {
+         name "%{=string.format('tile_%d_%d',x,y)}%"
+         translation %{= x*tileSize }% 0 %{= y*tileSize }%
+         tileSize %{=tileSize}%
+         height IS %{= string.format('tileHeight_%d_%d',x,y) }%
+         borderSize IS tileBorderSize
+         mainColor IS %{= string.format('tileColor_%d_%d',x,y) }%
+         edgeColor IS tileEdgeColor
+        }
+      %{ end }%
+    %{ end }%
+
+    #User defined objects
+    Group {
+      children IS children
+    }   
+    
+    #Walls 
+    #Wall along x axis at y=0 (add a bit of length to cover the corner gaps and provide a solid wall)
+    #This causes some minor depth buffer "fighting?", but only on the outside corners
+    SolidBox {
+      name "%{= fields.name.value .. '-wall1' }%"
+      translation %{=floorSize.x/2}% %{= wallHeight / 2 - tileSize / 2 }% %{=-wallThickness/2}%
+      size %{= floorSize.x+2*wallThickness }% %{= tileSize+wallHeight }% %{= wallThickness }%
+      contactMaterial "default"
+      appearance PBRAppearance {
+        baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+        normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+        normalMapFactor 0.8
+        occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+        metalness 0
+        roughness 1
+      }
+    }
+    
+    
+    
+    #Wall along x axis at y=floorSize.y (add a bit of length to cover the corner gaps and provide a solid wall)
+    SolidBox {
+      name "%{= fields.name.value .. '-wall2' }%"
+      translation %{=floorSize.x/2}% %{= wallHeight / 2 - tileSize / 2 }% %{=floorSize.y+wallThickness/2}%
+      size %{= floorSize.x+2*wallThickness }% %{= tileSize+wallHeight }% %{= wallThickness }%
+      contactMaterial "default"
+      appearance PBRAppearance {
+        baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+        normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+        normalMapFactor 0.8
+        occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+        metalness 0
+        roughness 1
+      }
+    }
+    #Wall along y axis at x=0
+    SolidBox {
+      name "%{= fields.name.value .. '-wall3' }%"
+      translation %{=-wallThickness/2}% %{= wallHeight / 2 - tileSize / 2 }% %{=floorSize.y/2}%
+      size %{= wallThickness }% %{= tileSize+wallHeight }% %{= floorSize.y }%
+      contactMaterial "default"
+      appearance PBRAppearance {
+        baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+        normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+        normalMapFactor 0.8
+        occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+        metalness 0
+        roughness 1
+      }
+    }
+    #Wall along y axis at x=floorSize.x
+    SolidBox {
+      name "%{= fields.name.value .. '-wall4' }%"
+      translation %{=floorSize.x+wallThickness/2}% %{= wallHeight / 2 - tileSize / 2 }% %{=floorSize.y/2}%
+      size %{= wallThickness }% %{= tileSize+wallHeight }% %{= floorSize.y }%
+      contactMaterial "default"
+      appearance PBRAppearance {
+        baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+        normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+        normalMapFactor 0.8
+        occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+        metalness 0
+        roughness 1
+      }
+    }
+    
+    Solid {
+      name "%{= fields.name.value .. '-collisionSolid' }%"
+      translation 0 0 0
+      rotation 0 1 0 0
+      contactMaterial "DPM-Tile"
+        boundingObject Transform {
+          translation %{=floorSize.x/2}% 0 %{=floorSize.y/2}%
+          children [
+            Plane {
+              size  %{=floorSize.x/2}% %{=floorSize.y/2}%
+            }
+          ]
+        }
+      locked TRUE
+    }
+  ]
+  
+
+  
+  
+  
+  }
+}

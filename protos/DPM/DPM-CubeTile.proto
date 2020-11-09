@@ -1,0 +1,191 @@
+#VRML_SIM R2020a utf8
+# ECSE211 (DPM) Tile Proto by Olivier St-Martin Cormier
+# license: Creative Commons Attribution 4.0 International Public License
+# license url: https://creativecommons.org/licenses/by/4.0/legalcode
+# Units are meters
+
+PROTO DPM-CubeTile [
+ field SFString   name     "cubetile"  #Individual Name of the tile, will include coordinates in name to simplify supervisor 
+ field SFVec3f    translation  0 0 0
+ field SFFloat    tileSize     0.3048
+ field SFFloat    borderSize   0.005
+ field SFFloat    height     0
+ field SFColor    mainColor    0.5 0.5 1
+ field SFColor    edgeColor    0 0 0
+ hiddenField SFFloat    edgeRoughness 0.8
+ hiddenField SFFloat    edgeMetalness 0
+ hiddenField SFFloat    mainRoughness 0.8
+ hiddenField SFFloat    mainMetalness 0
+]
+{
+  %{
+    local s = fields.tileSize.value
+    local b = fields.borderSize.value
+    local h = fields.height.value
+    local planeSize = { x=s , y=s }
+  }%
+
+  Solid {
+    name IS name
+    translation IS translation
+    rotation 0 1 0 0
+    children [
+    
+      #Top Edge
+      Shape {
+       castShadows FALSE
+       appearance PBRAppearance {
+         baseColor IS edgeColor
+         metalness IS edgeMetalness
+         roughness IS edgeRoughness
+        }
+        geometry IndexedFaceSet {
+          coord Coordinate {
+            point [
+              %{=s}% %{=h}% %{=s}%
+              %{=0}% %{=h}% %{=s}%
+              %{=b}% %{=h}% %{=s-b}%
+              %{=s-b}% %{=h}% %{=s-b}%
+            ]
+          }
+          coordIndex [
+            3 2 1 0 -1
+          ]
+        }
+      }
+      
+      #Left Edge
+      Shape {
+       castShadows FALSE
+       appearance PBRAppearance {
+         baseColor IS edgeColor
+         metalness IS edgeMetalness
+         roughness IS edgeRoughness
+        }
+        geometry IndexedFaceSet {
+          coord Coordinate {
+            point [
+              %{=b}% %{=h}% %{=s-b}%
+              %{=0}% %{=h}% %{=s}%
+              %{=0}% %{=h}% %{=0}%
+              %{=b}% %{=h}% %{=b}%
+            ]
+          }
+          coordIndex [
+            3 2 1 0 -1
+          ]
+        }
+      }
+    
+      #Right Edge
+      Shape {
+       castShadows FALSE
+       appearance PBRAppearance {
+         baseColor IS edgeColor
+         metalness IS edgeMetalness
+         roughness IS edgeRoughness
+        }
+        geometry IndexedFaceSet {
+          coord Coordinate {
+            point [
+              %{=s}% %{=h}% %{=s}%
+              %{=s-b}% %{=h}% %{=s-b}%
+              %{=s-b}% %{=h}% %{=b}%
+              %{=s}% %{=h}% %{=0}%
+            ]
+          }
+          coordIndex [
+            3 2 1 0 -1
+          ]
+        }
+      }
+      
+      #Bottom Edge
+      Shape {
+       castShadows FALSE
+       appearance PBRAppearance {
+         baseColor IS edgeColor
+         metalness IS edgeMetalness
+         roughness IS edgeRoughness
+        }
+        geometry IndexedFaceSet {
+          coord Coordinate {
+            point [
+              %{=s-b}% %{=h}% %{=b}%
+              %{=b}% %{=h}% %{=b}%
+              %{=0}% %{=h}% %{=0}%
+              %{=s}% %{=h}% %{=0}%
+            ]
+          }
+          coordIndex [
+            3 2 1 0 -1
+          ]
+        }
+      }
+    
+      #Main Part
+      Shape {
+       castShadows FALSE
+       appearance PBRAppearance {
+         baseColor IS mainColor
+         metalness IS mainMetalness
+         roughness IS mainRoughness
+        }
+        geometry IndexedFaceSet {
+          coord Coordinate {
+            point [
+              %{=s-b}% %{=h}% %{=s-b}%
+              %{=b}% %{=h}% %{=s-b}%
+              %{=b}% %{=h}% %{=b}%
+              %{=s-b}% %{=h}% %{=b}%
+            ]
+          }
+          coordIndex [
+            3 2 1 0 -1
+          ]
+        }
+      }
+
+      #Sides of the box
+      Transform {
+        translation %{=s/2}% %{=-(s+h)/2-0.001+h}% %{=s/2}%
+        children [
+          Shape {
+            castShadows FALSE
+            appearance PBRAppearance {
+              baseColorMap ImageTexture { url [ "textures/wall_baseColor.jpg" ] }
+              normalMap ImageTexture { url [ "textures/wall_normal.jpg" ] }
+              normalMapFactor 0.8
+              occlusionMap ImageTexture { url [ "textures/wall_occlusion.jpg" ] }
+              metalness 0
+              roughness 1
+            }
+            geometry Box {
+              size  %{=s}% %{=s+h}% %{=s}%
+            }
+          }
+        ]
+      }
+      
+      
+    ]
+
+
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    locked TRUE
+
+  }
+}

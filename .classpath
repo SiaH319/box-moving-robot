@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="controllers/TXXController"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="var" path="WEBOTS_HOME/lib/controller/java/Controller.jar"/>
+	<classpathentry kind="lib" path="controllers/lib/simlejos.jar"/>
+	<classpathentry kind="lib" path="controllers/lib/EV3WiFiClient.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

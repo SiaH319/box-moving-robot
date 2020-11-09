@@ -1,0 +1,32 @@
+#VRML_SIM R2020a utf8
+# ECSE211 (DPM) pushable block
+# license: Creative Commons Attribution 4.0 International Public License
+# license url: https://creativecommons.org/licenses/by/4.0/legalcode
+# Units are meters
+
+PROTO DPM-Block [
+ field SFString   name          "block"  #Individual Name of the block, should be unique
+ field SFVec3f    translation   0.15 0.15 0.15   # Position of the block
+ field SFRotation rotation      0 0 1 0       # Rotation of the block
+ field SFFloat    dimension          0.25    # Size of the block
+ field SFFloat    mass          0.25    # Mass of the block in kg
+]
+{
+  SolidRoundedBox{
+    name IS name
+    translation IS translation
+    rotation IS rotation
+    size %{=fields.dimension.value}% %{=fields.dimension.value}% %{=fields.dimension.value}%
+    borderRadius %{=fields.dimension.value/8}%
+    subdivision 10
+    appearance PBRAppearance {
+      baseColorMap ImageTexture {url [ "textures/block.jpg" ] }
+      metalness 0
+      roughness 0.5
+    }
+    physics Physics {
+      density -1
+      mass IS mass
+    }
+  }
+}
