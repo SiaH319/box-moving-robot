@@ -1,4 +1,4 @@
-# ECSE211 Project: Team N - TEAM_NAME
+# ECSE211 Project: Team 07 - TEA TIME
 
 ```diff
 - For student instructions, see the STUDENT_README.md file.
