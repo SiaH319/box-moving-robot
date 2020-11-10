@@ -14,11 +14,8 @@ WorldInfo {
       coulombFriction [
         1000
       ]
-      softERP 1e-11
-      softCFM 1e-07
-      bumpSound ""
-      rollSound ""
-      slideSound ""
+      bounce 0.1
+      softCFM 0.0001
     }
     ContactProperties {
       material1 "DPM-Tile"
@@ -26,7 +23,7 @@ WorldInfo {
       coulombFriction [
         1000
       ]
-      softCFM 1e-05
+      softCFM 0.0004
       bumpSound ""
       rollSound ""
       slideSound ""
@@ -34,8 +31,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.9999739581660465 -0.005425672604082631 -0.004758683276207883 1.4400258197739422
-  position 0.5385437345095322 3.5453505281969364 1.039260044295647
+  orientation -0.9999730379254964 -0.005592709290632667 -0.004758678896943822 1.4100266146829348
+  position 0.24522867961388 1.118375602408776 0.3781697473845703
 }
 TexturedBackground {
 }
@@ -275,7 +272,8 @@ DPM-Block {
   mass 2
 }
 DPM-Robot {
-  translation 0.15 0.062 0.15
+  hidden rotation_13 2.3697209895401383e-05 0.9999999997192042 -1.8459998602443e-07 0.015579576919313642
+  translation 0.15 0.072 0.15
   rotation 0 1 0 -1.5707953071795862
   children [
     EV3-ColorSensor {
