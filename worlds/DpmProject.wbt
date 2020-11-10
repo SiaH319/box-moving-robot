@@ -28,8 +28,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.9999999423393902 0.00023901867342946778 0.00024122870907989743 1.5800000576583708
-  position 2.25267990315868 7.5182133547552015 1.2995205584161151
+  orientation -0.1444098480054696 0.9880216926571275 0.05439605351477354 0.7284688481363814
+  position 0.540375503858552 0.11823584841765578 0.4781099106981769
 }
 TexturedBackground {
 }
@@ -267,4 +267,63 @@ DPM-Block {
   rotation 0.3065904812830824 5.578501835959162e-05 0.9518415170996901 -0.00020350857390287962
   dimension 0.1
   mass 2
+}
+DPM-Robot {
+  translation 0.15 0.07 0.15
+  rotation 0 1 0 -1.5707953071795862
+  children [
+    EV3-ColorSensor {
+      name "S2"
+      translation 0.04785 -0.034 -0.067
+      rotation 0 1 0 3.14159
+    }
+    EV3-ColorSensor {
+      name "S4"
+      translation -0.00215 -0.0071 -0.067
+      rotation 0.9999999999929585 -2.653589999981315e-06 2.653589999981315e-06 1.5708
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation -0.04785 -0.034 -0.067
+      rotation 0 1 0 3.14159
+    }
+    EV3-Ultrasonic {
+      name "S1"
+      translation -3.75274e-08 0.03 -0.05
+      rotation 1.3267905276071413e-06 0.7071072811859472 0.7071062811855495 3.14159
+    }
+    BallCaster {
+      translation 0 -0.04948 0.03974
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3-LargeMotor {
+      name "D"
+      translation 0.0557 -0.02602 -0.0061
+      rotation 1 0 0 -1.5707953071795862
+      children [
+        Wheel {
+          translation 0.022 0 0
+          rotation 0 0 1 1.5708003061004252
+        }
+      ]
+    }
+    EV3-LargeMotor {
+      name "A"
+      translation -0.0557 -0.02602 -0.0061
+      rotation 1 0 0 -1.5707953071795862
+      children [
+        Wheel {
+          translation -0.022 0 0
+          rotation 0 0 1 -1.5708
+        }
+      ]
+    }
+    robot-base-reinforced-solid {
+      translation 9.3e-05 -0.01008 -0.01586
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3 {
+      rotation 1 0 0 -1.5708
+    }
+  ]
 }
