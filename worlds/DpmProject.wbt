@@ -4,12 +4,18 @@ WorldInfo {
   coordinateSystem "NUE"
   contactProperties [
     ContactProperties {
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+    ContactProperties {
       material1 "DPM-Tile"
       material2 "Rubber"
       coulombFriction [
         1000
       ]
-      softERP 0.1
+      softERP 1e-11
+      softCFM 1e-07
       bumpSound ""
       rollSound ""
       slideSound ""
@@ -28,8 +34,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.1444098480054696 0.9880216926571275 0.05439605351477354 0.7284688481363814
-  position 0.540375503858552 0.11823584841765578 0.4781099106981769
+  orientation -0.9999739581660465 -0.005425672604082631 -0.004758683276207883 1.4400258197739422
+  position 0.5385437345095322 3.5453505281969364 1.039260044295647
 }
 TexturedBackground {
 }
@@ -269,7 +275,7 @@ DPM-Block {
   mass 2
 }
 DPM-Robot {
-  translation 0.15 0.07 0.15
+  translation 0.15 0.062 0.15
   rotation 0 1 0 -1.5707953071795862
   children [
     EV3-ColorSensor {
@@ -279,7 +285,7 @@ DPM-Robot {
     }
     EV3-ColorSensor {
       name "S4"
-      translation -0.00215 -0.0071 -0.067
+      translation -0.00215 -0.0071 -0.0625
       rotation 0.9999999999929585 -2.653589999981315e-06 2.653589999981315e-06 1.5708
     }
     EV3-ColorSensor {
