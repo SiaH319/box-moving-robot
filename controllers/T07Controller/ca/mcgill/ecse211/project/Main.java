@@ -28,7 +28,7 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-    /*
+
     if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
@@ -50,8 +50,6 @@ public class Main {
 
     LocalEV3.getAudio().beep(); // beeps once
     wifiExample();
-    */
-    Navigation.moveStraightForMeters(-COLOR_SENSOR_TO_WHEEL_DIST);
   }
 
   /**
