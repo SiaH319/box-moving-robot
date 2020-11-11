@@ -52,7 +52,7 @@ public class UltrasonicLocalizer {
    * @param startAngle Starting angle for the search (degrees).
    * @param endAngle   Ending angle for the search (degrees).
    */
-<<<<<<< HEAD
+  
   public static void search(double startAngle, double endAngle) {
 	  //turn to the start angle (position 0,0)
 	  turnTo(startAngle);
