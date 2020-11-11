@@ -42,7 +42,7 @@ public class Resources {
    * <p>
    * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
-  public static final String SERVER_IP = "127.0.0.1"; // = DEFAULT_SERVER_IP;
+  public static final String SERVER_IP = "192.168.0.165"; // = DEFAULT_SERVER_IP;
 
   /** Your team number. */
   public static final int TEAM_NUMBER = 7;
