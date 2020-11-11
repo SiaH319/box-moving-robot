@@ -330,4 +330,5 @@ DPM-Robot {
       rotation 1 0 0 -1.5708
     }
   ]
+  controller "T07Controller"
 }
