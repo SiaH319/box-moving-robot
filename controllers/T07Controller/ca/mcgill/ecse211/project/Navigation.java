@@ -11,6 +11,19 @@ public class Navigation {
   private Navigation() {
   }
 
+  /**
+   * This function navigates to a given unknown object's position on the map and
+   * checks if the object is a block or an obstacle. If it is an object, return
+   * true and update the blocks list in Resources. Otherwise, return false and
+   * update the obstacles list in Resources.
+   * 
+   * @param pt Position of an unknown object (point).
+   * @return Returns true if the object is a block, false if it is an obstacle.
+   */
+  public static boolean validateBlock(Point pt) {
+    return false;
+  }
+
   /** Travels to the given destination. */
   public static void travelTo(Point destination) {
     double[] xyt = odometer.getXyt();
@@ -29,7 +42,7 @@ public class Navigation {
   public static void turnTo(double angle) {
     turnBy(minimalAngle(odometer.getXyt()[2], angle));
   }
-  
+
   /**
    * Returns the angle that the robot should point towards to face the destination
    * in degrees.
@@ -80,10 +93,11 @@ public class Navigation {
     leftMotor.rotate(convertDistance(distance), true);
     rightMotor.rotate(convertDistance(distance), false);
   }
-  
+
   /**
-   * Moves the robot straight for the given distance.
-   * Returns immediately so as to not stop the execution of subsequent code.
+   * Moves the robot straight for the given distance. Returns immediately so as to
+   * not stop the execution of subsequent code.
+   * 
    * @param distance in feet (tile sizes), may be negative
    */
   public static void moveStraightForReturn(double distance) {
@@ -91,10 +105,11 @@ public class Navigation {
     leftMotor.rotate(convertDistance(distance * TILE_SIZE), true);
     rightMotor.rotate(convertDistance(distance * TILE_SIZE), true);
   }
-  
+
   /**
-   * Moves the robot straight for the given distance.
-   * Returns immediately so as to not stop the execution of subsequent code.
+   * Moves the robot straight for the given distance. Returns immediately so as to
+   * not stop the execution of subsequent code.
+   * 
    * @param distance in meters, may be negative
    */
   public static void moveStraightForReturnMeters(double distance) {
@@ -102,7 +117,7 @@ public class Navigation {
     leftMotor.rotate(convertDistance(distance), true);
     rightMotor.rotate(convertDistance(distance), true);
   }
-  
+
   /** Moves the robot forward for an indeterminate distance. */
   public static void forward() {
     setSpeed(FORWARD_SPEED);
