@@ -4,7 +4,8 @@ import static ca.mcgill.ecse211.project.Resources.*;
 import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
-import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import ca.mcgill.ecse211.playingfield.*;
 
 import simlejos.hardware.ev3.LocalEV3;
 
@@ -44,27 +45,55 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
-    if (TEAM_NUMBER == redTeam) { 
-      isRedTeam = true; 
-    } else if (TEAM_NUMBER == greenTeam) { 
-      isRedTeam = false; 
-    } 
-    if (isRedTeam == null) { 
+    if (TEAM_NUMBER == redTeam) {
+      isRedTeam = true;
+    } else if (TEAM_NUMBER == greenTeam) {
+      isRedTeam = false;
+    }
+    if (isRedTeam == null) {
       System.out.println("This team should not be competing according to the wifi class.");
       System.out.println("Check the provided team values.");
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
       System.out.println("Green Team Number in Wifi: " + greenTeam);
-      System.out.println("Red Team Number in Wifi: " + redTeam); 
-      System.out.println("Stopping the program. Please restart the simulation with the appropriate values."); 
-      return; 
+      System.out.println("Red Team Number in Wifi: " + redTeam);
+      System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
+      return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
     }
 
-    // TODO Replace these method calls with your own logic
-    
-    LocalEV3.getAudio().beep(); // beeps once
+    // TODO Determine full flow here.
+    // Uncomment the parts relevant to your methods/functionality
+
+    // UltrasonicLocalizer.localize();
+    // LightLocalizer.forwardLocalize(90);
+    // Odometer.setXyt(reset Odometer here);
+    // beep(3);
+    // Calculate tunnel entry point
+    // Navigation.travelTo(entry point);
+    // Traverse tunnel
+    // Go to search zone
+    // beep(3);
+    // UltrasonicLocalizer.search(startAngle, endAngle);
+    // int i = 0;
+    // while (!navigation.validate(unknowns.get(i)) {
+    // i++;
+    // }
+
+    beep(1); // beeps once
     wifiExample();
+  }
+
+  /**
+   * Helper method to beep for a given number of times.
+   * 
+   * @param times Number of times to beep.
+   */
+  public static void beep(int times) {
+    for (int i = 0; i < times; i++) {
+      LocalEV3.getAudio().beep();
+      waitUntilNextStep();
+    }
   }
 
   /**

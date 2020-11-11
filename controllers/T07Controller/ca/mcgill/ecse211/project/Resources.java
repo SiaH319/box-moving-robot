@@ -3,7 +3,9 @@ package ca.mcgill.ecse211.project;
 import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
+import ca.mcgill.ecse211.playingfield.Block;
 import ca.mcgill.ecse211.playingfield.Point;
 import ca.mcgill.ecse211.playingfield.RampEdge;
 import ca.mcgill.ecse211.playingfield.Region;
@@ -39,8 +41,7 @@ public class Resources {
    * The IP address of the server that sends data to the robot. For the beta demo
    * and competition, replace this line with
    * 
-   * <p>
-   * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
+   * <p>{@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
   public static final String SERVER_IP = "192.168.0.165"; // = DEFAULT_SERVER_IP;
 
@@ -70,9 +71,21 @@ public class Resources {
   // -----------------------------
 
   // Robot constants
-
+  
+  /** US sensor error estimate in cm. */
+  public static final int US_ERROR = 5;
+  
   /** The maximum distance detected by the ultrasonic sensor, in cm. */
   public static final int MAX_SENSOR_DIST = 255;
+  
+  /** List of all known blocks confirmed in the validation phase. */
+  public static ArrayList<Block> blocks = new ArrayList<Block>();
+  
+  /** List of the positions of all unknown objects detected in the search phase. */
+  public static ArrayList<Point> unknowns = new ArrayList<Point>();
+  
+  /** List of the positions of all known obstacles detected in the validation phase. */
+  public static ArrayList<Point> obstacles = new ArrayList<Point>();
 
   /**
    * The limit of invalid samples that we read from the US sensor before assuming
@@ -87,16 +100,19 @@ public class Resources {
   public static final double WHEEL_CIR = 2 * Math.PI * WHEEL_RAD;
 
   /** The robot width in meters. */
-  public static final double BASE_WIDTH = 0.1595; // TODO FIX
+  public static final double BASE_WIDTH = 0.15697;
 
   /** The distance between the color sensors and the wheels in meters. */
-  public static final double COLOR_SENSOR_TO_WHEEL_DIST = 0.0354; // TODO FIX
+  public static final double COLOR_SENSOR_TO_WHEEL_DIST = 0.0221;
 
   /** The speed at which the robot moves forward in degrees per second. */
   public static final int FORWARD_SPEED = 360;
 
-  /** The speed at which the robot rotates in degrees per second. */
+  /** The speed at which the robot rotates in degrees per second. */ 
   public static final int ROTATE_SPEED = 180;
+  
+  /** The speed at which the robot localizes in degrees per second. */
+  public static final int LOCAL_SPEED = 90;
 
   /** The motor acceleration in degrees per second squared. */
   public static final int ACCELERATION = 1500;
@@ -119,13 +135,13 @@ public class Resources {
   public static final EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(SensorPort.S1);
 
   /** The right color sensor. */
-  public static final EV3ColorSensor rightColorSensor = new EV3ColorSensor(SensorPort.S2);
+  public static final EV3ColorSensor colorSensorR = new EV3ColorSensor(SensorPort.S2);
 
   /** The left color sensor. */
-  public static final EV3ColorSensor leftColorSensor = new EV3ColorSensor(SensorPort.S3);
+  public static final EV3ColorSensor colorSensorL = new EV3ColorSensor(SensorPort.S3);
 
-  /** The forward facong color sensor */
-  public static final EV3ColorSensor frontColorSensor = new EV3ColorSensor(SensorPort.S4);
+  /** The forward facong color sensor. */
+  public static final EV3ColorSensor colorSensorF = new EV3ColorSensor(SensorPort.S4);
 
   // Software singletons
 
@@ -154,7 +170,7 @@ public class Resources {
   /** Green team's starting corner. */
   public static int greenCorner = getWP("GreenCorner");
 
-  /** Boolean to represent team */
+  /** Boolean to represent team .*/
   public static Boolean isRedTeam = null;
 
   /** The edge when facing the Red ramp. */
