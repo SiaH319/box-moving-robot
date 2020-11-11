@@ -59,12 +59,13 @@ public class Main {
     // Go to search zone
     // beep(3);
     // UltrasonicLocalizer.search(startAngle, endAngle);
-    for (Point p : unknowns) {
-      if (Navigation.validateBlock(p)) {
-        System.out.println("Block Found");
-        break;
-      }
-    }
+    // for (Point p : unknowns) {
+    // if (Navigation.validateBlock(p)) {
+    // System.out.println("Block Found");
+    // break;
+    // }
+    // }
+    System.out.println(Navigation.validateBlock(new Point(0, 0)) ? "Is a block" : "Not a block");
 
     beep(1); // beeps once
     wifiExample();

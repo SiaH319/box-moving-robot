@@ -41,7 +41,8 @@ public class Resources {
    * The IP address of the server that sends data to the robot. For the beta demo
    * and competition, replace this line with
    * 
-   * <p>{@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
+   * <p>
+   * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
   public static final String SERVER_IP = "192.168.0.165"; // = DEFAULT_SERVER_IP;
 
@@ -71,20 +72,25 @@ public class Resources {
   // -----------------------------
 
   // Robot constants
-  
+
   /** US sensor error estimate in cm. */
   public static final int US_ERROR = 5;
-  
+
   /** The maximum distance detected by the ultrasonic sensor, in cm. */
   public static final int MAX_SENSOR_DIST = 255;
-  
+
   /** List of all known blocks confirmed in the validation phase. */
   public static ArrayList<Block> blocks = new ArrayList<Block>();
-  
-  /** List of the positions of all unknown objects detected in the search phase. */
+
+  /**
+   * List of the positions of all unknown objects detected in the search phase.
+   */
   public static ArrayList<Point> unknowns = new ArrayList<Point>();
-  
-  /** List of the positions of all known obstacles detected in the validation phase. */
+
+  /**
+   * List of the positions of all known obstacles detected in the validation
+   * phase.
+   */
   public static ArrayList<Point> obstacles = new ArrayList<Point>();
 
   /**
@@ -108,9 +114,9 @@ public class Resources {
   /** The speed at which the robot moves forward in degrees per second. */
   public static final int FORWARD_SPEED = 360;
 
-  /** The speed at which the robot rotates in degrees per second. */ 
+  /** The speed at which the robot rotates in degrees per second. */
   public static final int ROTATE_SPEED = 180;
-  
+
   /** The speed at which the robot localizes in degrees per second. */
   public static final int LOCAL_SPEED = 90;
 
@@ -170,7 +176,7 @@ public class Resources {
   /** Green team's starting corner. */
   public static int greenCorner = getWP("GreenCorner");
 
-  /** Boolean to represent team .*/
+  /** Boolean to represent team . */
   public static Boolean isRedTeam = null;
 
   /** The edge when facing the Red ramp. */

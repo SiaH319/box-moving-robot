@@ -88,8 +88,7 @@ public class LightLocalizer {
     setSpeed(LOCAL_SPEED);
     Navigation.turnBy(-90);
 
-    odometer.setXyt(Math.round(xyt[0] / TILE_SIZE) * TILE_SIZE,
-        Math.round(xyt[1] / TILE_SIZE) * TILE_SIZE, 0);
+    odometer.setXyt(Math.round(xyt[0] / TILE_SIZE) * TILE_SIZE, Math.round(xyt[1] / TILE_SIZE) * TILE_SIZE, 0);
     xyt = odometer.getXyt();
     System.out.println(xyt[0] + " " + xyt[1] + " " + xyt[2]);
   }

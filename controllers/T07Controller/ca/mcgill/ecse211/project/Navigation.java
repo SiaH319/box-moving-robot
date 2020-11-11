@@ -20,7 +20,16 @@ public class Navigation {
    * @param pt Position of an unknown object (point).
    * @return Returns true if the object is a block, false if it is an obstacle.
    */
-  public static boolean validateBlock(Point pt) {
+  public static boolean validateBlock(Point pt) { // TODO
+    // Navigate to block ACCURATELY
+
+    // FOR INITIAL TESTING, ASSUME POSITION IS ALREADY GOOD. START AFTER HERE
+
+    // Check color sensor
+    // Compare with floor color to find difference that matches
+    // if wall color, add point to obstacles list and return false
+    // if not wall color, double check for block color
+    // if true, update blocks list and return true
     return false;
   }
 
