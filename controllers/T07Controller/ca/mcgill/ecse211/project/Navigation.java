@@ -164,5 +164,11 @@ public class Navigation {
     leftMotor.setAcceleration(acceleration);
     rightMotor.setAcceleration(acceleration);
   }
+  
+  public static Point getPointBeforetunnel() {
+	  Point lowerleft = tnr_x;
+	  
+	  
+  }
 
 }

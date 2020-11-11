@@ -24,6 +24,10 @@ public class Main {
   /** Main entry point. */
   public static void main(String[] args) {
     initialize();
+    // Localize
+   // Navigation.travelTo(getPointBeforetunnel());
+    
+    
 
     // Start the odometer thread
     new Thread(odometer).start();
