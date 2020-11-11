@@ -29,7 +29,7 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
-    if (TEAM_NUMBER == redTeam) {
+   /* if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
       isRedTeam = false;
@@ -44,7 +44,7 @@ public class Main {
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
-    }
+    }*/
 
     // TODO Determine full flow here.
     // Uncomment the parts relevant to your methods/functionality
@@ -58,14 +58,14 @@ public class Main {
     // Traverse tunnel
     // Go to search zone
     // beep(3);
-    // UltrasonicLocalizer.search(startAngle, endAngle);
+     UltrasonicLocalizer.search(0, 180);
     // int i = 0;
     // while (!navigation.validate(unknowns.get(i)) {
     // i++;
     // }
 
     beep(1); // beeps once
-    wifiExample();
+   // wifiExample();
   }
 
   /**
@@ -110,7 +110,7 @@ public class Main {
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
    *         St-Martin Cormier
    */
-  public static void wifiExample() {
+/*  public static void wifiExample() {
     System.out.println("Running...");
 
     // Example 1: Print out all received data
@@ -131,7 +131,7 @@ public class Main {
 
     // Example 4: Calculate the area of a region
     System.out.println("The island area is " + island.getWidth() * island.getHeight() + ".");
-  }
+  }*/
 
   /**
    * Initializes the robot logic. It starts a new thread to perform physics steps

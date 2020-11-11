@@ -3,6 +3,10 @@ package ca.mcgill.ecse211.project;
 import static ca.mcgill.ecse211.project.Navigation.*;
 import static ca.mcgill.ecse211.project.Resources.*;
 
+import ca.mcgill.ecse211.playingfield.Point;
+
+import static ca.mcgill.ecse211.playingfield.Point.*;
+
 public class UltrasonicLocalizer {
   /** Buffer (array) to store US samples. */
   private static float[] usData = new float[usSensor.sampleSize()];
@@ -49,7 +53,30 @@ public class UltrasonicLocalizer {
    * @param endAngle   Ending angle for the search (degrees).
    */
   public static void search(double startAngle, double endAngle) {
-
+	  //turn to the start angle (position 0,0)
+	  turnTo(startAngle);
+	  //turn to target angle 
+	  setSpeed(ROTATE_SPEED);
+	  leftMotor.rotate(convertAngle(endAngle), true);
+	  rightMotor.rotate(convertAngle(-endAngle), true);
+	  
+	  double currentAngle = odometer.getXyt()[2];
+	  
+	  //read US sensor, create a point and put it in the list of unknowns
+	  //point position = robot position + us sensor reading
+	  while(currentAngle != endAngle) {
+		  int value = getDistance();
+		  
+		  //create a point from the value
+		  double x = 0;
+		  double y = 0;
+				  
+		  Point newPoint = new Point(x, y);
+		  unknowns.add(newPoint);
+		  
+		  
+	  }
+	 
   }
 
   // =========================================
@@ -129,7 +156,7 @@ public class UltrasonicLocalizer {
    */
   public static int getDistance() {
     usSensor.fetchSample(usData, 0);
-    System.out.println(usData[0] * 100);
+    //System.out.println(usData[0] * 100);
     return (int) (usData[0] * 100);
   }
 
