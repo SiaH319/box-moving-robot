@@ -19,24 +19,24 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author Olivier St-Martin Cormier
  */
 public class Odometer implements Runnable {
-  
+
   /** The x-axis position in meters. */
   private volatile double x;
-  
+
   /** The y-axis position in meters. */
   private volatile double y;
-  
+
   /** The orientation (heading) in degrees. */
   private volatile double theta;
-  
+
   /** The instantaneous change in position (dx, dy, dTheta). */
   private static double[] deltaPosition = new double[3];
 
   // Thread control tools
-  
-  /**  Fair lock for concurrent writing. */
+
+  /** Fair lock for concurrent writing. */
   private static Lock lock = new ReentrantLock(true);
-  
+
   /** Indicates if a thread is trying to reset any position parameters. */
   private volatile boolean isResetting = false;
 
@@ -51,17 +51,19 @@ public class Odometer implements Runnable {
   private static int[] prevTacho = new int[2];
   /** The current motor tacho counts. */
   private static int[] currTacho = new int[2];
-  
+
   private static final int LEFT = 0;
   private static final int RIGHT = 1;
-
 
   /** Default constructor of this class. It cannot be accessed externally. */
   private Odometer() {
     setXyt(TILE_SIZE / 2, TILE_SIZE / 2, 0);
   }
 
-  /** Returns the Odometer Object. Use this method to obtain an instance of Odometer. */
+  /**
+   * Returns the Odometer Object. Use this method to obtain an instance of
+   * Odometer.
+   */
   public static synchronized Odometer getOdometer() {
     if (odo == null) {
       odo = new Odometer();
@@ -72,28 +74,28 @@ public class Odometer implements Runnable {
   /* This method is where the logic for the odometer will run. */
   @Override
   public void run() {
-    leftMotor.resetTachoCount();                                    
+    leftMotor.resetTachoCount();
     rightMotor.resetTachoCount();
-    
+
     while (true) {
       prevTacho[LEFT] = currTacho[LEFT];
       prevTacho[RIGHT] = currTacho[RIGHT];
       currTacho[LEFT] = leftMotor.getTachoCount();
       currTacho[RIGHT] = rightMotor.getTachoCount();
-      
+
       updateDeltaPosition(prevTacho, currTacho, theta, deltaPosition);
       updateOdometerValues();
-      //printPosition();
+      // printPosition();
       waitUntilNextStep();
     }
   }
-  
+
   /**
    * Updates the robot deltaPosition (x, y, theta) given the motor tacho counts.
    * 
-   * @param prev the previous tacho counts of the motors
-   * @param curr the current tacho counts of the motors
-   * @param theta the current heading (angle) of the robot
+   * @param prev   the previous tacho counts of the motors
+   * @param curr   the current tacho counts of the motors
+   * @param theta  the current heading (angle) of the robot
    * @param deltas the deltaPosition array (x, y, theta)
    */
   public static void updateDeltaPosition(int[] prev, int[] curr, double theta, double[] deltas) {
@@ -115,16 +117,16 @@ public class Odometer implements Runnable {
   /** Prints odometer information to the console. */
   public void printPosition() {
     lock.lock();
-    System.out.println("Odometer:\tx =" + String.format("% 02.2f", x)
-        + "m\ty =" + String.format("% 02.2f", y)
-        + "m\ttheta =" + String.format("% 06.2f", theta) + " degrees"); 
+    System.out.println("Odometer:\tx =" + String.format("% 02.2f", x) + "m\ty =" + String.format("% 02.2f", y)
+        + "m\ttheta =" + String.format("% 06.2f", theta) + " degrees");
     lock.unlock();
   }
-  
+
   /**
    * Returns the Odometer data.
    * 
-   * <p>{@code odoData[0] = x; odoData[1] = y; odoData[2] = theta;}
+   * <p>
+   * {@code odoData[0] = x; odoData[1] = y; odoData[2] = theta;}
    * 
    * @return the odometer data.
    */
@@ -148,8 +150,8 @@ public class Odometer implements Runnable {
   }
 
   /**
-   * Increments the current values of the x, y and theta instance variables given deltaPositions.
-   * Useful for odometry.
+   * Increments the current values of the x, y and theta instance variables given
+   * deltaPositions. Useful for odometry.
    */
   public void updateOdometerValues() {
     lock.lock();
@@ -168,8 +170,8 @@ public class Odometer implements Runnable {
   /**
    * Overrides the values of x, y and theta. Use for odometry correction.
    * 
-   * @param x the value of x
-   * @param y the value of y
+   * @param x     the value of x
+   * @param y     the value of y
    * @param theta the value of theta in degrees
    */
   public void setXyt(double x, double y, double theta) {
