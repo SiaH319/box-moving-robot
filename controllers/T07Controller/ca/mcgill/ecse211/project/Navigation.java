@@ -166,7 +166,18 @@ public class Navigation {
   }
   
   public static Point getPointBeforetunnel() {
-	  Point lowerleft = tnr_x;
+	  //check wich colour
+	  //get lower left corner Point
+	  //get upper right corner point
+	  // point= ((x_LL + x_UR)/2 , (y_ll -1))
+	  
+	  
+  }
+  
+  public static Point getTunnelLengthPoint() {
+	  //get lower left corner Point
+	  //get upper right corner point
+	  // point= ((x_LL + x_UR)/2 , (y_ll)
 	  
 	  
   }

@@ -24,8 +24,20 @@ public class Main {
   /** Main entry point. */
   public static void main(String[] args) {
     initialize();
-    // Localize
-   // Navigation.travelTo(getPointBeforetunnel());
+    
+       // Localize
+      // Navigation.travelTo(getPointBeforetunnel());
+     //travelTo(getTunnelLengthpoint)
+    //check if there is an object one tile away 
+   // (make sure the sensor is not reading a distance smaller than 35 (being generous)
+   // if no obstacle move straight for one tile.
+     //search, validate, done
+    //otherwise move straight untill out of tunnel(if obstacle allows)
+    //validate that object as a block!, done
+    // if not a block search, validate, done
+    //if object doent allow us out of tunnel
+    //rotate robot by like 60 degrees and repeat
+    //if still cant leave tunnel rotate robot in other direction and repeat
     
     
 
