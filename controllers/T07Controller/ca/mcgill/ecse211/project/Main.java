@@ -5,6 +5,7 @@ import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
 import java.security.InvalidParameterException;
+import ca.mcgill.ecse211.playingfield.*;
 
 import simlejos.hardware.ev3.LocalEV3;
 
@@ -27,28 +28,30 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-
-    if (TEAM_NUMBER == redTeam) { 
-      isRedTeam = true; 
-    } else if (TEAM_NUMBER == greenTeam) { 
-      isRedTeam = false; 
-    } 
-    if (isRedTeam == null) { 
+    /*
+    if (TEAM_NUMBER == redTeam) {
+      isRedTeam = true;
+    } else if (TEAM_NUMBER == greenTeam) {
+      isRedTeam = false;
+    }
+    if (isRedTeam == null) {
       System.out.println("This team should not be competing according to the wifi class.");
       System.out.println("Check the provided team values.");
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
       System.out.println("Green Team Number in Wifi: " + greenTeam);
-      System.out.println("Red Team Number in Wifi: " + redTeam); 
-      System.out.println("Stopping the program. Please restart the simulation with the appropriate values."); 
-      return; 
+      System.out.println("Red Team Number in Wifi: " + redTeam);
+      System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
+      return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
     }
 
     // TODO Replace these method calls with your own logic
-    
+
     LocalEV3.getAudio().beep(); // beeps once
     wifiExample();
+    */
+    Navigation.moveStraightForMeters(-COLOR_SENSOR_TO_WHEEL_DIST);
   }
 
   /**

@@ -3,7 +3,7 @@ package ca.mcgill.ecse211.project;
 import static ca.mcgill.ecse211.project.Resources.*;
 import static java.lang.Math.*;
 
-import ca.mcgill.ecse211.playingfield.Point;
+import ca.mcgill.ecse211.playingfield.*;
 
 public class Navigation {
 
@@ -21,6 +21,15 @@ public class Navigation {
     moveStraightFor(distanceBetween(currentLocation, destination));
   }
 
+  /**
+   * Turns the robot with a minimal angle towards the given input angle in
+   * degrees, no matter what its current orientation is. This method is different
+   * from {@code turnBy()}.
+   */
+  public static void turnTo(double angle) {
+    turnBy(minimalAngle(odometer.getXyt()[2], angle));
+  }
+  
   /**
    * Returns the angle that the robot should point towards to face the destination
    * in degrees.
@@ -50,8 +59,6 @@ public class Navigation {
     return sqrt(dx * dx + dy * dy);
   }
 
-  // TODO Bring Navigation-related helper methods from Labs 2 and 3 here
-
   /**
    * Moves the robot straight for the given distance.
    * 
@@ -63,6 +70,39 @@ public class Navigation {
     rightMotor.rotate(convertDistance(distance * TILE_SIZE), false);
   }
 
+  /**
+   * Moves the robot straight for the given distance.
+   * 
+   * @param distance in meters, may be negative
+   */
+  public static void moveStraightForMeters(double distance) {
+    setSpeed(FORWARD_SPEED);
+    leftMotor.rotate(convertDistance(distance), true);
+    rightMotor.rotate(convertDistance(distance), false);
+  }
+  
+  /**
+   * Moves the robot straight for the given distance.
+   * Returns immediately so as to not stop the execution of subsequent code.
+   * @param distance in feet (tile sizes), may be negative
+   */
+  public static void moveStraightForReturn(double distance) {
+    setSpeed(FORWARD_SPEED);
+    leftMotor.rotate(convertDistance(distance * TILE_SIZE), true);
+    rightMotor.rotate(convertDistance(distance * TILE_SIZE), true);
+  }
+  
+  /**
+   * Moves the robot straight for the given distance.
+   * Returns immediately so as to not stop the execution of subsequent code.
+   * @param distance in meters, may be negative
+   */
+  public static void moveStraightForReturnMeters(double distance) {
+    setSpeed(FORWARD_SPEED);
+    leftMotor.rotate(convertDistance(distance), true);
+    rightMotor.rotate(convertDistance(distance), true);
+  }
+  
   /** Moves the robot forward for an indeterminate distance. */
   public static void forward() {
     setSpeed(FORWARD_SPEED);
