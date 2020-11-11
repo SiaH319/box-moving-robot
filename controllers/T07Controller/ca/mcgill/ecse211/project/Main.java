@@ -4,7 +4,7 @@ import static ca.mcgill.ecse211.project.Resources.*;
 import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
-import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import ca.mcgill.ecse211.playingfield.*;
 
 import simlejos.hardware.ev3.LocalEV3;
@@ -46,10 +46,38 @@ public class Main {
       System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
     }
 
-    // TODO Replace these method calls with your own logic
+    // TODO Determine full flow here.
+    // Uncomment the parts relevant to your methods/functionality
 
-    LocalEV3.getAudio().beep(); // beeps once
+    // UltrasonicLocalizer.localize();
+    // LightLocalizer.forwardLocalize(90);
+    // Odometer.setXyt(reset Odometer here);
+    // beep(3);
+    // Calculate tunnel entry point
+    // Navigation.travelTo(entry point);
+    // Traverse tunnel
+    // Go to search zone
+    // beep(3);
+    // UltrasonicLocalizer.search(startAngle, endAngle);
+    // int i = 0;
+    // while (!navigation.validate(unknowns.get(i)) {
+    // i++;
+    // }
+
+    beep(1); // beeps once
     wifiExample();
+  }
+
+  /**
+   * Helper method to beep for a given number of times.
+   * 
+   * @param times Number of times to beep.
+   */
+  public static void beep(int times) {
+    for (int i = 0; i < times; i++) {
+      LocalEV3.getAudio().beep();
+      waitUntilNextStep();
+    }
   }
 
   /**
