@@ -78,9 +78,9 @@ public class Main {
     // }
     // }
 
-    // validateBlock(new Point(8.3, 5.7), new Point(8, 7), 0);
+    validateBlock(new Point(8.3, 5.7), new Point(8, 7), 0);
 
-    wifiExample();
+    // wifiExample();
   }
 
   /**
