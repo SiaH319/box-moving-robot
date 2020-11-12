@@ -1,6 +1,9 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
+import static ca.mcgill.ecse211.project.LightLocalizer.*;
+import static ca.mcgill.ecse211.project.Navigation.*;
 import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
@@ -29,22 +32,25 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
-    if (TEAM_NUMBER == redTeam) {
-      isRedTeam = true;
-    } else if (TEAM_NUMBER == greenTeam) {
-      isRedTeam = false;
-    }
-    if (isRedTeam == null) {
-      System.out.println("This team should not be competing according to the wifi class.");
-      System.out.println("Check the provided team values.");
-      System.out.println("Current team in Resources: " + TEAM_NUMBER);
-      System.out.println("Green Team Number in Wifi: " + greenTeam);
-      System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
-      return;
-    } else {
-      System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
-    }
+    // if (TEAM_NUMBER == redTeam) {
+    // isRedTeam = true;
+    // } else if (TEAM_NUMBER == greenTeam) {
+    // isRedTeam = false;
+    // }
+    // if (isRedTeam == null) {
+    // System.out.println("This team should not be competing according to the wifi
+    // class.");
+    // System.out.println("Check the provided team values.");
+    // System.out.println("Current team in Resources: " + TEAM_NUMBER);
+    // System.out.println("Green Team Number in Wifi: " + greenTeam);
+    // System.out.println("Red Team Number in Wifi: " + redTeam);
+    // System.out.println("Stopping the program. Please restart the simulation with
+    // the appropriate values.");
+    // return;
+    // } else {
+    // System.out.println("Identified team as being " + (isRedTeam ? "red." :
+    // "green."));
+    // }
 
     // TODO Determine full flow here.
     // Uncomment the parts relevant to your methods/functionality
@@ -65,10 +71,11 @@ public class Main {
     // break;
     // }
     // }
-    System.out.println(Navigation.validateBlock(new Point(0, 0)) ? "Is a block" : "Not a block");
+    // System.out.println(Navigation.validateBlock(new Point(0, 0)) ? "Is a block" :
+    // "Not a block");
 
     beep(1); // beeps once
-    wifiExample();
+    // wifiExample();
   }
 
   /**
