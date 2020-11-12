@@ -9,5 +9,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="lib" path="controllers/lib/simlejos.jar"/>
 	<classpathentry kind="lib" path="controllers/lib/EV3WiFiClient.jar"/>
+	<classpathentry kind="lib" path="C:/Users/hamsi/AppData/Local/Programs/Webots/lib/controller/java/Controller.jar" sourcepath="/usr/local/webots/resources/languages/java"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

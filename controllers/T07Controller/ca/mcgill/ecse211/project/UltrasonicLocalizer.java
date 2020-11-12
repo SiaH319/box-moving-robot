@@ -53,6 +53,99 @@ public class UltrasonicLocalizer {
    * @param endAngle   Ending angle for the search (degrees).
    */
   public static void search(double startAngle, double endAngle) {
+    //turn to the start angle (position 0,0)
+    double dw = 0;
+    double dr = 0;
+    double ds_x = 0;
+    double ds_y = 0;
+    double theta_1 = 0;
+    double theta_2 = 0;
+
+    //Temporary hard coding values
+    isRedTeam = true;
+    szr.ur.x = 10;
+    szr.ur.y = 9;
+
+    szr.ll.x = 6;
+    szr.ll.y = 5;
+
+    tnr.ur.x = 6;
+    tnr.ur.y = 8;
+
+    rr.left.x = 9;
+    rr.left.y = 7;
+
+    if (isRedTeam) {
+      //turnTo(startAngle);
+      turnBy(-90);
+
+      //distance between the current position and the wall
+      dw = szr.ur.y - tnr.ur.y + 0.5;
+      System.out.println("dw=" + dw);
+      //distance between the current position and the ramp
+      dr = rr.left.x - tnr.ur.x - 0.5;
+      System.out.println("dr=" + dr);
+
+      ds_x = szr.ur.x - tnr.ur.x - 0.5;
+      System.out.println("ds_x=" + ds_x);
+
+      ds_y = tnr.ur.y - szr.ll.y - 0.5;
+      System.out.println("ds_y=" + ds_y);
+
+      theta_1 = Math.toDegrees(Math.atan(dr / dw));
+      System.out.println("theta_1=" + theta_1);
+
+      theta_2 = Math.toDegrees(Math.atan(ds_y / ds_x));
+      System.out.println("theta_2=" + theta_2);
+
+
+    }
+
+    //turn to target angle 
+    setSpeed(ROTATE_SPEED);
+    leftMotor.rotate(convertAngle(endAngle), true);
+    rightMotor.rotate(convertAngle(-endAngle), true);
+
+
+
+    double currentAngle = odometer.getXyt()[2];
+    //condition if its an object or not
+    // boolean isUnknown = false;
+    //read US sensor, create a point and put it in the list of unkno`1wns
+    //point position = robot position + us sensor reading
+
+    int ideal = 0;
+    odometer.setTheta(0);
+    while (currentAngle != endAngle) {
+      int value = filter(readUsDistance());
+      if (odometer.getXyt()[2] < theta_1) {
+        ideal = (int) (TILE_SIZE * 100 * dw / Math.cos(Math.toRadians(odometer.getXyt()[2])));
+      }
+      else if (theta_1 <= odometer.getXyt()[2] && odometer.getXyt()[2] < 90) {
+        ideal = (int) (TILE_SIZE * 100 * dr / Math.cos(Math.toRadians(odometer.getXyt()[2]-theta_1)));
+      }
+      else if (90 <= odometer.getXyt()[2] && odometer.getXyt()[2] <= (90 + theta_2)) {
+        ideal = (int) (TILE_SIZE * 100 * ds_x / Math.cos(Math.toRadians(odometer.getXyt()[2]-90)));
+      }
+      else if ((90 + theta_2) < odometer.getXyt()[2] && odometer.getXyt()[2] <= 180) {
+        ideal = (int) (TILE_SIZE * 100 * ds_y / Math.cos(Math.toRadians(odometer.getXyt()[2]-theta_2-90)));
+      }
+      System.out.println("ideal=" + ideal + "," + "actual=" + value + "at angle=>"+odometer.getXyt()[2]);
+
+
+      /*if(isUnknown) {
+        //  create a point from the value
+        double robotX = odometer.getXyt()[0];
+        double robotY = odometer.getXyt()[1];
+
+
+        double x = 0;
+        double y = 0;
+        Point newPoint = new Point(x, y);
+        unknowns.add(newPoint);
+    }*/
+
+    }
   }
 
 
