@@ -27,7 +27,7 @@ public class Main {
     initialize();
     
        // Localize
-      // Navigation.travelTo(getPointBeforetunnel());
+    // Navigation.travelTo(Navigation.getPointBeforetunnel());
      //travelTo(getTunnelLengthpoint)
     //check if there is an object one tile away 
    // (make sure the sensor is not reading a distance smaller than 35 (being generous)
@@ -51,6 +51,13 @@ public class Main {
       isRedTeam = false;
     }
     if (isRedTeam == null) {
+    	
+    	
+     Navigation.goThroughTunnel();
+     if(Navigation.inSearchZone() == false) {
+    	 Navigation.goToSearchZone();
+     }
+    	     
       System.out.println("This team should not be competing according to the wifi class.");
       System.out.println("Check the provided team values.");
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
@@ -63,6 +70,9 @@ public class Main {
     }
 
     // TODO Determine full flow here.
+    
+  //  Navigation.travelTo(Navigation.getPointBeforetunnel());
+
     // Uncomment the parts relevant to your methods/functionality
 
     // UltrasonicLocalizer.localize();
