@@ -32,6 +32,32 @@ public class Navigation {
 	public static int SZG_LL_y = 5;
 	public static int SZG_UR_x = 15;
 	public static int SZG_UR_y = 9;
+	/*
+	public static double Red_LL_x = red.ll.x;
+	public static double Red_LL_y = red.ll.y;
+	public static double Red_UR_x = red.ur.x;
+	public static double Red_UR_y = red.ur.y;
+	public static double Green_LL_x = green.ll.x;
+	public static double Green_LL_y = green.ll.y;
+	public static double Green_UR_x = green.ur.x;
+	public static double Green_UR_y = green.ur.y;
+	public static double TNR_LL_x = tnr.ll.x;
+	public static double TNR_LL_y = tnr.ll.y;
+	public static double TNR_UR_x = tnr.ur.x;
+	public static double TNR_UR_y = tnr.ur.y;
+	public static double TNG_LL_x = tng.ll.x;
+	public static double TNG_LL_y = tng.ll.y;
+	public static double TNG_UR_x = tng.ur.x;
+	public static double TNG_UR_y = tng.ur.y;
+	public static double SZR_LL_x = szr.ll.x;
+	public static double SZR_LL_y = szr.ll.y;
+	public static double SZR_UR_x = szr.ur.x;
+	public static double SZR_UR_y = szr.ur.y;
+	public static double SZG_LL_x =szg.ll.x;
+	public static double SZG_LL_y = szg.ll.y;
+	public static double SZG_UR_x = szg.ur.x;
+	public static double SZG_UR_y = szg.ur.y;
+*/
 	  public static int lowerLeftSzgX = 0;
 	   public static int lowerLeftSzgY = 0;
 	   public static int upperRightSzgX = 0;
@@ -293,7 +319,9 @@ public class Navigation {
     	double x = 0;
     	double y = 0;
     	Point dest = new Point(0, 0);
-    	
+    	Point check = new Point(lowerLeftTunnelX, lowerLeftTunnelY);
+    	Point lowerRegion = new Point (lowerLeftX, lowerLeftY);
+    	Point upperRegion = new Point (upperRightX, upperRightY);
     	
     	
     	//upper left
@@ -303,6 +331,7 @@ public class Navigation {
     		angle=90;
     		upperonmap = true;
     		leftonmap = true;
+    		
     		//going horizontally
     		if(upperRightY == upperRightSzgY) {
     			dest.x = lowerLeftTunnelX -1;
@@ -383,7 +412,7 @@ public class Navigation {
     }
     
     public static void setPoints() {
-    	if (isRedTeam != null) {
+    	if (isRedTeam == null) {
     	    lowerLeftSzgX = SZR_LL_x;
     	    lowerLeftSzgY = SZR_LL_y;
     	    upperRightSzgX = SZR_UR_x;
