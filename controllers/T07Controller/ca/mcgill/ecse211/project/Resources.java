@@ -137,7 +137,7 @@ public class Resources {
   /** The right motor. */
   public static final RegulatedMotor rightMotor = Motor.D;
 
-  /** The ultrasonic sensor. */
+  /** The main ultrasonic sensor. */
   public static final EV3UltrasonicSensor usSensor = new EV3UltrasonicSensor(SensorPort.S1);
 
   /** The right color sensor. */
@@ -146,8 +146,8 @@ public class Resources {
   /** The left color sensor. */
   public static final EV3ColorSensor colorSensorL = new EV3ColorSensor(SensorPort.S3);
 
-  /** The forward facong color sensor. */
-  public static final EV3ColorSensor colorSensorF = new EV3ColorSensor(SensorPort.S4);
+  /** The top mounted ultrasonic sensor (for block recognition). */
+  public static final EV3UltrasonicSensor usSensorTop = new EV3UltrasonicSensor(SensorPort.S4);
 
   // Software singletons
 
