@@ -51,7 +51,7 @@ public class LightLocalizer {
       // the robot is on a line
       if (motorLeftStop && motorRightStop) {
         setSpeed(LOCAL_SPEED);
-        moveStraightFor(COLOR_SENSOR_TO_WHEEL_DIST);
+        moveStraightForMeters(COLOR_SENSOR_TO_WHEEL_DIST); //0.11354
         // depends of the position of the bot, can be -90
         setSpeed(LOCAL_SPEED);
         turnBy(rotation);
@@ -139,7 +139,7 @@ public class LightLocalizer {
       waitUntilNextStep();
     }
     setSpeed(LOCAL_SPEED);
-    moveStraightFor(COLOR_SENSOR_TO_WHEEL_DIST);
+    moveStraightForMeters(COLOR_SENSOR_TO_WHEEL_DIST);
     return true;
   }
 
@@ -182,14 +182,14 @@ public class LightLocalizer {
         break;
       } else if (tachoL <= convertDistance(-0.20)) {
         // stopped moving and didn't detect line
-        moveStraightFor(0.10);
+        moveStraightForMeters(0.10);
         return false;
       }
       tachoL = leftMotor.getTachoCount();
       waitUntilNextStep();
     }
     setSpeed(LOCAL_SPEED);
-    moveStraightFor(COLOR_SENSOR_TO_WHEEL_DIST);
+    moveStraightForMeters(COLOR_SENSOR_TO_WHEEL_DIST);
     return true;
   }
 

@@ -51,12 +51,16 @@ public class Main {
     }
     if (isRedTeam == null) {
 
-    	
-    	
+     UltrasonicLocalizer.localize();
+     LightLocalizer.forwardLocalize(90);
+     beep(3);
+
      Navigation.goThroughTunnel();
      if(Navigation.inSearchZone() == false) {
-    	 Navigation.goToSearchZone();
+       Navigation.goToSearchZone();
      }
+     beep(3);
+     
     	     
       System.out.println("This team should not be competing according to the wifi class.");
       System.out.println("Check the provided team values.");

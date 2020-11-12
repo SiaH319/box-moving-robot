@@ -2,83 +2,56 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import static ca.mcgill.ecse211.project.Main.*;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.getDistance;
+import static ca.mcgill.ecse211.project.LightLocalizer.relocalize;
 import static java.lang.Math.*;
 
 import ca.mcgill.ecse211.playingfield.*;
 
-
-
 public class Navigation {
-	public static int Red_LL_x = 0;
-	public static int Red_LL_y = 5;
-	public static int Red_UR_x = 4;
-	public static int Red_UR_y = 9;
-	public static int Green_LL_x = 10;
-	public static int Green_LL_y = 0;
-	public static int Green_UR_x = 15;
-	public static int Green_UR_y = 4;
-	public static double TNR_LL_x = 4;
-	public static double TNR_LL_y = 7;
-	public static double TNR_UR_x = 6;
-	public static double TNR_UR_y = 8;
-	public static double TNG_LL_x = 10;
-	public static double TNG_LL_y = 3;
-	public static double TNG_UR_x = 11;
-	public static double TNG_UR_y = 5;
-	public static int SZR_LL_x = 6;
-	public static int SZR_LL_y = 5;
-	public static int SZR_UR_x = 10;
-	public static int SZR_UR_y = 9;
-	public static int SZG_LL_x =11;
-	public static int SZG_LL_y = 5;
-	public static int SZG_UR_x = 15;
-	public static int SZG_UR_y = 9;
-	/*
-	public static double Red_LL_x = red.ll.x;
-	public static double Red_LL_y = red.ll.y;
-	public static double Red_UR_x = red.ur.x;
-	public static double Red_UR_y = red.ur.y;
-	public static double Green_LL_x = green.ll.x;
-	public static double Green_LL_y = green.ll.y;
-	public static double Green_UR_x = green.ur.x;
-	public static double Green_UR_y = green.ur.y;
-	public static double TNR_LL_x = tnr.ll.x;
-	public static double TNR_LL_y = tnr.ll.y;
-	public static double TNR_UR_x = tnr.ur.x;
-	public static double TNR_UR_y = tnr.ur.y;
-	public static double TNG_LL_x = tng.ll.x;
-	public static double TNG_LL_y = tng.ll.y;
-	public static double TNG_UR_x = tng.ur.x;
-	public static double TNG_UR_y = tng.ur.y;
-	public static double SZR_LL_x = szr.ll.x;
-	public static double SZR_LL_y = szr.ll.y;
-	public static double SZR_UR_x = szr.ur.x;
-	public static double SZR_UR_y = szr.ur.y;
-	public static double SZG_LL_x =szg.ll.x;
-	public static double SZG_LL_y = szg.ll.y;
-	public static double SZG_UR_x = szg.ur.x;
-	public static double SZG_UR_y = szg.ur.y;
-*/
-	  public static int lowerLeftSzgX = 0;
-	   public static int lowerLeftSzgY = 0;
-	   public static int upperRightSzgX = 0;
-	   public static int upperRightSzgY = 0;
-	   public static int lowerLeftX = 0;
-	   public static int lowerLeftY = 0;
-	   public static int upperRightX = 0;
-	   public static int upperRightY = 0;
-	   public static double lowerLeftTunnelX = 0;
-	   public static double lowerLeftTunnelY = 0;
-	   public static double upperRightTunnelX = 0;
-	   public static double upperRightTunnelY = 0;
-	  public static boolean upperonmap = false;
-   	public static boolean leftonmap = false;
-   	public static boolean horizontaltunnel = false;
-	
-	//red tunnel LL point
-	//red tunnel UR point
-	//green tunnel LL point
-	//green tunnel UR point
+  // TODO: Get following variables from WIFI class
+  // WIFI CLASS VARIABLES (FOR TESTING)
+  public static int Red_LL_x = 0;
+  public static int Red_LL_y = 5;
+  public static int Red_UR_x = 4;
+  public static int Red_UR_y = 9;
+  public static int Green_LL_x = 10;
+  public static int Green_LL_y = 0;
+  public static int Green_UR_x = 15;
+  public static int Green_UR_y = 4;
+  public static double TNR_LL_x = 4;
+  public static double TNR_LL_y = 7;
+  public static double TNR_UR_x = 6;
+  public static double TNR_UR_y = 8;
+  public static double TNG_LL_x = 10;
+  public static double TNG_LL_y = 3;
+  public static double TNG_UR_x = 11;
+  public static double TNG_UR_y = 5;
+  public static int SZR_LL_x = 6;
+  public static int SZR_LL_y = 5;
+  public static int SZR_UR_x = 10;
+  public static int SZR_UR_y = 9;
+  public static int SZG_LL_x =11;
+  public static int SZG_LL_y = 5;
+  public static int SZG_UR_x = 15;
+  public static int SZG_UR_y = 9;
+    
+  // TEAM-SPECIFIC VARIABLES
+  public static int lowerLeftSzgX = 0;
+  public static int lowerLeftSzgY = 0;
+  public static int upperRightSzgX = 0;
+  public static int upperRightSzgY = 0;
+  public static int lowerLeftX = 0;
+  public static int lowerLeftY = 0;
+  public static int upperRightX = 0;
+  public static int upperRightY = 0;
+  public static double lowerLeftTunnelX = 0;
+  public static double lowerLeftTunnelY = 0;
+  public static double upperRightTunnelX = 0;
+  public static double upperRightTunnelY = 0;
+  public static boolean upperonmap = false;
+  public static boolean leftonmap = false;
+  public static boolean horizontaltunnel = false;
 	
   /** Do not instantiate this class. */
   private Navigation() {
@@ -285,288 +258,331 @@ public class Navigation {
    * 
    * Returns the point.
    */
-    
-    public static Point getPointBeforetunnel() {
-    	setPoints();
-    	double angle=0;
-    	double x = 0;
-    	double y = 0;
-    	Point dest = new Point(0, 0);
-    	Point check = new Point(lowerLeftTunnelX, lowerLeftTunnelY);
-    	Point lowerRegion = new Point (lowerLeftX, lowerLeftY);
-    	Point upperRegion = new Point (upperRightX, upperRightY);
-    	
-    	
-    	
-    	//upper left
-    	if(lowerLeftX == 0 && upperRightY == 9) {
-    		x = 1;
-    		y = 8;
-    		angle=90;
-    		upperonmap = true;
-    		leftonmap = true;
-    		
-    		//going horizontally
-    		if(isWithin(check, lowerRegion, upperRegion)) {
-    			dest.x = lowerLeftTunnelX -1;
-    			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
-    			horizontaltunnel = true;
-    		}
-    		//going vertically
-    		else {
-    			dest.y = upperRightTunnelY + 1;
-    			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
-    		}
-    	
-    		
-    	}
-    	//upperRight
-    	else if(upperRightX == 15 && upperRightY == 9) {
-    		x = 14;
-    		y = 8;
-    		angle=-90;
-    		upperonmap=true;
-    		double diffy = upperRightTunnelY - lowerLeftTunnelY;
-    		double diffx = upperRightTunnelX - lowerLeftTunnelX;
-    	
-    		if(diffx > 1) {
-    			dest.x = upperRightTunnelX + 1;
-    			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
-    			horizontaltunnel = true;
-    		}
-    		//going vertically
-    		else if(diffy >1) {
-    			dest.y = upperRightTunnelY + 1;
-    			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
-    			
-    		}
-    		//1x1
-    		else {
-    			
-    		if (upperRightTunnelX == lowerRegion.x) {
-    				dest.x = upperRightTunnelX + 1;
-        			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
-        			horizontaltunnel = true;
-    				
-    			}
-    		else {
-    			dest.y = upperRightTunnelY + 1;
-    			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
-    			}
-    		}
-    		
-    		
-    	}
-    	//LowerLeft
-    	else if(lowerLeftX == 0 && lowerLeftY == 0) {
-    		x = 1;
-    		y = 1;
-    		angle=90;
-    		leftonmap = true;
-    		double diffy = upperRightTunnelY - lowerLeftTunnelY;
-    		double diffx = upperRightTunnelX - lowerLeftTunnelX;
-    		if (diffx >1) {
-    			dest.x = lowerLeftTunnelX -1;
-    			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
-    			horizontaltunnel = true;
-    			
-    		}
-    		else if (diffy >1) {
-    			dest.y = lowerLeftTunnelY -1;
-    			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
-    		}
-    		else {
-    			if(lowerLeftTunnelX == upperRegion.x) {
-    				dest.x = lowerLeftTunnelX -1;
-        			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
-        			horizontaltunnel = true;
-    			}
-    			
-    			else {
-    				dest.y = lowerLeftTunnelY -1;
-        			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
-    				
-    			}
-    			
+  public static Point getPointBeforetunnel() {
+    setPoints();
+    double angle=0;
+    double x = 0;
+    double y = 0;
+    Point dest = new Point(0, 0);
+    Point check = new Point(lowerLeftTunnelX, lowerLeftTunnelY);
+    Point lowerRegion = new Point (lowerLeftX, lowerLeftY);
+    Point upperRegion = new Point (upperRightX, upperRightY);
 
-    		}
-    	}
-    	//LowerRight
-    	else {
-    		x = 14;
-    		y = 1;
-    		angle= -90;
-    		
-    		if(!isWithin(check, lowerRegion, upperRegion)) {
-    			dest.x = upperRightTunnelX + 1;
-    			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
-    			horizontaltunnel = true;
-    		}
-    		//going vertically
-    		else {
-    			dest.y = lowerLeftTunnelY -1;
-    			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
-    			
-    		}
-    	}
+    if(lowerLeftX == 0 && upperRightY == 9) {
+      // In the UPPER-LEFT corner
+      x = 1;
+      y = 8;
+      angle=90;
+      upperonmap = true;
+      leftonmap = true;
+      
+      // Check whether tunnel is horizontal or vertical	
+      if(isWithin(check, lowerRegion, upperRegion)) {
+        // Is horizontal
+        dest.x = lowerLeftTunnelX -1;
+        dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+        horizontaltunnel = true;
+      } else {
+        // Is vertical
+        dest.y = upperRightTunnelY + 1;
+        dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+      }
+      
+    } else if (upperRightX == 15 && upperRightY == 9) {
+      // In the UPPER-RIGHT corner
+      x = 14;
+      y = 8;
+      angle=-90;
+      upperonmap=true;
+      double diffy = upperRightTunnelY - lowerLeftTunnelY;
+      double diffx = upperRightTunnelX - lowerLeftTunnelX;
     	
-    	odometer.setX(x*TILE_SIZE);
-	    odometer.setY(y*TILE_SIZE);
-	    odometer.setTheta(angle);
-	    return dest;
+      if(diffx > 1) {
+        dest.x = upperRightTunnelX + 1;
+        dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+        horizontaltunnel = true;
+      } else if(diffy > 1) {
+        dest.y = upperRightTunnelY + 1;
+        dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+      } else {
+        // 1 x 1 tunnel
+        if (upperRightTunnelX == lowerRegion.x) {
+    	dest.x = upperRightTunnelX + 1;
+        	dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+        	horizontaltunnel = true;
+        } else {
+    	dest.y = upperRightTunnelY + 1;
+    	dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+        }
+      }
+    } else if(lowerLeftX == 0 && lowerLeftY == 0) {
+      // In the LOWER-LEFT corner
+      x = 1;
+      y = 1;
+      angle=90;
+      leftonmap = true;
+      double diffy = upperRightTunnelY - lowerLeftTunnelY;
+      double diffx = upperRightTunnelX - lowerLeftTunnelX;
+      
+      if (diffx >1) {
+        dest.x = lowerLeftTunnelX -1;
+        dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+        horizontaltunnel = true;
+      } else if (diffy >1) {
+        dest.y = lowerLeftTunnelY -1;
+        dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+      } else {
+        // 1 x 1 tunnel
+        if(lowerLeftTunnelX == upperRegion.x) {
+          dest.x = lowerLeftTunnelX -1;
+          dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+          horizontaltunnel = true;
+        } else {
+          dest.y = lowerLeftTunnelY -1;
+          dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+        }
+      }
+    } else {
+      // In the LOWER-RIGHT corner
+      x = 14;
+      y = 1;
+      angle= -90;
+      
+      // Check whether tunnel is horizontal or vertical	
+      if(!isWithin(check, lowerRegion, upperRegion)) {
+        dest.x = upperRightTunnelX + 1;
+        dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+        horizontaltunnel = true;
+      } else {
+        dest.y = lowerLeftTunnelY -1;
+        dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+      }
+    }
+    	
+    // Set odometer to determined destination
+    odometer.setX(x*TILE_SIZE);
+    odometer.setY(y*TILE_SIZE);
+    odometer.setTheta(angle);
+    return dest;
     	
     }
     
-    public static void setPoints() {
-    	if (isRedTeam != null) {
-    	    lowerLeftSzgX = SZR_LL_x;
-    	    lowerLeftSzgY = SZR_LL_y;
-    	    upperRightSzgX = SZR_UR_x;
-    	    upperRightSzgY = SZR_UR_y;
-    	    lowerLeftX = Red_LL_x;
-    	    lowerLeftY = Red_LL_y;
-    	    upperRightX = Red_UR_x;
-    	    upperRightY = Red_UR_y;
-    	    lowerLeftTunnelX = TNR_LL_x;
-    	    lowerLeftTunnelY = TNR_LL_y;
-    	    upperRightTunnelX = TNR_UR_x;
-    	    upperRightTunnelY = TNR_UR_y;
-    	}
-    	else {
-    	    lowerLeftSzgX = SZG_LL_x;
-    	    lowerLeftSzgY = SZG_LL_y;
-    	    upperRightSzgX = SZG_UR_x;
-    	    upperRightSzgY = SZG_UR_y;
-    	    lowerLeftX = Green_LL_x;
-    	    lowerLeftY = Green_LL_y;
-    	    upperRightX = Green_UR_x;
-    	    upperRightY = Green_UR_y;
-    	    lowerLeftTunnelX = TNG_LL_x;
-    	    lowerLeftTunnelY = TNG_LL_y;
-    	    upperRightTunnelX = TNG_UR_x;
-    	    upperRightTunnelY = TNG_UR_y;
-    	}
+  /**
+   * Finds the point before the tunnel.
+   * 
+   * Returns the point.
+   */
+  public static void setPoints() {
+    // TODO: Change conditional statement for isRedTeam
+    if (isRedTeam != null) {
+      // Set RED TEAM coordinates
+      lowerLeftSzgX = SZR_LL_x;
+      lowerLeftSzgY = SZR_LL_y;
+      upperRightSzgX = SZR_UR_x;
+      upperRightSzgY = SZR_UR_y;
+      lowerLeftX = Red_LL_x;
+      lowerLeftY = Red_LL_y;
+      upperRightX = Red_UR_x;
+      upperRightY = Red_UR_y;
+      lowerLeftTunnelX = TNR_LL_x;
+      lowerLeftTunnelY = TNR_LL_y;
+      upperRightTunnelX = TNR_UR_x;
+      upperRightTunnelY = TNR_UR_y;
+    } else {
+      // Set GREEN TEAM coordinates
+      lowerLeftSzgX = SZG_LL_x;
+      lowerLeftSzgY = SZG_LL_y;
+      upperRightSzgX = SZG_UR_x;
+      upperRightSzgY = SZG_UR_y;
+      lowerLeftX = Green_LL_x;
+      lowerLeftY = Green_LL_y;
+      upperRightX = Green_UR_x;
+      upperRightY = Green_UR_y;
+      lowerLeftTunnelX = TNG_LL_x;
+      lowerLeftTunnelY = TNG_LL_y;
+      upperRightTunnelX = TNG_UR_x;
+      upperRightTunnelY = TNG_UR_y;
+    }
+  }
+    
+  /**
+   * Goes through the tunnel plus 0.4 tile lengths ahead.
+   * 
+   * Returns the point.
+   */
+  public static void goThroughTunnel() {
+    Point destination = getPointBeforetunnel();
+    travelTo(destination);
+    
+    if(upperonmap == true) {
+      // Check UPPER-X cases
+      
+      if(leftonmap) {
+        // UPPER-LEFT
+        if(horizontaltunnel) {
+          turnTo(90);
+          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+				   
+          odometer.setX(destination.x + (upperRightTunnelX - lowerLeftTunnelX + 1.4));
+          odometer.setY(destination.y);
+        } else {
+          turnTo(180);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4); 
+          
+          odometer.setX(destination.x);
+          odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        }
+      } else {
+        // UPPER-RIGHT
+        if(horizontaltunnel) {
+          turnTo(-90);
+          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          
+          odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX + 1.4));
+          odometer.setY(destination.y);
+        } else {
+          turnTo(-180);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4); 
+          
+          odometer.setX(destination.x);
+          odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        }
+      }
+    } else {
+      // Check LOWER-X cases
+      
+      if(leftonmap) {
+        // LOWER-LEFT
+        if(horizontaltunnel) {
+          turnTo(90);
+          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          
+          odometer.setX(destination.x + upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          odometer.setY(destination.y);
+        } else {
+          turnTo(0);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4); 
+          
+          odometer.setX(destination.x);
+          odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        }
+      } else {
+        // LOWER-RIGHT
+        if(horizontaltunnel) {
+          turnTo(-90);
+          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          
+          odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX + 1.4));
+          odometer.setY(destination.y);
+        } else {
+          turnTo(0);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4); 
+          
+          odometer.setX(destination.x);
+          odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        }
+      }   
+    }
+  }
+   
+  /**
+   * Checks weather the robot is in the search zone
+   * 
+   * Returns true if in search zone.
+   */
+  public static boolean inSearchZone() {
+    // TODO: Change isRedTeam conditional
+    if(isRedTeam == null) {
+      // If RED TEAM, use RED SEARCH ZONE coordinates
+      if(odometer.getXyt()[0] > SZR_LL_x && odometer.getXyt()[0] < SZR_UR_x  && odometer.getXyt()[1] > SZR_LL_y && odometer.getXyt()[1] < SZR_UR_y) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      // If GREEN TEAM, use GREEN SEARCH ZONE coordinates
+      if(odometer.getXyt()[0] > SZG_LL_x && odometer.getXyt()[0] < SZG_UR_x  && odometer.getXyt()[1] > SZG_LL_y && odometer.getXyt()[1] < SZG_UR_y) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
+   
+  /**
+   * Moves robot to searchZone after having moved through tunnel.
+   * Assumes that robot will be in center of tile just after tunnel
+   */
+  public static void goToSearchZone() {
+    System.out.println("[STATUS] Navigating to search zone...");
+    
+    // Get current location from odometer; set as Point
+    double[] xyt = odometer.getXyt();
+    Point currentLocation = new Point(xyt[0], xyt[1]);
+    double currentTheta = xyt[2];
+    //System.out.println(currentLocation.x + ", " + currentLocation.y);
+    
+    // Get search zone corner coordinates
+    Point LL_SZ = new Point(lowerLeftSzgX, lowerLeftSzgY);
+    Point LR_SZ = new Point(upperRightSzgX, lowerLeftSzgY);
+    Point UL_SZ = new Point(lowerLeftSzgX, upperRightSzgY);
+    Point UR_SZ = new Point(upperRightSzgX, upperRightSzgY); 
+    Point[] szCorners = new Point[]{LL_SZ, LR_SZ, UL_SZ, UR_SZ};
 
+    // Find closest corner of search zone and set as destination "dest"
+    Point SZ_dest = LL_SZ;
+    for(int i = 0; i < szCorners.length; i++){
+      Point currCorner = szCorners[i];
+      if (distanceBetween(currentLocation, currCorner) <= distanceBetween(currentLocation, SZ_dest)) {
+        // Closest point found; set appropriate offset
+        if (i == 0) {
+          // Lower-left corner
+          System.out.println("=> Lower-left corner of search zone is closest.");
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y + 1); 
+        } else if (i == 1) {
+          // Lower-right corner
+          System.out.println("=> Lower-right corner of search zone is closest.");
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y + 1); 
+        } else if (i == 2) {
+          // Upper-left corner
+          System.out.println("=> Upper-left corner of search zone is closest.");
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y - 1); 
+        } else {
+          // Upper-right corner
+          System.out.println("=> Upper-right corner of search zone is closest.");
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y - 1); 
+        }
+      }
     }
     
-    /**
-     * Goes through the tunnel and one tile ahead.
-     * 
-     * Returns the point.
-     */
+    // Turn towards destination point
+    double destinationTheta = getDestinationAngle(currentLocation, SZ_dest);
+    turnBy(minimalAngle(currentTheta, destinationTheta));
+    //System.out.println("Turning by: " + minimalAngle(currentTheta, destinationTheta));
     
-   public static void goThroughTunnel() {
-	   Point destination = getPointBeforetunnel();
-	   travelTo(destination);
+    // Check for obstacles in path; adjust path as necessary
+    double usDistance = (getDistance() / 100.0) / TILE_SIZE;
+    double distanceToTravel = distanceBetween(currentLocation, SZ_dest);
+    System.out.println("=> Tiles to next obstacle: " + usDistance);
+    System.out.println("=> Tiles to travel: " + distanceToTravel);
+    if (usDistance <= distanceToTravel) {
+      // Path is NOT clear; adjust heading until clear and try again
+      System.out.println("=> Obstacle detected. Readjusting...");
+      // TODO: Adjust path to avoid object (rotate?)
+      
+      // Rotate 
+
+    } else {
+      // Path is clear; proceed to destination
+      System.out.println("=> Path clear. Proceeding...");
+      moveStraightFor(distanceToTravel);
+      turnTo(0);
+      relocalize();
+      // TODO update odometer
+      odometer.printPosition();
+    }
 	   
-	
-	   if(upperonmap == true) {
-		   //upperLeft
-		   if(leftonmap) {
-			   if(horizontaltunnel) {
-				   turnTo(90);
-				   moveStraightFor(upperRightTunnelX - lowerLeftTunnelX +1.4);
-				   
-				   odometer.setX(destination.x + (upperRightTunnelX - lowerLeftTunnelX +1.4));
-				   odometer.setY(destination.y);
-			   }
-			   else {
-				   turnTo(180);
-				   moveStraightFor(upperRightTunnelY - lowerLeftTunnelY +1.4); 
-				   odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY +1.4));
-				   odometer.setX(destination.x);
-			   }
-			   
-		   }
-		   //upperRight
-		   else {
-			   if(horizontaltunnel) {
-				   turnTo(-90);
-				   moveStraightFor(upperRightTunnelX - lowerLeftTunnelX +1.4);
-				   odometer.setY(destination.y);
-				   odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX +1.4));
-			   }
-			   else {
-				   turnTo(-180);
-				   moveStraightFor(upperRightTunnelY - lowerLeftTunnelY +1.4); 
-				   odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY +1.4));
-				   odometer.setX(destination.x);
-			   }
-		   }
-	   }
-	   
-	   
-		   
-		   else{
-			   
-			   if(leftonmap) {
-				   if(horizontaltunnel) {
-					   turnTo(90);
-					   moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-					   odometer.setY(destination.y);
-					   odometer.setX(destination.x + upperRightTunnelX - lowerLeftTunnelX + 1.4);
-				   }
-				   else {
-					   turnTo(0);
-					   moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4); 
-					   odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
-					   odometer.setX(destination.x);
-				   }
-				   
-			   }
-			   //lowerRight
-			   else {
-				   if(horizontaltunnel) {
-					   turnTo(-90);
-					   moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-					   odometer.setY(destination.y);
-					   odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX + 1.4));
-				   }
-				   else {
-					   turnTo(0);
-					   moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.5); 
-					   odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
-					   odometer.setX(destination.x);
-				   }
-		   }
-		   
-	   
-   }}
-   
-   /**
-    * Checks weather the robot is in the search zone
-    * 
-    * Returns true if in search zone.
-    */
-   public static boolean inSearchZone() {
-	   if(isRedTeam == null) {
-		   if(odometer.getXyt()[0] > SZR_LL_x && odometer.getXyt()[0] < SZR_UR_x  && odometer.getXyt()[1] > SZR_LL_y && odometer.getXyt()[1] < SZR_UR_y) {
-			   return true;
-		   }
-			   else {
-				   return false;
-			   }
-	   }
-		   
-		else {
-			
-			 if(odometer.getXyt()[0] > SZG_LL_x && odometer.getXyt()[0] < SZG_UR_x  && odometer.getXyt()[1] > SZG_LL_y && odometer.getXyt()[1] < SZG_UR_y) {
-				   return true;
-			   }
-				   else {
-					   return false;
-				   }
-		   }
-		}
-   
-   /**
-    * Moves robot to searchZone.
-    * 
-    */
-   public static void goToSearchZone() {
-	  
-	   
-   }
+  }
   
 
 
