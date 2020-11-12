@@ -52,7 +52,7 @@ public class UltrasonicLocalizer {
    * @param startAngle Starting angle for the search (degrees).
    * @param endAngle   Ending angle for the search (degrees).
    */
-  public static void search(double startAngle, double endAngle) {
+  public static void search(double startAngle, double endAngle, double current_ur_x, double current_ur_y) {
     //turn to the start angle (position 0,0)
     double dw = 0;
     double dr = 0;
@@ -74,22 +74,26 @@ public class UltrasonicLocalizer {
 
     rr.left.x = 9;
     rr.left.y = 7;
+    
+    current_ur_y=tnr.ur.y-0.5;
+    current_ur_x=tnr.ur.x+0.5;
+    
 
     if (isRedTeam) {
       //turnTo(startAngle);
       turnBy(-90);
 
       //distance between the current position and the wall
-      dw = szr.ur.y - tnr.ur.y + 0.5;
+      dw = szr.ur.y - current_ur_y;
       System.out.println("dw=" + dw);
       //distance between the current position and the ramp
-      dr = rr.left.x - tnr.ur.x - 0.5;
+      dr = rr.left.x - current_ur_x;
       System.out.println("dr=" + dr);
 
-      ds_x = szr.ur.x - tnr.ur.x - 0.5;
+      ds_x = szr.ur.x - current_ur_x;
       System.out.println("ds_x=" + ds_x);
 
-      ds_y = tnr.ur.y - szr.ll.y - 0.5;
+      ds_y = current_ur_y- szr.ll.y;
       System.out.println("ds_y=" + ds_y);
 
       theta_1 = Math.toDegrees(Math.atan(dr / dw));

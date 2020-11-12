@@ -58,7 +58,7 @@ public class Main {
     // Traverse tunnel
     // Go to search zone
     // beep(3);
-     UltrasonicLocalizer.search(0, 180);
+     UltrasonicLocalizer.search(0, 180,6.5,7.5);
     // int i = 0;
     // while (!navigation.validate(unknowns.get(i)) {
     // i++;
