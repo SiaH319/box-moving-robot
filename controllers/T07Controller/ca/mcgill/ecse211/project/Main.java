@@ -25,22 +25,21 @@ public class Main {
   /** Main entry point. */
   public static void main(String[] args) {
     initialize();
-    
-       // Localize
+
+    // Localize
     // Navigation.travelTo(Navigation.getPointBeforetunnel());
-     //travelTo(getTunnelLengthpoint)
-    //check if there is an object one tile away 
-   // (make sure the sensor is not reading a distance smaller than 35 (being generous)
-   // if no obstacle move straight for one tile.
-     //search, validate, done
-    //otherwise move straight untill out of tunnel(if obstacle allows)
-    //validate that object as a block!, done
+    // travelTo(getTunnelLengthpoint)
+    // check if there is an object one tile away
+    // (make sure the sensor is not reading a distance smaller than 35 (being
+    // generous)
+    // if no obstacle move straight for one tile.
+    // search, validate, done
+    // otherwise move straight untill out of tunnel(if obstacle allows)
+    // validate that object as a block!, done
     // if not a block search, validate, done
-    //if object doent allow us out of tunnel
-    //rotate robot by like 60 degrees and repeat
-    //if still cant leave tunnel rotate robot in other direction and repeat
-    
-    
+    // if object doent allow us out of tunnel
+    // rotate robot by like 60 degrees and repeat
+    // if still cant leave tunnel rotate robot in other direction and repeat
 
     // Start the odometer thread
     new Thread(odometer).start();
@@ -51,6 +50,7 @@ public class Main {
       isRedTeam = false;
     }
     if (isRedTeam == null) {
+
     	
     /*	
      Navigation.goThroughTunnel();
@@ -70,12 +70,14 @@ public class Main {
     }
 
     // TODO Determine full flow here.
+
     Navigation.goThroughTunnel();
     if(Navigation.inSearchZone() == false) {
    	 Navigation.goToSearchZone();
     }
     
   //  Navigation.travelTo(Navigation.getPointBeforetunnel());
+
 
     // Uncomment the parts relevant to your methods/functionality
 
@@ -108,6 +110,21 @@ public class Main {
       LocalEV3.getAudio().beep();
       waitUntilNextStep();
     }
+  }
+
+  /**
+   * Determines if a point is within a given region (in points). True if a point
+   * is ON the edge.
+   * 
+   * @param pt Point whose position to check.
+   * @param LL Lower left corner of the region (point).
+   * @param UR Upper right corner of the region (point).
+   * @return True if the point is within, false if not.
+   */
+  public static boolean isWithin(Point pt, Point LL, Point UR) {
+    boolean xGood = (pt.x <= UR.x && pt.x >= LL.x);
+    boolean yGood = (pt.y <= UR.y && pt.y >= LL.y);
+    return xGood && yGood;
   }
 
   /**
