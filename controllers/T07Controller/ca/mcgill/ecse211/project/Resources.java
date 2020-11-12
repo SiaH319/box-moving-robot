@@ -60,7 +60,7 @@ public class Resources {
   // Simulation-related constants
 
   /** The time between physics steps in milliseconds. */
-  public static final int PHYSICS_STEP_PERIOD = 500; // ms
+  public static final int PHYSICS_STEP_PERIOD = 700; // ms
 
   /** The relative path of the input vector file. */
   public static final Path VECTORS_FILE = Paths.get("vectors.txt");

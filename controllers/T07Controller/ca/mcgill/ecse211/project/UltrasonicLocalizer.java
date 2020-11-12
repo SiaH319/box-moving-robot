@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Navigation.*;
 import static ca.mcgill.ecse211.project.Resources.*;
+import static simlejos.ExecutionController.*;
 
 import ca.mcgill.ecse211.playingfield.Point;
 
@@ -85,22 +86,22 @@ public class UltrasonicLocalizer {
 
       //distance between the current position and the wall
       dw = szr.ur.y - current_ur_y;
-      System.out.println("dw=" + dw);
+      // System.out.println("dw=" + dw);
       //distance between the current position and the ramp
       dr = rr.left.x - current_ur_x;
-      System.out.println("dr=" + dr);
+      //System.out.println("dr=" + dr);
 
       ds_x = szr.ur.x - current_ur_x;
-      System.out.println("ds_x=" + ds_x);
+      //System.out.println("ds_x=" + ds_x);
 
       ds_y = current_ur_y - szr.ll.y;
-      System.out.println("ds_y=" + ds_y);
+      //System.out.println("ds_y=" + ds_y);
 
       theta_1 = Math.toDegrees(Math.atan(dr / dw));
-      System.out.println("theta_1=" + theta_1);
+      //System.out.println("theta_1=" + theta_1);
 
       theta_2 = Math.toDegrees(Math.atan(ds_y / ds_x));
-      System.out.println("theta_2=" + theta_2);
+      //System.out.println("theta_2=" + theta_2);
 
     }
 
@@ -113,13 +114,20 @@ public class UltrasonicLocalizer {
     boolean isUnknown = false;
     //read US sensor, create a point and put it in the list of unkno`1wns
     //point position = robot position + us sensor reading
-
+    int old_dist = 0;
+    int old_theta = 0;
+    int diff_dist =0;
+    int diff_theta=0;
     int ideal = 0;
     odometer.setTheta(0);
     //condition never false
-    while ((int) odometer.getXyt()[2] != endAngle) {
+    while (Math.round(odometer.getXyt()[2]) != endAngle) {
 
-      int value = filter(readUsDistance());
+      int curr_dist = filter(readUsDistance());
+      int curr_theta = (int) Math.round(odometer.getXyt()[2]);
+
+      diff_dist = curr_dist - old_dist;
+      diff_theta = curr_theta - old_theta;
 
       if (odometer.getXyt()[2] < theta_1) {
         ideal = (int) (TILE_SIZE * 100 * dw / Math.cos(Math.toRadians(odometer.getXyt()[2])));
@@ -137,11 +145,14 @@ public class UltrasonicLocalizer {
             / Math.cos(Math.toRadians(odometer.getXyt()[2] - theta_2 - 90)));
       }
 
-      if (value < ideal && difference(value)) {
+      if (curr_dist < ideal && difference(curr_dist, curr_theta)) {
         isUnknown = true;
       }
-      System.out.println("ideal=" + ideal + "," + "actual=" + value + "at angle=>"+odometer.getXyt()[2]);
 
+
+      System.out.println("ideal=" + ideal + "," + "actual=" + curr_dist + " at angle => "+ curr_theta);
+      old_dist = curr_dist;
+      old_theta = curr_theta; 
 
       if (isUnknown) {
         //  create a point from the value
@@ -156,8 +167,7 @@ public class UltrasonicLocalizer {
         isUnknown = false;
       }
       System.out.println("size of array: " + unknowns.size());
-    }
-
+    }  
   }
 
 
@@ -172,19 +182,22 @@ public class UltrasonicLocalizer {
    * @return boolean if its a new unknown
    */
 
-  private static int old = 0;
-  public static boolean difference (int current) {
-    boolean unknown = false;
-    int diff = Math.abs(current - old);
+  private static int old_d = 0;
+  private static int old_th = 0;
 
+  public static boolean difference (int current_d, int current_th) {
+    boolean unknown = false;
+    int diff_d = Math.abs(current_d - old_d);
+    int diff_th = Math.abs(current_th - old_th);
     //find a more precise condition
     //hard time with huge obstacles
-    if (old != 0) {
-      if (diff > 15) {
+    if (old_d != 0 && old_th != 0) {
+      if (diff_d > 15 && diff_th > 2) {
         unknown = true;
       }
     }
-    old = current;
+    old_d = current_d;
+    old_th = current_th;
     return unknown;
 
   }
