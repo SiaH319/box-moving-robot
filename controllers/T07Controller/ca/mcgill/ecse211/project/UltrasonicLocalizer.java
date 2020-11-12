@@ -6,6 +6,7 @@ import static ca.mcgill.ecse211.project.Resources.*;
 public class UltrasonicLocalizer {
   /** Buffer (array) to store US samples. */
   private static float[] usData = new float[usSensor.sampleSize()];
+  private static float[] usDataTop = new float[usSensorTop.sampleSize()];
   //Ideal distance to wall
   static int d = 17;
   //Acceptable margin of error
@@ -113,9 +114,16 @@ public class UltrasonicLocalizer {
    */
   public static int getDistance() {
     usSensor.fetchSample(usData, 0);
-    System.out.println(usData[0] * 100);
+    // System.out.println(usData[0] * 100);
     return (int) (usData[0] * 100);
   }
+  
+  public static int getDistanceTop() {
+    usSensorTop.fetchSample(usDataTop, 0);
+    // System.out.println(usData[0] * 100);
+    return (int) (usDataTop[0] * 100);
+  }
+
 
   /**
    * Calculates the angle to rotate for zero heading.

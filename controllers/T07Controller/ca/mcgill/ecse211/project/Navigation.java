@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.project;
 import static ca.mcgill.ecse211.project.Resources.*;
 import static ca.mcgill.ecse211.project.Main.*;
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.getDistance;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.getDistanceTop;
 import static ca.mcgill.ecse211.project.LightLocalizer.relocalize;
 import static java.lang.Math.*;
 
@@ -36,6 +37,34 @@ public class Navigation {
   public static int SZG_UR_x = 15;
   public static int SZG_UR_y = 9;
     
+  // Replace hard-coded values with:
+  /*
+  public static double Red_LL_x = red.ll.x;
+  public static double Red_LL_y = red.ll.y;
+  public static double Red_UR_x = red.ur.x;
+  public static double Red_UR_y = red.ur.y;
+  public static double Green_LL_x = green.ll.x;
+  public static double Green_LL_y = green.ll.y;
+  public static double Green_UR_x = green.ur.x;
+  public static double Green_UR_y = green.ur.y;
+  public static double TNR_LL_x = tnr.ll.x;
+  public static double TNR_LL_y = tnr.ll.y;
+  public static double TNR_UR_x = tnr.ur.x;
+  public static double TNR_UR_y = tnr.ur.y;
+  public static double TNG_LL_x = tng.ll.x;
+  public static double TNG_LL_y = tng.ll.y;
+  public static double TNG_UR_x = tng.ur.x;
+  public static double TNG_UR_y = tng.ur.y;
+  public static double SZR_LL_x = szr.ll.x;
+  public static double SZR_LL_y = szr.ll.y;
+  public static double SZR_UR_x = szr.ur.x;
+  public static double SZR_UR_y = szr.ur.y;
+  public static double SZG_LL_x =szg.ll.x;
+  public static double SZG_LL_y = szg.ll.y;
+  public static double SZG_UR_x = szg.ur.x;
+  public static double SZG_UR_y = szg.ur.y;
+*/ 
+  
   // TEAM-SPECIFIC VARIABLES
   public static int lowerLeftSzgX = 0;
   public static int lowerLeftSzgY = 0;
@@ -561,16 +590,31 @@ public class Navigation {
     //System.out.println("Turning by: " + minimalAngle(currentTheta, destinationTheta));
     
     // Check for obstacles in path; adjust path as necessary
+    //double usDistance = (getDistanceTop() / 100.0) / TILE_SIZE;
     double usDistance = (getDistance() / 100.0) / TILE_SIZE;
     double distanceToTravel = distanceBetween(currentLocation, SZ_dest);
-    System.out.println("=> Tiles to next obstacle: " + usDistance);
-    System.out.println("=> Tiles to travel: " + distanceToTravel);
+    //System.out.println("=> Tiles to next obstacle: " + usDistance);
+    //System.out.println("=> Tiles to travel: " + distanceToTravel);
     if (usDistance <= distanceToTravel) {
       // Path is NOT clear; adjust heading until clear and try again
       System.out.println("=> Obstacle detected. Readjusting...");
-      // TODO: Adjust path to avoid object (rotate?)
+      // TODO: MAKE GENERALIZED
+      // TODO: Maybe add block validation to check obstacle?
       
-      // Rotate 
+      // EXAMPLE OBSTACLE AVOIDANCE
+      System.out.println("[!] EXAMPLE OBSTACLE AVOIDANCE ROUTINE");
+      turnTo(0);
+      usDistance = (getDistance() / 100.0) / TILE_SIZE;
+      System.out.println(usDistance);
+      if (usDistance >= distanceToTravel * 1.5) {
+        System.out.println("Travelling...");
+        moveStraightFor(1.0);
+        
+        // UPDATE ODOMETER
+        odometer.setY(odometer.getXyt()[1] + 1);
+        odometer.setTheta(0.0);
+        goToSearchZone();
+      }
 
     } else {
       // Path is clear; proceed to destination
@@ -578,7 +622,10 @@ public class Navigation {
       moveStraightFor(distanceToTravel);
       turnTo(0);
       relocalize();
-      // TODO update odometer
+      
+      // Update odometer
+      odometer.setX(SZ_dest.x);
+      odometer.setY(SZ_dest.y);
       odometer.printPosition();
     }
 	   
