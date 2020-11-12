@@ -112,6 +112,7 @@ public class UltrasonicLocalizer {
 
     int ideal = 0;
     odometer.setTheta(0);
+    //condition never false
     while ((int)odometer.getXyt()[2] != endAngle) {
     	
       int value = filter(readUsDistance());
@@ -129,8 +130,7 @@ public class UltrasonicLocalizer {
         ideal = (int) (TILE_SIZE * 100 * ds_y / Math.cos(Math.toRadians(odometer.getXyt()[2]-theta_2-90)));
       }
       
-      int diff  = Math.abs(value - ideal);
-      if(diff > 20 && value < ideal && difference(value)) {
+      if(value < ideal && difference(value)) {
     	  isUnknown = true;
       }
       System.out.println("ideal=" + ideal + "," + "actual=" + value + "at angle=>"+odometer.getXyt()[2]);
@@ -161,24 +161,22 @@ public class UltrasonicLocalizer {
   /**
    * method of finite differences
    * @param current
-   * @return  
+   * @return boolean if its a new unknown
    */
   private static int old = 0;
   public static boolean difference(int current) {
+	  boolean unknown = false;
 	  int diff = Math.abs(current - old);
 	  
+	  //find a more precise condition
+	  //hard time with huge obstacles
 	  if(old != 0) {
-		  if(diff > 30) {
-			  old = current;
-			  return true;
+		  if(diff > 15) {
+			  unknown = true;
 		  }
-		  else return false;
 	  }
-	  else{
-		  old = current;
-		  return false;
-	  }
-	  
+	  old = current;
+	  return unknown;
 	  
   }
   /**
