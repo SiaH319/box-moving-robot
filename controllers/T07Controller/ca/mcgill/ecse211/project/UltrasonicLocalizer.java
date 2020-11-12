@@ -212,6 +212,26 @@ public class UltrasonicLocalizer {
   }
 
   /**
+   * Reads an unfiltered US distance from the front us Sensor.
+   * 
+   * @return Distance read by the front US sensor.
+   */
+  public static int frontUSDistance() {
+    usSensor.fetchSample(usData, 0);
+    return (int) (usData[0] * 100);
+  }
+
+  /**
+   * Reads an unfiltered US distance from the front us Sensor.
+   * 
+   * @return Distance read by the front US sensor.
+   */
+  public static int topUSDistance() {
+    usSensorTop.fetchSample(usData, 0);
+    return (int) (usData[0] * 100);
+  }
+
+  /**
    * Rudimentary filter - toss out invalid samples corresponding to null signal.
    * 
    * @param distance raw distance measured by the sensor in cm

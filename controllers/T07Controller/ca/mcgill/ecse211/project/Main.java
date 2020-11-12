@@ -74,6 +74,9 @@ public class Main {
     // System.out.println(Navigation.validateBlock(new Point(0, 0)) ? "Is a block" :
     // "Not a block");
 
+    System.out.println(UltrasonicLocalizer.frontUSDistance());
+    System.out.println(UltrasonicLocalizer.topUSDistance());
+
     beep(1); // beeps once
     // wifiExample();
   }
