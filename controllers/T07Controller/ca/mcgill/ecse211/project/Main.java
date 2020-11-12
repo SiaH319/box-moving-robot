@@ -64,7 +64,8 @@ public class Main {
     // i++;
     // }
 
-    beep(1); // beeps once
+    beep(3);
+    System.out.println("beeped");
     wifiExample();
   }
 
@@ -76,7 +77,9 @@ public class Main {
   public static void beep(int times) {
     for (int i = 0; i < times; i++) {
       LocalEV3.getAudio().beep();
-      waitUntilNextStep();
+      for (int j = 0; j < 2000; j++) {
+        waitUntilNextStep();
+      }
     }
   }
 
