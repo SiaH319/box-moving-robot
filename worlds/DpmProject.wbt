@@ -31,8 +31,6 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.9960586613865934 0.06952256520358595 0.055079542520439145 1.3438461407811733
-  position 2.327938134206983 1.5750288782909012 0.7378522910739476
 }
 TexturedBackground {
 }
@@ -245,35 +243,25 @@ DEF ARENA DPM-CompetitionArena {
 }
 DPM-Block {
   name "block1"
-  translation 3.5122400737390524 0.04983699313268594 0.7279434525644145
-  rotation 0.999862613551533 1.1140045633511208e-06 -0.01657570573630703 8.898798110648786e-05
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block2"
-  translation 4.12963070831293 0.04983699313268542 0.46017044148825853
-  rotation 0.9998626135513453 1.2075619902707573e-06 -0.016575705741082865 8.898798110650749e-05
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block3"
-  translation 2.23556 0.049837 0.765157
-  rotation 0.9998626135514518 1.1565332672010894e-06 -0.016575705738294325 8.898798110646736e-05
   dimension 0.1
   mass 2
 }
 DPM-Block {
   name "block4"
-  translation 2.55036 0.0499989 0.296171
-  rotation 0.3065904812830824 5.578501835959162e-05 0.9518415170996901 -0.00020350857390287962
   dimension 0.1
   mass 2
 }
 DPM-Robot {
-  translation 1.97 0.072 0.498
-  rotation 0 1 0 -1.5707953071795862
   children [
     EV3-ColorSensor {
       name "S2"
@@ -303,6 +291,7 @@ DPM-Robot {
       name "D"
       translation 0.0557 -0.02602 -0.0061
       rotation 1 0 0 -1.5707953071795862
+      position 2.8523741787271576e-06
       children [
         Wheel {
           translation 0.022 0 0
@@ -314,6 +303,7 @@ DPM-Robot {
       name "A"
       translation -0.0557 -0.02602 -0.0061
       rotation 1 0 0 -1.5707953071795862
+      position 2.8429859378010745e-06
       children [
         Wheel {
           translation -0.022 0 0

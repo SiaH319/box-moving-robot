@@ -53,36 +53,8 @@ public class UltrasonicLocalizer {
    * @param endAngle   Ending angle for the search (degrees).
    */
   public static void search(double startAngle, double endAngle) {
-	  //turn to the start angle (position 0,0)
-	  turnTo(startAngle);
-	  //turn to target angle 
-	  setSpeed(ROTATE_SPEED);
-	  leftMotor.rotate(convertAngle(endAngle), true);
-	  rightMotor.rotate(convertAngle(-endAngle), true);
-	  
-	  double currentAngle = odometer.getXyt()[2];
-	  //condition if its an object or not
-	  boolean isUnknown = false;
-	  
-	  //read US sensor, create a point and put it in the list of unknowns
-	  //point position = robot position + us sensor reading
-	  while(currentAngle != endAngle) {
-		  int value = getDistance();
-		  
-		  if(isUnknown) {
-			  //create a point from the value
-			  double robotX = odometer.getXyt()[0];
-			  double robotY = odometer.getXyt()[1];
-			  
-			  
-			  double x = 0;
-			  double y = 0;
-				  
-			  Point newPoint = new Point(x, y);
-			  unknowns.add(newPoint);
-		  }
-	  }
   }
+
 
   // =========================================
   // ============ Helper Methods =============
