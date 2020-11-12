@@ -98,26 +98,24 @@ public class UltrasonicLocalizer {
       theta_2 = Math.toDegrees(Math.atan(ds_y / ds_x));
       System.out.println("theta_2=" + theta_2);
 
-
     }
 
     //turn to target angle 
     setSpeed(ROTATE_SPEED);
     leftMotor.rotate(convertAngle(endAngle), true);
     rightMotor.rotate(convertAngle(-endAngle), true);
-
-
-
-    double currentAngle = odometer.getXyt()[2];
+   
     //condition if its an object or not
-    // boolean isUnknown = false;
+     boolean isUnknown = false;
     //read US sensor, create a point and put it in the list of unkno`1wns
     //point position = robot position + us sensor reading
 
     int ideal = 0;
     odometer.setTheta(0);
-    while (currentAngle != endAngle) {
+    while ((int)odometer.getXyt()[2] != endAngle) {
+    	
       int value = filter(readUsDistance());
+      
       if (odometer.getXyt()[2] < theta_1) {
         ideal = (int) (TILE_SIZE * 100 * dw / Math.cos(Math.toRadians(odometer.getXyt()[2])));
       }
@@ -130,22 +128,29 @@ public class UltrasonicLocalizer {
       else if ((90 + theta_2) < odometer.getXyt()[2] && odometer.getXyt()[2] <= 180) {
         ideal = (int) (TILE_SIZE * 100 * ds_y / Math.cos(Math.toRadians(odometer.getXyt()[2]-theta_2-90)));
       }
+      
+      int diff  = Math.abs(value - ideal);
+      if(diff > 20 && value < ideal && difference(value)) {
+    	  isUnknown = true;
+      }
       System.out.println("ideal=" + ideal + "," + "actual=" + value + "at angle=>"+odometer.getXyt()[2]);
 
 
-      /*if(isUnknown) {
-        //  create a point from the value
-        double robotX = odometer.getXyt()[0];
-        double robotY = odometer.getXyt()[1];
+      if(isUnknown) {
+    	  //  create a point from the value
+    	  double robotX = odometer.getXyt()[0];
+    	  double robotY = odometer.getXyt()[1];
 
 
-        double x = 0;
-        double y = 0;
-        Point newPoint = new Point(x, y);
-        unknowns.add(newPoint);
-    }*/
-
+    	  double x = 0;
+    	  double y = 0;
+    	  Point newPoint = new Point(x, y);
+    	  unknowns.add(newPoint);
+    	  isUnknown = false;
     }
+      	System.out.println("size of array: " + unknowns.size());
+    }
+    
   }
 
 
@@ -153,6 +158,29 @@ public class UltrasonicLocalizer {
   // ============ Helper Methods =============
   // =========================================
 
+  /**
+   * method of finite differences
+   * @param current
+   * @return  
+   */
+  private static int old = 0;
+  public static boolean difference(int current) {
+	  int diff = Math.abs(current - old);
+	  
+	  if(old != 0) {
+		  if(diff > 30) {
+			  old = current;
+			  return true;
+		  }
+		  else return false;
+	  }
+	  else{
+		  old = current;
+		  return false;
+	  }
+	  
+	  
+  }
   /**
    * Performs falling edge localization (where robot starts facing away from
    * wall).
