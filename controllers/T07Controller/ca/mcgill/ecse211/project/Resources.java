@@ -129,6 +129,9 @@ public class Resources {
   /** The tile size in meters. Note that 0.3048 m = 1 ft. */
   public static final double TILE_SIZE = 0.3048;
 
+  /** The block width in m. */
+  public static final double BLOCK_WIDTH = 0.10; // 10cm
+
   // Hardware resources
 
   /** The left motor. */

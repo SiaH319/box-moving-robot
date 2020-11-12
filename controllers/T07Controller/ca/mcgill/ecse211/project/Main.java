@@ -55,30 +55,32 @@ public class Main {
     // TODO Determine full flow here.
     // Uncomment the parts relevant to your methods/functionality
 
+    // ================== LOCALIZATION ===================
     // UltrasonicLocalizer.localize();
     // LightLocalizer.forwardLocalize(90);
     // Odometer.setXyt(reset Odometer here);
     // beep(3);
+    // =============== NAVIGATION TO TUNNEL ==============
     // Calculate tunnel entry point
     // Navigation.travelTo(entry point);
+    // ================ TUNNEL TRAVERSAL =================
     // Traverse tunnel
+    // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     // beep(3);
+    // ================= BLOCK SEARCHING =================
     // UltrasonicLocalizer.search(startAngle, endAngle);
+    // ================= BLOCK VALIDATION ================
     // for (Point p : unknowns) {
-    // if (Navigation.validateBlock(p)) {
+    // if (validateBlock(p)) {
     // System.out.println("Block Found");
     // break;
     // }
     // }
-    // System.out.println(Navigation.validateBlock(new Point(0, 0)) ? "Is a block" :
-    // "Not a block");
 
-    System.out.println(UltrasonicLocalizer.frontUSDistance());
-    System.out.println(UltrasonicLocalizer.topUSDistance());
+    // validateBlock(new Point(8.3, 5.7), new Point(8, 7), 0);
 
-    beep(1); // beeps once
-    // wifiExample();
+    wifiExample();
   }
 
   /**
