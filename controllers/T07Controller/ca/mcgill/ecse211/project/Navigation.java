@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.Main.*;
 import static java.lang.Math.*;
 
 import ca.mcgill.ecse211.playingfield.*;
@@ -284,36 +285,6 @@ public class Navigation {
    * 
    * Returns the point.
    */
-  
-   // public static Point getPointBeforetunnel() {
-    	
-    //setPoints();
-    //setOdometer();
-    
-    
-	/*
-	
-    if(isRedTeam != null){
-  
-	 x1 = 4;
-	 x2 = 6;
-	 y1 = 7;
-	 y2 = 8; 
-	 Point dest= new Point(x1 - 1, (y1 + y2)/2);
-	 return dest;
-    }  
-	else {
-	
-		x1 = 10;
-		x2 = 11;
-		y1 = 3;
-		y2 = 5;
-		Point dest= new Point((x2 + x1)/2, y1 -1);
-		return dest;
-	  }
-   */
-	  
- // }
     
     public static Point getPointBeforetunnel() {
     	setPoints();
@@ -326,6 +297,7 @@ public class Navigation {
     	Point upperRegion = new Point (upperRightX, upperRightY);
     	
     	
+    	
     	//upper left
     	if(lowerLeftX == 0 && upperRightY == 9) {
     		x = 1;
@@ -335,7 +307,7 @@ public class Navigation {
     		leftonmap = true;
     		
     		//going horizontally
-    		if(upperRightY == upperRightSzgY) {
+    		if(isWithin(check, lowerRegion, upperRegion)) {
     			dest.x = lowerLeftTunnelX -1;
     			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
     			horizontaltunnel = true;
@@ -354,16 +326,33 @@ public class Navigation {
     		y = 8;
     		angle=-90;
     		upperonmap=true;
+    		double diffy = upperRightTunnelY - lowerLeftTunnelY;
+    		double diffx = upperRightTunnelX - lowerLeftTunnelX;
     	
-    		if(upperRightY == upperRightSzgY) {
+    		if(diffx > 1) {
     			dest.x = upperRightTunnelX + 1;
     			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
     			horizontaltunnel = true;
     		}
     		//going vertically
+    		else if(diffy >1) {
+    			dest.y = upperRightTunnelY + 1;
+    			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+    			
+    		}
+    		//1x1
+    		else {
+    			
+    		if (upperRightTunnelX == lowerRegion.x) {
+    				dest.x = upperRightTunnelX + 1;
+        			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+        			horizontaltunnel = true;
+    				
+    			}
     		else {
     			dest.y = upperRightTunnelY + 1;
     			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+    			}
     		}
     		
     		
@@ -374,17 +363,32 @@ public class Navigation {
     		y = 1;
     		angle=90;
     		leftonmap = true;
-    		
-    		if(lowerLeftY == lowerLeftSzgY) {
+    		double diffy = upperRightTunnelY - lowerLeftTunnelY;
+    		double diffx = upperRightTunnelX - lowerLeftTunnelX;
+    		if (diffx >1) {
     			dest.x = lowerLeftTunnelX -1;
     			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
     			horizontaltunnel = true;
+    			
     		}
-    		//going vertically
-    		else {
+    		else if (diffy >1) {
     			dest.y = lowerLeftTunnelY -1;
     			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+    		}
+    		else {
+    			if(lowerLeftTunnelX == upperRegion.x) {
+    				dest.x = lowerLeftTunnelX -1;
+        			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
+        			horizontaltunnel = true;
+    			}
     			
+    			else {
+    				dest.y = lowerLeftTunnelY -1;
+        			dest.x = (lowerLeftTunnelX + upperRightTunnelX)/2;
+    				
+    			}
+    			
+
     		}
     	}
     	//LowerRight
@@ -393,7 +397,7 @@ public class Navigation {
     		y = 1;
     		angle= -90;
     		
-    		if(lowerLeftY == lowerLeftSzgY) {
+    		if(!isWithin(check, lowerRegion, upperRegion)) {
     			dest.x = upperRightTunnelX + 1;
     			dest.y = (upperRightTunnelY + lowerLeftTunnelY)/2;
     			horizontaltunnel = true;
@@ -414,7 +418,7 @@ public class Navigation {
     }
     
     public static void setPoints() {
-    	if (isRedTeam == null) {
+    	if (isRedTeam != null) {
     	    lowerLeftSzgX = SZR_LL_x;
     	    lowerLeftSzgY = SZR_LL_y;
     	    upperRightSzgX = SZR_UR_x;
@@ -526,8 +530,6 @@ public class Navigation {
 				   }
 		   }
 		   
-		   
-		
 	   
    }}
    
@@ -562,9 +564,7 @@ public class Navigation {
     * 
     */
    public static void goToSearchZone() {
-	   turnBy(90);
-	   moveStraightFor(1.5);
-	   LightLocalizer.relocalize();
+	  
 	   
    }
   

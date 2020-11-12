@@ -52,11 +52,11 @@ public class Main {
     if (isRedTeam == null) {
 
     	
-    /*	
+    	
      Navigation.goThroughTunnel();
      if(Navigation.inSearchZone() == false) {
     	 Navigation.goToSearchZone();
-     }*/
+     }
     	     
       System.out.println("This team should not be competing according to the wifi class.");
       System.out.println("Check the provided team values.");
@@ -70,11 +70,11 @@ public class Main {
     }
 
     // TODO Determine full flow here.
-
+/*
     Navigation.goThroughTunnel();
     if(Navigation.inSearchZone() == false) {
    	 Navigation.goToSearchZone();
-    }
+    }*/
     
   //  Navigation.travelTo(Navigation.getPointBeforetunnel());
 
