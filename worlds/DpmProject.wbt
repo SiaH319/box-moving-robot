@@ -271,7 +271,7 @@ DPM-Block {
   dimension 0.1
   mass 2
 }
-DPM-Robot {
+T07-Robot {
   hidden position_11_0 9.360395705748582e-09
   hidden rotation_12 -0.00016404057751736282 -0.7572374612359667 0.653139648460876 0.0007162013218245402
   hidden rotation_14 -1 0 0 2.8407726275428476e-06
@@ -279,47 +279,15 @@ DPM-Robot {
   translation 4.32716 0.0620566 2.43298
   rotation 0.0016376704833949575 0.9999972951714982 -0.0016515704874978537 1.56951
   children [
-    EV3-ColorSensor {
-      name "S2"
-      translation 0.04785 -0.034 -0.067
-      rotation 0 1 0 3.14159
-    }
-    EV3-ColorSensor {
-      name "S3"
-      translation -0.04785 -0.034 -0.067
-      rotation 0 1 0 3.14159
-    }
-    EV3-Ultrasonic {
-      name "S4"
-      translation -3.50407e-14 0.04 -0.05
-      rotation -9.381808589788182e-07 -0.5000009248431466 -0.8660248698248325 -3.1415853071795863
-    }
-    EV3-Ultrasonic {
-      name "S1"
-      translation -1.87636e-07 -0.01 -0.058
-      rotation 1.3267905276071413e-06 0.7071072811859472 0.7071062811855495 3.14159
-    }
-    BallCaster {
-      translation 0 -0.04948 0.03974
-      rotation 1 0 0 -1.5707953071795862
-    }
-    EV3-LargeMotor {
-      name "D"
-      translation 0.0557 -0.02602 -0.0061
-      rotation 1 0 0 -1.5707953071795862
-      position 87.94245663750112
-      children [
-        Wheel {
-          translation 0.022 0 0
-          rotation 0 0 1 1.5708003061004252
-        }
-      ]
+    T07-robot-base-reinforced-solid {
+      translation 9.3e-05 -0.01008 -0.01586
+      rotation 1 0 0 -1.5708
     }
     EV3-LargeMotor {
       name "A"
       translation -0.0557 -0.02602 -0.0061
       rotation 1 0 0 -1.5707953071795862
-      position 87.97385658690149
+      position 87.94245663750112
       children [
         Wheel {
           translation -0.022 0 0
@@ -327,9 +295,41 @@ DPM-Robot {
         }
       ]
     }
-    robot-base-reinforced-solid {
-      translation 9.3e-05 -0.01008 -0.01586
+    EV3-LargeMotor {
+      name "D"
+      translation 0.0557 -0.02602 -0.0061
       rotation 1 0 0 -1.5707953071795862
+      position 87.97385658690149
+      children [
+        Wheel {
+          translation 0.022 0 0
+          rotation 0 0 1 1.5708003061004252
+        }
+      ]
+    }
+    BallCaster {
+      translation 0 -0.04948 0.03974
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3-Ultrasonic {
+      name "S1"
+      translation -1.87636e-07 -0.01 -0.058
+      rotation 1.3267905276071413e-06 0.7071072811859472 0.7071062811855495 3.14159
+    }
+    EV3-Ultrasonic {
+      name "S4"
+      translation -3.50407e-14 0.04 -0.05
+      rotation -9.381808589788182e-07 -0.5000009248431466 -0.8660248698248325 -3.1415853071795863
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation -0.04785 -0.034 -0.067
+      rotation 0 1 0 3.14159
+    }
+    EV3-ColorSensor {
+      name "S2"
+      translation 0.04785 -0.034 -0.067
+      rotation 0 1 0 3.14159
     }
     EV3 {
       rotation 1 0 0 -1.5708
