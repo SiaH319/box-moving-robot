@@ -33,7 +33,6 @@ public class Navigation {
     // Find proxy point and navigate to it
     double dist = distanceBetween(curr, pt);
     double destAngle = getDestinationAngle(curr, pt);
-    System.out.println(dist);
     turnBy(minimalAngle(curTheta, destAngle));
     // block width is 10cm, so "radius" would be 5 or more (trig). So 10cm would put
     // is within the 7cm margin.
@@ -95,7 +94,7 @@ public class Navigation {
       }
       waitUntilNextStep();
     }
-    System.out.println("Done");
+    System.out.println("Destination reached safely");
     return true;
   }
 
@@ -300,7 +299,6 @@ public class Navigation {
     for (int i = 0; i < tiles.size(); i++) {
       System.out.println("Checking tile number " + i);
       Point pt = new Point(tiles.get(i).x + 0.5, tiles.get(i).y + 0.5);
-      System.out.println(pt.x + " and " + pt.y);
       if (distanceBetween(curr, pt) < 0.3) {
         continue;
       }
@@ -314,9 +312,10 @@ public class Navigation {
             xyt[1] + dist * sin(toRadians(xyt[2] - 90)));
         if (validateBlock(unknownPt, curr, angle)) { // if block, end
           System.out.println("Block found. Ending demo here.");
+          Main.beep(3);
           return;
         } else { // if not a block, go around
-          System.out.println("Oh no, it seems this is an obstacle...");
+          System.out.println("Oh no, it seems this is an obstacle... This part of the code doesn't work yet :(");
           return;
           // TODO GO AROUND IT AND CONTINUE FORWARD
         }
@@ -363,23 +362,23 @@ public class Navigation {
     // Tiles are identified by their lower left corner.
     ArrayList<Point> tiles = new ArrayList<Point>();
     // Determine which tiles the ramp and bin occupy (2 tiles only)
-    // Point lre = isRedTeam ? rr.left : gr.left;
-    // Point rre = isRedTeam ? rr.right : gr.right;
+    Point lre = isRedTeam ? rr.left : gr.left;
+    Point rre = isRedTeam ? rr.right : gr.right;
     Point rt1 = new Point(100, 100);
     Point rt2 = new Point(100, 100);
-    // if (lre.x < rre.x) { // upward facing bin
-    // rt1 = new Point(lre.x, lre.y);
-    // rt2 = new Point(lre.x, lre.y + 1);
-    // } else if (lre.x > rre.x) { // downward facing bin
-    // rt1 = new Point(rre.x, rre.y - 1);
-    // rt2 = new Point(rre.x, rre.y - 2);
-    // } else if (lre.y < rre.y) { // left facing bin
-    // rt1 = new Point(lre.x - 1, lre.y);
-    // rt2 = new Point(lre.x - 2, lre.y);
-    // } else { // (lre.y > rre.y) // right facing bin
-    // rt1 = new Point(rre.x, rre.y);
-    // rt2 = new Point(rre.x + 1, rre.y);
-    // }
+    if (lre.x < rre.x) { // upward facing bin
+      rt1 = new Point(lre.x, lre.y);
+      rt2 = new Point(lre.x, lre.y + 1);
+    } else if (lre.x > rre.x) { // downward facing bin
+      rt1 = new Point(rre.x, rre.y - 1);
+      rt2 = new Point(rre.x, rre.y - 2);
+    } else if (lre.y < rre.y) { // left facing bin
+      rt1 = new Point(lre.x - 1, lre.y);
+      rt2 = new Point(lre.x - 2, lre.y);
+    } else { // (lre.y > rre.y) // right facing bin
+      rt1 = new Point(rre.x, rre.y);
+      rt2 = new Point(rre.x + 1, rre.y);
+    }
     // ramp tiles stored in rt1 and rt2
     // iterate over all tiles in the region
     for (int y = (int) szn.ll.y; y < (int) szn.ur.y; y++) {
