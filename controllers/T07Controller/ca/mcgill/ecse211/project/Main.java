@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.Navigation.*;
 import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
@@ -29,22 +30,18 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
-   /* if (TEAM_NUMBER == redTeam) {
-      isRedTeam = true;
-    } else if (TEAM_NUMBER == greenTeam) {
-      isRedTeam = false;
-    }
-    if (isRedTeam == null) {
-      System.out.println("This team should not be competing according to the wifi class.");
-      System.out.println("Check the provided team values.");
-      System.out.println("Current team in Resources: " + TEAM_NUMBER);
-      System.out.println("Green Team Number in Wifi: " + greenTeam);
-      System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
-      return;
-    } else {
-      System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
-    }*/
+    /*
+     * if (TEAM_NUMBER == redTeam) { isRedTeam = true; } else if (TEAM_NUMBER ==
+     * greenTeam) { isRedTeam = false; } if (isRedTeam == null) { System.out.
+     * println("This team should not be competing according to the wifi class.");
+     * System.out.println("Check the provided team values.");
+     * System.out.println("Current team in Resources: " + TEAM_NUMBER);
+     * System.out.println("Green Team Number in Wifi: " + greenTeam);
+     * System.out.println("Red Team Number in Wifi: " + redTeam); System.out.
+     * println("Stopping the program. Please restart the simulation with the appropriate values."
+     * ); return; } else { System.out.println("Identified team as being " +
+     * (isRedTeam ? "red." : "green.")); }
+     */
 
     // TODO Determine full flow here.
     // Uncomment the parts relevant to your methods/functionality
@@ -58,14 +55,16 @@ public class Main {
     // Traverse tunnel
     // Go to search zone
     // beep(3);
-     UltrasonicLocalizer.search(0, 180,6.5,7.5);
+    // UltrasonicLocalizer.search(0, 180,6.5,7.5);
     // int i = 0;
     // while (!navigation.validate(unknowns.get(i)) {
     // i++;
     // }
 
-    beep(1); // beeps once
-   // wifiExample();
+    // beep(1); // beeps once
+    // wifiExample();
+    odometer.setXyt(0, 0, 0);
+    safeTravelTo(new Point(0, 3));
   }
 
   /**
@@ -110,28 +109,25 @@ public class Main {
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
    *         St-Martin Cormier
    */
-/*  public static void wifiExample() {
-    System.out.println("Running...");
-
-    // Example 1: Print out all received data
-    System.out.println("Map:\n" + wifiParameters);
-
-    // Example 2: Print out specific values
-    System.out.println("Red Team: " + redTeam);
-    System.out.println("Green Zone: " + green);
-    System.out.println("Island Zone, upper right: " + island.ur);
-    System.out.println("Red tunnel footprint, lower left y value: " + tnr.ll.y);
-
-    // Example 3: Compare value
-    if (szg.ll.x >= island.ll.x && szg.ll.y >= island.ll.y) {
-      System.out.println("The green search zone is on the island.");
-    } else {
-      System.err.println("The green search zone is in the water!");
-    }
-
-    // Example 4: Calculate the area of a region
-    System.out.println("The island area is " + island.getWidth() * island.getHeight() + ".");
-  }*/
+  /*
+   * public static void wifiExample() { System.out.println("Running...");
+   * 
+   * // Example 1: Print out all received data System.out.println("Map:\n" +
+   * wifiParameters);
+   * 
+   * // Example 2: Print out specific values System.out.println("Red Team: " +
+   * redTeam); System.out.println("Green Zone: " + green);
+   * System.out.println("Island Zone, upper right: " + island.ur);
+   * System.out.println("Red tunnel footprint, lower left y value: " + tnr.ll.y);
+   * 
+   * // Example 3: Compare value if (szg.ll.x >= island.ll.x && szg.ll.y >=
+   * island.ll.y) { System.out.println("The green search zone is on the island.");
+   * } else { System.err.println("The green search zone is in the water!"); }
+   * 
+   * // Example 4: Calculate the area of a region
+   * System.out.println("The island area is " + island.getWidth() *
+   * island.getHeight() + "."); }
+   */
 
   /**
    * Initializes the robot logic. It starts a new thread to perform physics steps

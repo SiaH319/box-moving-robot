@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import static java.lang.Math.*;
 
 import ca.mcgill.ecse211.playingfield.*;
+import static simlejos.ExecutionController.*;
 
 public class Navigation {
 
@@ -22,17 +23,30 @@ public class Navigation {
     moveStraightFor(distanceBetween(currentLocation, destination));
   }
 
-  /** Travels to the given destination. */
-  public static void safeTravelTo(Point destination) {
+  /**
+   * Travels to a given point and stops if an obstacle is detected.
+   * 
+   * @param destination Point
+   * @return True if reached destination, false if stopped.
+   */
+  public static boolean safeTravelTo(Point destination) {
     double[] xyt = odometer.getXyt();
     Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
     double currentTheta = xyt[2];
     double destinationTheta = getDestinationAngle(currentLocation, destination);
     turnBy(minimalAngle(currentTheta, destinationTheta));
     moveStraightForReturn(distanceBetween(currentLocation, destination));
-    while (distanceBetween(new Point(odometer.getXyt()[0], odometer.getXyt()[1]), destination) * TILE_SIZE < 0.1) {
-
+    while (distanceBetween(new Point(odometer.getXyt()[0], odometer.getXyt()[1]), destination) * TILE_SIZE > 0.1) {
+      int dist = UltrasonicLocalizer.getDistance();
+      System.out.println(dist);
+      if (dist <= 15) { // within 15 cm of something
+        stopMotors();
+        return false;
+      }
+      waitUntilNextStep();
     }
+    System.out.println("Done");
+    return true;
   }
 
   /**
@@ -224,6 +238,16 @@ public class Navigation {
   public void carpetSearch(Point curr, double angle, Region szn) {
     ArrayList<Point> tiles = szTiles(szn);
     // sort tiles by distance from current position
+    for (int i = 0; i < tiles.size(); i++) {
+      Point pt = new Point(tiles.get(i).x + 0.5, tiles.get(i).y + 0.5);
+      if (!safeTravelTo(pt)) {
+        double dist = (UltrasonicLocalizer.getDistance() / 100) / TILE_SIZE;
+        double[] xyt = odometer.getXyt();
+        Point obstacle = new Point(xyt[0] + dist * cos(Math.toRadians(xyt[2]) - 90),
+            xyt[1] + dist * sin(Math.toRadians(xyt[2]) - 90));
+        // run validate, if false return
+      }
+    }
     // safeTravelTo one at a time and return if nothing detected on the way
     // if something detected, run validate on it.
     // if obstacle, nav around it
