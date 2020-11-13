@@ -61,7 +61,7 @@ public class Resources {
   // Simulation-related constants
 
   /** The time between physics steps in milliseconds. */
-  public static final int PHYSICS_STEP_PERIOD = 500; // ms
+  public static final int PHYSICS_STEP_PERIOD = 700; // ms
 
   /** The relative path of the input vector file. */
   public static final Path VECTORS_FILE = Paths.get("vectors.txt");
@@ -128,6 +128,9 @@ public class Resources {
 
   /** The tile size in meters. Note that 0.3048 m = 1 ft. */
   public static final double TILE_SIZE = 0.3048;
+
+  /** The block width in m. */
+  public static final double BLOCK_WIDTH = 0.10; // 10cm
 
   // Hardware resources
 

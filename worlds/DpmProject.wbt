@@ -309,7 +309,7 @@ T07-Robot {
     }
     EV3-Ultrasonic {
       name "S1"
-      translation -1.87636e-07 -0.01 -0.058
+      translation -1.87636e-07 -0.00999999 -0.058
       rotation 1.3267905276071413e-06 0.7071072811859472 0.7071062811855495 3.14159
     }
     EV3-Ultrasonic {

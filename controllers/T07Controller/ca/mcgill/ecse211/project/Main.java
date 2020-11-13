@@ -1,6 +1,9 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
+import static ca.mcgill.ecse211.project.LightLocalizer.*;
+import static ca.mcgill.ecse211.project.Navigation.*;
 import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
@@ -51,17 +54,16 @@ public class Main {
     }
     if (isRedTeam == null) {
 
-     UltrasonicLocalizer.localize();
-     LightLocalizer.forwardLocalize(90);
-     beep(3);
+      UltrasonicLocalizer.localize();
+      LightLocalizer.forwardLocalize(90);
+      beep(3);
 
-     Navigation.goThroughTunnel();
-     if(Navigation.inSearchZone() == false) {
-       Navigation.goToSearchZone();
-     }
-     beep(3);
-     
-    	     
+      Navigation.goThroughTunnel();
+      if (Navigation.inSearchZone() == false) {
+        Navigation.goToSearchZone();
+      }
+      beep(3);
+
       System.out.println("This team should not be competing according to the wifi class.");
       System.out.println("Check the provided team values.");
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
@@ -74,34 +76,30 @@ public class Main {
     }
 
     // TODO Determine full flow here.
-/*
-    Navigation.goThroughTunnel();
-    if(Navigation.inSearchZone() == false) {
-   	 Navigation.goToSearchZone();
-    }*/
-    
-  //  Navigation.travelTo(Navigation.getPointBeforetunnel());
+    /*
+     * Navigation.goThroughTunnel(); if(Navigation.inSearchZone() == false) {
+     * Navigation.goToSearchZone(); }
+     */
 
+    // Navigation.travelTo(Navigation.getPointBeforetunnel());
 
     // Uncomment the parts relevant to your methods/functionality
 
+    // ================== LOCALIZATION ===================
     // UltrasonicLocalizer.localize();
     // LightLocalizer.forwardLocalize(90);
-    // Odometer.setXyt(reset Odometer here);
-    // beep(3);
+    // TODO RESET ODO HERE
+    beep(3);
+    // =============== NAVIGATION TO TUNNEL ==============
     // Calculate tunnel entry point
     // Navigation.travelTo(entry point);
+    // ================ TUNNEL TRAVERSAL =================
     // Traverse tunnel
+    // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
-    // beep(3);
-    // UltrasonicLocalizer.search(startAngle, endAngle);
-    // int i = 0;
-    // while (!navigation.validate(unknowns.get(i)) {
-    // i++;
-    // }
-
-    beep(1); // beeps once
-    wifiExample();
+    beep(3);
+    double[] xyt = odometer.getXyt();
+    carpetSearch(new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE), xyt[2], (isRedTeam ? szr : szg));
   }
 
   /**
@@ -112,7 +110,9 @@ public class Main {
   public static void beep(int times) {
     for (int i = 0; i < times; i++) {
       LocalEV3.getAudio().beep();
-      waitUntilNextStep();
+      for (int j = 0; j < 2000; j++) {
+        waitUntilNextStep();
+      }
     }
   }
 
@@ -161,6 +161,7 @@ public class Main {
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
    *         St-Martin Cormier
    */
+
   public static void wifiExample() {
     System.out.println("Running...");
 
