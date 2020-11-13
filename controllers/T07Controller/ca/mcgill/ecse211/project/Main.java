@@ -86,9 +86,9 @@ public class Main {
     // Uncomment the parts relevant to your methods/functionality
 
     // ================== LOCALIZATION ===================
-    // UltrasonicLocalizer.localize();
-    // LightLocalizer.forwardLocalize(90);
-    // TODO RESET ODO HERE
+    UltrasonicLocalizer.localize();
+    LightLocalizer.forwardLocalize(90);
+    // Odo should be reset by the following functions
     beep(3);
     // =============== NAVIGATION TO TUNNEL ==============
     // Calculate tunnel entry point
