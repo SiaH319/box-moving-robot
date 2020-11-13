@@ -90,6 +90,7 @@ public class Navigation {
       int dist = UltrasonicLocalizer.getDistance();
       if (dist <= 15) { // within 15 cm of something
         stopMotors();
+        System.out.println("Obstruction found");
         return false;
       }
       waitUntilNextStep();
@@ -300,7 +301,7 @@ public class Navigation {
       System.out.println("Checking tile number " + i);
       Point pt = new Point(tiles.get(i).x + 0.5, tiles.get(i).y + 0.5);
       System.out.println(pt.x + " and " + pt.y);
-      if (distanceBetween(curr, pt) < 0.10 * TILE_SIZE) {
+      if (distanceBetween(curr, pt) < 0.3) {
         continue;
       }
       if (safeTravelTo(pt)) {
