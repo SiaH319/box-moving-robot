@@ -53,17 +53,6 @@ public class Main {
       isRedTeam = false;
     }
     if (isRedTeam == null) {
-
-      UltrasonicLocalizer.localize();
-      LightLocalizer.forwardLocalize(90);
-      beep(3);
-
-      Navigation.goThroughTunnel();
-      if (Navigation.inSearchZone() == false) {
-        Navigation.goToSearchZone();
-      }
-      beep(3);
-
       System.out.println("This team should not be competing according to the wifi class.");
       System.out.println("Check the provided team values.");
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
@@ -91,10 +80,11 @@ public class Main {
     // Odo should be reset by the following functions
     beep(3);
     // =============== NAVIGATION TO TUNNEL ==============
-    // Calculate tunnel entry point
-    // Navigation.travelTo(entry point);
-    // ================ TUNNEL TRAVERSAL =================
-    // Traverse tunnel
+    Navigation.goThroughTunnel();
+    if (Navigation.inSearchZone() == false) {
+      Navigation.goToSearchZone();
+    }
+    beep(3);
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     beep(3);
