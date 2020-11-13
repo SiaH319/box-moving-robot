@@ -120,7 +120,7 @@ public class UltrasonicLocalizer {
     int diff_theta=0;
     int ideal = 0;
     odometer.setTheta(0);
-    //condition never false
+    
     while (Math.round(odometer.getXyt()[2]) != endAngle) {
 
       int curr_dist = filter(readUsDistance());
@@ -155,14 +155,21 @@ public class UltrasonicLocalizer {
       old_theta = curr_theta; 
 
       if (isUnknown) {
-        //  create a point from the value
-        double robotX = odometer.getXyt()[0];
-        double robotY = odometer.getXyt()[1];
-
-
-        double x = 0;
-        double y = 0;
+        //  create a point from the current distance
+        double a = curr_dist/100;
+        double b = secondDistance(a);
+        //maybe need to cur_theta - last_theta
+        double theta = Math.toRadians(curr_theta);
+        
+        //length of the object
+        double c = Math.sqrt(Math.pow(b, 2) + Math.pow(a, 2) - (2*b*a*Math.cos(theta)));
+        
+        //coordinates in feet
+        double x =  (Math.cos(curr_theta/2) * a) * TILE_SIZE * 10;
+        double y = c/2 * TILE_SIZE * 10;
+        
         Point newPoint = new Point(x, y);
+        System.out.println("coordinates: " + x + " , " + y);
         unknowns.add(newPoint);
         isUnknown = false;
       }
@@ -174,7 +181,21 @@ public class UltrasonicLocalizer {
   // =========================================
   // ============ Helper Methods =============
   // =========================================
-
+  
+  
+  private static double secondDistance(double current) {
+	  double previous = 0;
+	  double temp = 0;
+	 
+	  while(previous <= current) {
+		  temp = current;
+		  current = (filter(readUsDistance()))/100;
+		  previous = temp;
+	  }
+	  System.out.println(previous);
+	   //find a way to get the angle at previous
+	  return previous;
+  }
   /**
    * method of finite differences
    * 
