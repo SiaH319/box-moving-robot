@@ -38,7 +38,10 @@ public class Navigation {
     // block width is 10cm, so "radius" would be 5 or more (trig). So 10cm would put
     // is within the 7cm margin.
     moveStraightFor(dist - (BLOCK_WIDTH / TILE_SIZE));
-
+    double[] xyt = odometer.getXyt();
+    Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+    turnTo(getDestinationAngle(current, pt));
+    System.out.println("VALIDATING NOW");
     // Note: THE FOLLOWING PART ONLY WORKS IF WITHIN ~7CM (+-2cm) OF THE TARGET.
     int top = topUSDistance();
     int front = frontUSDistance();
@@ -82,9 +85,9 @@ public class Navigation {
     double destinationTheta = getDestinationAngle(currentLocation, destination);
     turnBy(minimalAngle(currentTheta, destinationTheta));
     moveStraightForReturn(distanceBetween(currentLocation, destination));
-    while (distanceBetween(new Point(odometer.getXyt()[0], odometer.getXyt()[1]), destination) * TILE_SIZE > 0.1) {
+    while (distanceBetween(new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE),
+        destination) > 0.1) {
       int dist = UltrasonicLocalizer.getDistance();
-      System.out.println(dist);
       if (dist <= 15) { // within 15 cm of something
         stopMotors();
         return false;
@@ -281,22 +284,70 @@ public class Navigation {
     rightMotor.setAcceleration(acceleration);
   }
 
-  public void carpetSearch(Point curr, double angle, Region szn) {
-    ArrayList<Point> tiles = szTiles(szn);
+  /**
+   * 
+   * @param curr
+   * @param angle
+   * @param szn
+   */
+  public static void carpetSearch(Point curr, double angle, Region szn) {
+    ArrayList<Point> unSortedTiles = szTiles(szn);
     // sort tiles by distance from current position
+    ArrayList<Point> tiles = sortDistances(unSortedTiles, curr);
+    System.out.println("Sorted");
+    // travel to one tile at a time
     for (int i = 0; i < tiles.size(); i++) {
+      System.out.println("Checking tile number " + i);
       Point pt = new Point(tiles.get(i).x + 0.5, tiles.get(i).y + 0.5);
-      if (!safeTravelTo(pt)) {
+      System.out.println(pt.x + " and " + pt.y);
+      if (distanceBetween(curr, pt) < 0.10 * TILE_SIZE) {
+        continue;
+      }
+      if (safeTravelTo(pt)) {
+        travelTo(curr); // return to start, nothing interesting here.
+      } else {
+        // if obstacle detected, check what it is
         double dist = (UltrasonicLocalizer.getDistance() / 100) / TILE_SIZE;
         double[] xyt = odometer.getXyt();
-        Point obstacle = new Point(xyt[0] + dist * cos(Math.toRadians(xyt[2]) - 90),
-            xyt[1] + dist * sin(Math.toRadians(xyt[2]) - 90));
-        // run validate, if false return
+        Point unknownPt = new Point(xyt[0] + dist * cos(toRadians(xyt[2] - 90)),
+            xyt[1] + dist * sin(toRadians(xyt[2] - 90)));
+        if (validateBlock(unknownPt, curr, angle)) { // if block, end
+          System.out.println("Block found. Ending demo here.");
+          return;
+        } else { // if not a block, go around
+          System.out.println("Oh no, it seems this is an obstacle...");
+          return;
+          // TODO GO AROUND IT AND CONTINUE FORWARD
+        }
       }
     }
-    // safeTravelTo one at a time and return if nothing detected on the way
-    // if something detected, run validate on it.
-    // if obstacle, nav around it
+  }
+
+  public static ArrayList<Point> sortDistances(ArrayList<Point> list, Point curr) {
+    ArrayList<Point> result = new ArrayList<Point>();
+
+    for (int i = 0; i < list.size(); i++) { // for all individual points in list
+      int index = 0;
+      Point offsetPt = new Point(list.get(i).x + 0.5, list.get(i).y + 0.5);
+      while (true) { // loop until point position is found
+        if (result.size() <= index) {
+          // if there are no more elements to compare to
+          result.add(index, list.get(i));
+          break;
+        } else {
+          Point resultOffset = new Point(result.get(index).x + 0.5, result.get(index).y + 0.5);
+          if (distanceBetween(curr, offsetPt) > distanceBetween(curr, resultOffset)) {
+            // current index object belongs later in the list
+            index++;
+          } else {
+            // current index object belongs before the current list element
+            result.add(index, list.get(i));
+            break;
+          }
+        }
+      }
+    }
+    return result;
   }
 
   /**
@@ -307,30 +358,30 @@ public class Navigation {
    * @param szn Search zone (region)
    * @return ArrayList of points contianing all lower left corners of valid tiles.
    */
-  public ArrayList<Point> szTiles(Region szn) {
+  public static ArrayList<Point> szTiles(Region szn) {
     // Tiles are identified by their lower left corner.
     ArrayList<Point> tiles = new ArrayList<Point>();
     // Determine which tiles the ramp and bin occupy (2 tiles only)
-    Point lre = isRedTeam ? rr.left : gr.left;
-    Point rre = isRedTeam ? rr.right : gr.right;
-    Point rt1;
-    Point rt2;
-    if (lre.x < rre.x) { // upward facing bin
-      rt1 = new Point(lre.x, lre.y);
-      rt2 = new Point(lre.x, lre.y + 1);
-    } else if (lre.x > rre.x) { // downward facing bin
-      rt1 = new Point(rre.x, rre.y - 1);
-      rt2 = new Point(rre.x, rre.y - 2);
-    } else if (lre.y < rre.y) { // left facing bin
-      rt1 = new Point(lre.x - 1, lre.y);
-      rt2 = new Point(lre.x - 2, lre.y);
-    } else { // (lre.y > rre.y) // right facing bin
-      rt1 = new Point(rre.x, rre.y);
-      rt2 = new Point(rre.x + 1, rre.y);
-    }
+    // Point lre = isRedTeam ? rr.left : gr.left;
+    // Point rre = isRedTeam ? rr.right : gr.right;
+    Point rt1 = new Point(100, 100);
+    Point rt2 = new Point(100, 100);
+    // if (lre.x < rre.x) { // upward facing bin
+    // rt1 = new Point(lre.x, lre.y);
+    // rt2 = new Point(lre.x, lre.y + 1);
+    // } else if (lre.x > rre.x) { // downward facing bin
+    // rt1 = new Point(rre.x, rre.y - 1);
+    // rt2 = new Point(rre.x, rre.y - 2);
+    // } else if (lre.y < rre.y) { // left facing bin
+    // rt1 = new Point(lre.x - 1, lre.y);
+    // rt2 = new Point(lre.x - 2, lre.y);
+    // } else { // (lre.y > rre.y) // right facing bin
+    // rt1 = new Point(rre.x, rre.y);
+    // rt2 = new Point(rre.x + 1, rre.y);
+    // }
     // ramp tiles stored in rt1 and rt2
     // iterate over all tiles in the region
-    for (int y = (int) szn.ll.y; y < (int) szn.ll.y; y++) {
+    for (int y = (int) szn.ll.y; y < (int) szn.ur.y; y++) {
       for (int x = (int) szn.ll.x; x < (int) szn.ur.x; x++) {
         boolean sameP1 = x == rt1.x && y == rt1.y;
         boolean sameP2 = x == rt2.x && y == rt2.y;

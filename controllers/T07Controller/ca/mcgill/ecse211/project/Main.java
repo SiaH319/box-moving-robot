@@ -69,8 +69,8 @@ public class Main {
 
     // beep(1); // beeps once
     // wifiExample();
-    odometer.setXyt(0, 0, 0);
-    safeTravelTo(new Point(0, 3));
+    odometer.setXyt(0.5 * TILE_SIZE, 0.5 * TILE_SIZE, 0);
+    Navigation.carpetSearch(new Point(0.5, 0.5), 0, new Region(new Point(0, 0), new Point(3, 3)));
   }
 
   /**
