@@ -1,14 +1,65 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import java.util.ArrayList;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
 import static java.lang.Math.*;
 
 import ca.mcgill.ecse211.playingfield.*;
+import static simlejos.ExecutionController.*;
 
 public class Navigation {
 
   /** Do not instantiate this class. */
   private Navigation() {
+  }
+
+  /**
+   * This function navigates to a given unknown object's position on the map and
+   * checks if the object is a block or an obstacle. If it is a block, return true
+   * and update the blocks list in Resources. Otherwise, return false and update
+   * the obstacles list in Resources.
+   * 
+   * @param pt       Target object's position (point).
+   * @param curr     Current position (point).
+   * @param curTheta Current heading of the robot.
+   * @return Returns true if the object is a block. False if it is an obstacle.
+   */
+  public static boolean validateBlock(Point pt, Point curr, double curTheta) {
+    // It is safe to assume that there is nothing in the way as the block readings
+    // are based on the unknowns list of objects that were all read radially from
+    // the search position, so only objects with direct LOS were added to that list.
+
+    // Find proxy point and navigate to it
+    double dist = distanceBetween(curr, pt);
+    double destAngle = getDestinationAngle(curr, pt);
+    System.out.println(dist);
+    turnBy(minimalAngle(curTheta, destAngle));
+    // block width is 10cm, so "radius" would be 5 or more (trig). So 10cm would put
+    // is within the 7cm margin.
+    moveStraightFor(dist - (BLOCK_WIDTH / TILE_SIZE));
+    double[] xyt = odometer.getXyt();
+    Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+    turnTo(getDestinationAngle(current, pt));
+    System.out.println("VALIDATING NOW");
+    // Note: THE FOLLOWING PART ONLY WORKS IF WITHIN ~7CM (+-2cm) OF THE TARGET.
+    int top = topUSDistance();
+    int front = frontUSDistance();
+    System.out.println("Top : " + top);
+    System.out.println("Front x2 : " + front * 2);
+    if (top > 2 * front && top > 10) {
+      // 10 is used as it is bigger than the possible value top could see within the
+      // 7m radius of an obstacle.
+
+      // If top USS not seeing same-ish as front USS (block too short, wall isn't)
+      blocks.add(new Block(pt, -1)); // Add as block with placeholder torque
+      System.out.println("Is a block");
+      return true;
+    } else { // Both are seeing roughly the same object (within 7cm) (tall wall)
+      obstacles.add(pt); // Add as obstacle
+      System.out.println("Not a block");
+      return false;
+    }
   }
 
   /** Travels to the given destination. */
@@ -19,6 +70,33 @@ public class Navigation {
     double destinationTheta = getDestinationAngle(currentLocation, destination);
     turnBy(minimalAngle(currentTheta, destinationTheta));
     moveStraightFor(distanceBetween(currentLocation, destination));
+  }
+
+  /**
+   * Travels to a given point and stops if an obstacle is detected.
+   * 
+   * @param destination Point
+   * @return True if reached destination, false if stopped.
+   */
+  public static boolean safeTravelTo(Point destination) {
+    double[] xyt = odometer.getXyt();
+    Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+    double currentTheta = xyt[2];
+    double destinationTheta = getDestinationAngle(currentLocation, destination);
+    turnBy(minimalAngle(currentTheta, destinationTheta));
+    moveStraightForReturn(distanceBetween(currentLocation, destination));
+    while (distanceBetween(new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE),
+        destination) > 0.1) {
+      int dist = UltrasonicLocalizer.getDistance();
+      if (dist <= 15) { // within 15 cm of something
+        stopMotors();
+        System.out.println("Obstruction found");
+        return false;
+      }
+      waitUntilNextStep();
+    }
+    System.out.println("Done");
+    return true;
   }
 
   /**
@@ -105,7 +183,7 @@ public class Navigation {
     rightMotor.rotate(convertDistance(distance), true);
   }
 
-    /** Moves the robot forward for an indeterminate distance. */
+  /** Moves the robot forward for an indeterminate distance. */
   public static void forward() {
     setSpeed(FORWARD_SPEED);
     leftMotor.forward();
@@ -205,6 +283,115 @@ public class Navigation {
   public static void setAcceleration(int acceleration) {
     leftMotor.setAcceleration(acceleration);
     rightMotor.setAcceleration(acceleration);
+  }
+
+  /**
+   * 
+   * @param curr
+   * @param angle
+   * @param szn
+   */
+  public static void carpetSearch(Point curr, double angle, Region szn) {
+    ArrayList<Point> unSortedTiles = szTiles(szn);
+    // sort tiles by distance from current position
+    ArrayList<Point> tiles = sortDistances(unSortedTiles, curr);
+    System.out.println("Sorted");
+    // travel to one tile at a time
+    for (int i = 0; i < tiles.size(); i++) {
+      System.out.println("Checking tile number " + i);
+      Point pt = new Point(tiles.get(i).x + 0.5, tiles.get(i).y + 0.5);
+      System.out.println(pt.x + " and " + pt.y);
+      if (distanceBetween(curr, pt) < 0.3) {
+        continue;
+      }
+      if (safeTravelTo(pt)) {
+        travelTo(curr); // return to start, nothing interesting here.
+      } else {
+        // if obstacle detected, check what it is
+        double dist = (UltrasonicLocalizer.getDistance() / 100) / TILE_SIZE;
+        double[] xyt = odometer.getXyt();
+        Point unknownPt = new Point(xyt[0] + dist * cos(toRadians(xyt[2] - 90)),
+            xyt[1] + dist * sin(toRadians(xyt[2] - 90)));
+        if (validateBlock(unknownPt, curr, angle)) { // if block, end
+          System.out.println("Block found. Ending demo here.");
+          return;
+        } else { // if not a block, go around
+          System.out.println("Oh no, it seems this is an obstacle...");
+          return;
+          // TODO GO AROUND IT AND CONTINUE FORWARD
+        }
+      }
+    }
+  }
+
+  public static ArrayList<Point> sortDistances(ArrayList<Point> list, Point curr) {
+    ArrayList<Point> result = new ArrayList<Point>();
+
+    for (int i = 0; i < list.size(); i++) { // for all individual points in list
+      int index = 0;
+      Point offsetPt = new Point(list.get(i).x + 0.5, list.get(i).y + 0.5);
+      while (true) { // loop until point position is found
+        if (result.size() <= index) {
+          // if there are no more elements to compare to
+          result.add(index, list.get(i));
+          break;
+        } else {
+          Point resultOffset = new Point(result.get(index).x + 0.5, result.get(index).y + 0.5);
+          if (distanceBetween(curr, offsetPt) > distanceBetween(curr, resultOffset)) {
+            // current index object belongs later in the list
+            index++;
+          } else {
+            // current index object belongs before the current list element
+            result.add(index, list.get(i));
+            break;
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  /**
+   * A method that takes as input a search zone and generates all valid tiles
+   * inside the zone (valid meaning that there are no known obstacles, ie the ramp
+   * and bin)
+   * 
+   * @param szn Search zone (region)
+   * @return ArrayList of points contianing all lower left corners of valid tiles.
+   */
+  public static ArrayList<Point> szTiles(Region szn) {
+    // Tiles are identified by their lower left corner.
+    ArrayList<Point> tiles = new ArrayList<Point>();
+    // Determine which tiles the ramp and bin occupy (2 tiles only)
+    // Point lre = isRedTeam ? rr.left : gr.left;
+    // Point rre = isRedTeam ? rr.right : gr.right;
+    Point rt1 = new Point(100, 100);
+    Point rt2 = new Point(100, 100);
+    // if (lre.x < rre.x) { // upward facing bin
+    // rt1 = new Point(lre.x, lre.y);
+    // rt2 = new Point(lre.x, lre.y + 1);
+    // } else if (lre.x > rre.x) { // downward facing bin
+    // rt1 = new Point(rre.x, rre.y - 1);
+    // rt2 = new Point(rre.x, rre.y - 2);
+    // } else if (lre.y < rre.y) { // left facing bin
+    // rt1 = new Point(lre.x - 1, lre.y);
+    // rt2 = new Point(lre.x - 2, lre.y);
+    // } else { // (lre.y > rre.y) // right facing bin
+    // rt1 = new Point(rre.x, rre.y);
+    // rt2 = new Point(rre.x + 1, rre.y);
+    // }
+    // ramp tiles stored in rt1 and rt2
+    // iterate over all tiles in the region
+    for (int y = (int) szn.ll.y; y < (int) szn.ur.y; y++) {
+      for (int x = (int) szn.ll.x; x < (int) szn.ur.x; x++) {
+        boolean sameP1 = x == rt1.x && y == rt1.y;
+        boolean sameP2 = x == rt2.x && y == rt2.y;
+        if (!sameP1 && !sameP2) { // Is neither ramp or bin point
+          tiles.add(new Point(x, y));
+        }
+      }
+    }
+    return tiles;
   }
 
 }

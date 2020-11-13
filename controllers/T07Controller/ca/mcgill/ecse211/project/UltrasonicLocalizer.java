@@ -2,6 +2,11 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Navigation.*;
 import static ca.mcgill.ecse211.project.Resources.*;
+import static simlejos.ExecutionController.*;
+
+import ca.mcgill.ecse211.playingfield.Point;
+
+import static ca.mcgill.ecse211.playingfield.Point.*;
 
 public class UltrasonicLocalizer {
   /** Buffer (array) to store US samples. */
@@ -48,18 +53,181 @@ public class UltrasonicLocalizer {
    * @param startAngle Starting angle for the search (degrees).
    * @param endAngle   Ending angle for the search (degrees).
    */
-  public static void search(double startAngle, double endAngle) {
+  public static void search (double startAngle, double endAngle, double current_ur_x, double current_ur_y) {
+    //turn to the start angle (position 0,0)
+    double dw = 0;
+    double dr = 0;
+    double ds_x = 0;
+    double ds_y = 0;
+    double theta_1 = 0;
+    double theta_2 = 0;
 
+    //Temporary hard coding values
+    isRedTeam = true;
+    szr.ur.x = 10;
+    szr.ur.y = 9;
+
+    szr.ll.x = 6;
+    szr.ll.y = 5;
+
+    tnr.ur.x = 6;
+    tnr.ur.y = 8;
+
+    rr.left.x = 9;
+    rr.left.y = 7;
+
+    //current_ur_y = tnr.ur.y - 0.5;
+    //current_ur_x = tnr.ur.x + 0.5;
+
+
+    if (isRedTeam) {
+      //turnTo(startAngle);
+      turnBy(-90);
+
+      //distance between the current position and the wall
+      dw = szr.ur.y - current_ur_y;
+      // System.out.println("dw=" + dw);
+      //distance between the current position and the ramp
+      dr = rr.left.x - current_ur_x;
+      //System.out.println("dr=" + dr);
+
+      ds_x = szr.ur.x - current_ur_x;
+      //System.out.println("ds_x=" + ds_x);
+
+      ds_y = current_ur_y - szr.ll.y;
+      //System.out.println("ds_y=" + ds_y);
+
+      theta_1 = Math.toDegrees(Math.atan(dr / dw));
+      //System.out.println("theta_1=" + theta_1);
+
+      theta_2 = Math.toDegrees(Math.atan(ds_y / ds_x));
+      //System.out.println("theta_2=" + theta_2);
+
+    }
+
+    //turn to target angle 
+    setSpeed(ROTATE_SPEED);
+    leftMotor.rotate(convertAngle(endAngle), true);
+    rightMotor.rotate(convertAngle(-endAngle), true);
+
+    //condition if its an object or not
+    boolean isUnknown = false;
+    //read US sensor, create a point and put it in the list of unkno`1wns
+    //point position = robot position + us sensor reading
+    int old_dist = 0;
+    int old_theta = 0;
+    int diff_dist =0;
+    int diff_theta=0;
+    int ideal = 0;
+    odometer.setTheta(0);
+    
+    while (Math.round(odometer.getXyt()[2]) != endAngle) {
+
+      int curr_dist = filter(readUsDistance());
+      int curr_theta = (int) Math.round(odometer.getXyt()[2]);
+
+      diff_dist = curr_dist - old_dist;
+      diff_theta = curr_theta - old_theta;
+
+      if (odometer.getXyt()[2] < theta_1) {
+        ideal = (int) (TILE_SIZE * 100 * dw / Math.cos(Math.toRadians(odometer.getXyt()[2])));
+      }
+      else if (theta_1 <= odometer.getXyt()[2] && odometer.getXyt()[2] < 90) {
+        ideal = (int) (TILE_SIZE * 100 * dr 
+            / Math.cos(Math.toRadians(odometer.getXyt()[2] - theta_1)));
+      }
+      else if (90 <= odometer.getXyt()[2] && odometer.getXyt()[2] <= (90 + theta_2)) {
+        ideal = (int) (TILE_SIZE * 100 * ds_x 
+            / Math.cos(Math.toRadians(odometer.getXyt()[2] - 90)));
+      }
+      else if ((90 + theta_2) < odometer.getXyt()[2] && odometer.getXyt()[2] <= 180) {
+        ideal = (int) (TILE_SIZE * 100 * ds_y 
+            / Math.cos(Math.toRadians(odometer.getXyt()[2] - theta_2 - 90)));
+      }
+
+      if (curr_dist < ideal && difference(curr_dist, curr_theta)) {
+        isUnknown = true;
+      }
+
+
+      System.out.println("ideal=" + ideal + "," + "actual=" + curr_dist + " at angle => "+ curr_theta);
+      old_dist = curr_dist;
+      old_theta = curr_theta; 
+
+      if (isUnknown) {
+        //  create a point from the current distance
+        double a = curr_dist/100;
+        double b = secondDistance(a);
+        //maybe need to cur_theta - last_theta
+        double theta = Math.toRadians(curr_theta);
+        
+        //length of the object
+        double c = Math.sqrt(Math.pow(b, 2) + Math.pow(a, 2) - (2*b*a*Math.cos(theta)));
+        
+        //coordinates in feet
+        double x =  (Math.cos(curr_theta/2) * a) * TILE_SIZE * 10;
+        double y = c/2 * TILE_SIZE * 10;
+        
+        Point newPoint = new Point(x, y);
+        System.out.println("coordinates: " + x + " , " + y);
+        unknowns.add(newPoint);
+        isUnknown = false;
+      }
+      System.out.println("size of array: " + unknowns.size());
+    }  
   }
+
 
   // =========================================
   // ============ Helper Methods =============
   // =========================================
+  
+  
+  private static double secondDistance(double current) {
+	  double previous = 0;
+	  double temp = 0;
+	 
+	  while(previous <= current) {
+		  temp = current;
+		  current = (filter(readUsDistance()))/100;
+		  previous = temp;
+	  }
+	  System.out.println(previous);
+	   //find a way to get the angle at previous
+	  return previous;
+  }
+  /**
+   * method of finite differences
+   * 
+   * @param current
+   * @return boolean if its a new unknown
+   */
+
+  private static int old_d = 0;
+  private static int old_th = 0;
+
+  public static boolean difference (int current_d, int current_th) {
+    boolean unknown = false;
+    int diff_d = Math.abs(current_d - old_d);
+    int diff_th = Math.abs(current_th - old_th);
+    //find a more precise condition
+    //hard time with huge obstacles
+    if (old_d != 0 && old_th != 0) {
+      if (diff_d > 15 && diff_th > 2) {
+        unknown = true;
+      }
+    }
+    old_d = current_d;
+    old_th = current_th;
+    return unknown;
+
+  }
 
   /**
    * Performs falling edge localization (where robot starts facing away from
    * wall).
    */
+
   public static void fallingEdge() {
     System.out.println("[STATUS] Ultrasonic localization starting (FALLING EDGE)...");
 
@@ -129,7 +297,7 @@ public class UltrasonicLocalizer {
    */
   public static int getDistance() {
     usSensor.fetchSample(usData, 0);
-    System.out.println(usData[0] * 100);
+    //System.out.println(usData[0] * 100);
     return (int) (usData[0] * 100);
   }
 
@@ -209,6 +377,26 @@ public class UltrasonicLocalizer {
   public static int readUsDistance() {
     usSensor.fetchSample(usData, 0);
     return filter((int) (usData[0] * 100));
+  }
+
+  /**
+   * Reads an unfiltered US distance from the front us Sensor.
+   * 
+   * @return Distance read by the front US sensor.
+   */
+  public static int frontUSDistance() {
+    usSensor.fetchSample(usData, 0);
+    return (int) (usData[0] * 100);
+  }
+
+  /**
+   * Reads an unfiltered US distance from the front us Sensor.
+   * 
+   * @return Distance read by the front US sensor.
+   */
+  public static int topUSDistance() {
+    usSensorTop.fetchSample(usData, 0);
+    return (int) (usData[0] * 100);
   }
 
   /**

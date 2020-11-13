@@ -1,6 +1,9 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
+import static ca.mcgill.ecse211.project.LightLocalizer.*;
+import static ca.mcgill.ecse211.project.Navigation.*;
 import static simlejos.ExecutionController.*;
 
 import java.lang.Thread;
@@ -29,36 +32,36 @@ public class Main {
     // Start the odometer thread
     new Thread(odometer).start();
 
-    if (TEAM_NUMBER == redTeam) {
-      isRedTeam = true;
-    } else if (TEAM_NUMBER == greenTeam) {
-      isRedTeam = false;
-    }
-    if (isRedTeam == null) {
-      System.out.println("This team should not be competing according to the wifi class.");
-      System.out.println("Check the provided team values.");
-      System.out.println("Current team in Resources: " + TEAM_NUMBER);
-      System.out.println("Green Team Number in Wifi: " + greenTeam);
-      System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
-      return;
-    } else {
-      System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
-    }
+    /*
+     * if (TEAM_NUMBER == redTeam) { isRedTeam = true; } else if (TEAM_NUMBER ==
+     * greenTeam) { isRedTeam = false; } if (isRedTeam == null) { System.out.
+     * println("This team should not be competing according to the wifi class.");
+     * System.out.println("Check the provided team values.");
+     * System.out.println("Current team in Resources: " + TEAM_NUMBER);
+     * System.out.println("Green Team Number in Wifi: " + greenTeam);
+     * System.out.println("Red Team Number in Wifi: " + redTeam); System.out.
+     * println("Stopping the program. Please restart the simulation with the appropriate values."
+     * ); return; } else { System.out.println("Identified team as being " +
+     * (isRedTeam ? "red." : "green.")); }
+     */
 
     // TODO Determine full flow here.
     // Uncomment the parts relevant to your methods/functionality
 
+    // ================== LOCALIZATION ===================
     // UltrasonicLocalizer.localize();
     // LightLocalizer.forwardLocalize(90);
     // Odometer.setXyt(reset Odometer here);
     // beep(3);
+    // =============== NAVIGATION TO TUNNEL ==============
     // Calculate tunnel entry point
     // Navigation.travelTo(entry point);
+    // ================ TUNNEL TRAVERSAL =================
     // Traverse tunnel
+    // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     // beep(3);
-    // UltrasonicLocalizer.search(startAngle, endAngle);
+    // UltrasonicLocalizer.search(0, 180,6.5,7.5);
     // int i = 0;
     // while (!navigation.validate(unknowns.get(i)) {
     // i++;
@@ -113,6 +116,7 @@ public class Main {
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
    *         St-Martin Cormier
    */
+
   public static void wifiExample() {
     System.out.println("Running...");
 
