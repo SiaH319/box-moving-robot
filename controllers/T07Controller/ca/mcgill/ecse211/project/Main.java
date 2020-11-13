@@ -1,6 +1,8 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
+import static ca.mcgill.ecse211.project.LightLocalizer.*;
 import static ca.mcgill.ecse211.project.Navigation.*;
 import static simlejos.ExecutionController.*;
 
@@ -46,13 +48,17 @@ public class Main {
     // TODO Determine full flow here.
     // Uncomment the parts relevant to your methods/functionality
 
+    // ================== LOCALIZATION ===================
     // UltrasonicLocalizer.localize();
     // LightLocalizer.forwardLocalize(90);
     // Odometer.setXyt(reset Odometer here);
     // beep(3);
+    // =============== NAVIGATION TO TUNNEL ==============
     // Calculate tunnel entry point
     // Navigation.travelTo(entry point);
+    // ================ TUNNEL TRAVERSAL =================
     // Traverse tunnel
+    // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     // beep(3);
     // UltrasonicLocalizer.search(0, 180,6.5,7.5);

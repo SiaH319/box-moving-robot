@@ -279,47 +279,15 @@ DPM-Robot {
   translation 2.60924 0.0639585 0.748001
   rotation 0.005480339096002383 -0.0005436489103235564 0.9999848350496396 0.00289946
   children [
-    EV3-ColorSensor {
-      name "S2"
-      translation 0.04785 -0.034 -0.067
-      rotation 0 1 0 3.14159
-    }
-    EV3-ColorSensor {
-      name "S4"
-      translation -0.00215 -0.0071 -0.0625
-      rotation 0.9999999999929585 -2.653589999981315e-06 2.653589999981315e-06 1.5708
-    }
-    EV3-ColorSensor {
-      name "S3"
-      translation -0.04785 -0.034 -0.067
-      rotation 0 1 0 3.14159
-    }
-    EV3-Ultrasonic {
-      name "S1"
-      translation -3.75274e-08 0.03 -0.05
-      rotation 1.3267905276071413e-06 0.7071072811859472 0.7071062811855495 3.14159
-    }
-    BallCaster {
-      translation 0 -0.04948 0.03974
-      rotation 1 0 0 -1.5707953071795862
-    }
-    EV3-LargeMotor {
-      name "D"
-      translation 0.0557 -0.02602 -0.0061
-      rotation 1 0 0 -1.5707953071795862
-      position 2.8523741787271576e-06
-      children [
-        Wheel {
-          translation 0.022 0 0
-          rotation 0 0 1 1.5708003061004252
-        }
-      ]
+    T07-robot-base-reinforced-solid {
+      translation 9.3e-05 -0.01008 -0.01586
+      rotation 1 0 0 -1.5708
     }
     EV3-LargeMotor {
       name "A"
       translation -0.0557 -0.02602 -0.0061
       rotation 1 0 0 -1.5707953071795862
-      position 2.8429859378010745e-06
+      position 2.8523741787271576e-06
       children [
         Wheel {
           translation -0.022 0 0
@@ -327,9 +295,41 @@ DPM-Robot {
         }
       ]
     }
-    robot-base-reinforced-solid {
-      translation 9.3e-05 -0.01008 -0.01586
+    EV3-LargeMotor {
+      name "D"
+      translation 0.0557 -0.02602 -0.0061
       rotation 1 0 0 -1.5707953071795862
+      position 2.8429859378010745e-06
+      children [
+        Wheel {
+          translation 0.022 0 0
+          rotation 0 0 1 1.5708003061004252
+        }
+      ]
+    }
+    BallCaster {
+      translation 0 -0.04948 0.03974
+      rotation 1 0 0 -1.5707953071795862
+    }
+    EV3-Ultrasonic {
+      name "S1"
+      translation -1.87636e-07 -0.01 -0.058
+      rotation 1.3267905276071413e-06 0.7071072811859472 0.7071062811855495 3.14159
+    }
+    EV3-Ultrasonic {
+      name "S4"
+      translation -3.50407e-14 0.04 -0.05
+      rotation -9.381808589788182e-07 -0.5000009248431466 -0.8660248698248325 -3.1415853071795863
+    }
+    EV3-ColorSensor {
+      name "S3"
+      translation -0.04785 -0.034 -0.067
+      rotation 0 1 0 3.14159
+    }
+    EV3-ColorSensor {
+      name "S2"
+      translation 0.04785 -0.034 -0.067
+      rotation 0 1 0 3.14159
     }
     EV3 {
       rotation 1 0 0 -1.5708

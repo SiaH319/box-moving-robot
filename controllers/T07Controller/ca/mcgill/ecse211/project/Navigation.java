@@ -2,6 +2,7 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
 import java.util.ArrayList;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
 import static java.lang.Math.*;
 
 import ca.mcgill.ecse211.playingfield.*;
@@ -11,6 +12,51 @@ public class Navigation {
 
   /** Do not instantiate this class. */
   private Navigation() {
+  }
+
+  /**
+   * This function navigates to a given unknown object's position on the map and
+   * checks if the object is a block or an obstacle. If it is a block, return true
+   * and update the blocks list in Resources. Otherwise, return false and update
+   * the obstacles list in Resources.
+   * 
+   * @param pt       Target object's position (point).
+   * @param curr     Current position (point).
+   * @param curTheta Current heading of the robot.
+   * @return Returns true if the object is a block. False if it is an obstacle.
+   */
+  public static boolean validateBlock(Point pt, Point curr, double curTheta) {
+    // It is safe to assume that there is nothing in the way as the block readings
+    // are based on the unknowns list of objects that were all read radially from
+    // the search position, so only objects with direct LOS were added to that list.
+
+    // Find proxy point and navigate to it
+    double dist = distanceBetween(curr, pt);
+    double destAngle = getDestinationAngle(curr, pt);
+    System.out.println(dist);
+    turnBy(minimalAngle(curTheta, destAngle));
+    // block width is 10cm, so "radius" would be 5 or more (trig). So 10cm would put
+    // is within the 7cm margin.
+    moveStraightFor(dist - (BLOCK_WIDTH / TILE_SIZE));
+
+    // Note: THE FOLLOWING PART ONLY WORKS IF WITHIN ~7CM (+-2cm) OF THE TARGET.
+    int top = topUSDistance();
+    int front = frontUSDistance();
+    System.out.println("Top : " + top);
+    System.out.println("Front x2 : " + front * 2);
+    if (top > 2 * front && top > 10) {
+      // 10 is used as it is bigger than the possible value top could see within the
+      // 7m radius of an obstacle.
+
+      // If top USS not seeing same-ish as front USS (block too short, wall isn't)
+      blocks.add(new Block(pt, -1)); // Add as block with placeholder torque
+      System.out.println("Is a block");
+      return true;
+    } else { // Both are seeing roughly the same object (within 7cm) (tall wall)
+      obstacles.add(pt); // Add as obstacle
+      System.out.println("Not a block");
+      return false;
+    }
   }
 
   /** Travels to the given destination. */
