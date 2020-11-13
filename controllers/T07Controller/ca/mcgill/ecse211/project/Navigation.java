@@ -1,6 +1,7 @@
 package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Resources.*;
+import java.util.ArrayList;
 import static java.lang.Math.*;
 
 import ca.mcgill.ecse211.playingfield.*;
@@ -21,6 +22,19 @@ public class Navigation {
     moveStraightFor(distanceBetween(currentLocation, destination));
   }
 
+  /** Travels to the given destination. */
+  public static void safeTravelTo(Point destination) {
+    double[] xyt = odometer.getXyt();
+    Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+    double currentTheta = xyt[2];
+    double destinationTheta = getDestinationAngle(currentLocation, destination);
+    turnBy(minimalAngle(currentTheta, destinationTheta));
+    moveStraightForReturn(distanceBetween(currentLocation, destination));
+    while (distanceBetween(new Point(odometer.getXyt()[0], odometer.getXyt()[1]), destination) * TILE_SIZE < 0.1) {
+
+    }
+  }
+
   /**
    * Turns the robot with a minimal angle towards the given input angle in
    * degrees, no matter what its current orientation is. This method is different
@@ -29,7 +43,7 @@ public class Navigation {
   public static void turnTo(double angle) {
     turnBy(minimalAngle(odometer.getXyt()[2], angle));
   }
-  
+
   /**
    * Returns the angle that the robot should point towards to face the destination
    * in degrees.
@@ -80,10 +94,11 @@ public class Navigation {
     leftMotor.rotate(convertDistance(distance), true);
     rightMotor.rotate(convertDistance(distance), false);
   }
-  
+
   /**
-   * Moves the robot straight for the given distance.
-   * Returns immediately so as to not stop the execution of subsequent code.
+   * Moves the robot straight for the given distance. Returns immediately so as to
+   * not stop the execution of subsequent code.
+   * 
    * @param distance in feet (tile sizes), may be negative
    */
   public static void moveStraightForReturn(double distance) {
@@ -91,10 +106,11 @@ public class Navigation {
     leftMotor.rotate(convertDistance(distance * TILE_SIZE), true);
     rightMotor.rotate(convertDistance(distance * TILE_SIZE), true);
   }
-  
+
   /**
-   * Moves the robot straight for the given distance.
-   * Returns immediately so as to not stop the execution of subsequent code.
+   * Moves the robot straight for the given distance. Returns immediately so as to
+   * not stop the execution of subsequent code.
+   * 
    * @param distance in meters, may be negative
    */
   public static void moveStraightForReturnMeters(double distance) {
@@ -102,7 +118,7 @@ public class Navigation {
     leftMotor.rotate(convertDistance(distance), true);
     rightMotor.rotate(convertDistance(distance), true);
   }
-  
+
   /** Moves the robot forward for an indeterminate distance. */
   public static void forward() {
     setSpeed(FORWARD_SPEED);
@@ -203,6 +219,57 @@ public class Navigation {
   public static void setAcceleration(int acceleration) {
     leftMotor.setAcceleration(acceleration);
     rightMotor.setAcceleration(acceleration);
+  }
+
+  public void carpetSearch(Point curr, double angle, Region szn) {
+    ArrayList<Point> tiles = szTiles(szn);
+    // sort tiles by distance from current position
+    // safeTravelTo one at a time and return if nothing detected on the way
+    // if something detected, run validate on it.
+    // if obstacle, nav around it
+  }
+
+  /**
+   * A method that takes as input a search zone and generates all valid tiles
+   * inside the zone (valid meaning that there are no known obstacles, ie the ramp
+   * and bin)
+   * 
+   * @param szn Search zone (region)
+   * @return ArrayList of points contianing all lower left corners of valid tiles.
+   */
+  public ArrayList<Point> szTiles(Region szn) {
+    // Tiles are identified by their lower left corner.
+    ArrayList<Point> tiles = new ArrayList<Point>();
+    // Determine which tiles the ramp and bin occupy (2 tiles only)
+    Point lre = isRedTeam ? rr.left : gr.left;
+    Point rre = isRedTeam ? rr.right : gr.right;
+    Point rt1;
+    Point rt2;
+    if (lre.x < rre.x) { // upward facing bin
+      rt1 = new Point(lre.x, lre.y);
+      rt2 = new Point(lre.x, lre.y + 1);
+    } else if (lre.x > rre.x) { // downward facing bin
+      rt1 = new Point(rre.x, rre.y - 1);
+      rt2 = new Point(rre.x, rre.y - 2);
+    } else if (lre.y < rre.y) { // left facing bin
+      rt1 = new Point(lre.x - 1, lre.y);
+      rt2 = new Point(lre.x - 2, lre.y);
+    } else { // (lre.y > rre.y) // right facing bin
+      rt1 = new Point(rre.x, rre.y);
+      rt2 = new Point(rre.x + 1, rre.y);
+    }
+    // ramp tiles stored in rt1 and rt2
+    // iterate over all tiles in the region
+    for (int y = (int) szn.ll.y; y < (int) szn.ll.y; y++) {
+      for (int x = (int) szn.ll.x; x < (int) szn.ur.x; x++) {
+        boolean sameP1 = x == rt1.x && y == rt1.y;
+        boolean sameP2 = x == rt2.x && y == rt2.y;
+        if (!sameP1 && !sameP2) { // Is neither ramp or bin point
+          tiles.add(new Point(x, y));
+        }
+      }
+    }
+    return tiles;
   }
 
 }
