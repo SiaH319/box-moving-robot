@@ -17,7 +17,7 @@ import simlejos.hardware.sensor.EV3UltrasonicSensor;
 import simlejos.robotics.RegulatedMotor;
 
 /* (non-Javadoc comment)
- * TODO Integrate this carefully with your existing Resources class (See below for where to add
+ * Integrate this carefully with your existing Resources class (See below for where to add
  * your code from your current Resources file). The order in which things are declared matters!
  */
 
@@ -44,7 +44,8 @@ public class Resources {
    * <p>
    * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
-  public static final String SERVER_IP = "192.168.0.165"; // = DEFAULT_SERVER_IP;
+  // 192.168.1.105
+  public static final String SERVER_IP = "127.0.0.1"; // = DEFAULT_SERVER_IP;
 
   /** Your team number. */
   public static final int TEAM_NUMBER = 7;
