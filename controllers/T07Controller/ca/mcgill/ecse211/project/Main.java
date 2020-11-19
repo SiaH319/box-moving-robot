@@ -31,31 +31,25 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-
-    if (TEAM_NUMBER == redTeam) {
-      isRedTeam = true;
-    } else if (TEAM_NUMBER == greenTeam) {
-      isRedTeam = false;
-    }
-    if (isRedTeam == null) {
-      System.out.println("This team should not be competing according to the wifi class.");
-      System.out.println("Check the provided team values.");
-      System.out.println("Current team in Resources: " + TEAM_NUMBER);
-      System.out.println("Green Team Number in Wifi: " + greenTeam);
-      System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
-      return;
-    } else {
-      System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
-    }
-
+    /*
+     * if (TEAM_NUMBER == redTeam) { isRedTeam = true; } else if (TEAM_NUMBER ==
+     * greenTeam) { isRedTeam = false; } if (isRedTeam == null) { System.out.
+     * println("This team should not be competing according to the wifi class.");
+     * System.out.println("Check the provided team values.");
+     * System.out.println("Current team in Resources: " + TEAM_NUMBER);
+     * System.out.println("Green Team Number in Wifi: " + greenTeam);
+     * System.out.println("Red Team Number in Wifi: " + redTeam); System.out.
+     * println("Stopping the program. Please restart the simulation with the appropriate values."
+     * ); return; } else { System.out.println("Identified team as being " +
+     * (isRedTeam ? "red." : "green.")); }
+     */
     // Uncomment the parts relevant to your methods/functionality
 
     // ================== LOCALIZATION ===================
     // UltrasonicLocalizer.localize();
     // LightLocalizer.forwardLocalize(90);
     // TODO RESET ODO HERE
-    beep(3);
+    // beep(3);
     // =============== NAVIGATION TO TUNNEL ==============
     // Calculate tunnel entry point
     // Navigation.travelTo(entry point);
@@ -63,9 +57,11 @@ public class Main {
     // Traverse tunnel
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
-    beep(3);
-    double[] xyt = odometer.getXyt();
-    carpetSearch(new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE), xyt[2], (isRedTeam ? szr : szg));
+    // beep(3);
+    // double[] xyt = odometer.getXyt();
+    // carpetSearch(new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE), xyt[2],
+    // (isRedTeam ? szr : szg));
+    validateBlock(null, null, 0);
   }
 
   /**

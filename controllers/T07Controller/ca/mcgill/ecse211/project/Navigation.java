@@ -31,15 +31,15 @@ public class Navigation {
     // the search position, so only objects with direct LOS were added to that list.
 
     // Find proxy point and navigate to it
-    double dist = distanceBetween(curr, pt);
-    double destAngle = getDestinationAngle(curr, pt);
-    turnBy(minimalAngle(curTheta, destAngle));
+    // double dist = distanceBetween(curr, pt);
+    // double destAngle = getDestinationAngle(curr, pt);
+    // turnBy(minimalAngle(curTheta, destAngle));
     // block width is 10cm, so "radius" would be 5 or more (trig). So 10cm would put
     // is within the 7cm margin.
-    moveStraightFor(dist - (BLOCK_WIDTH / TILE_SIZE));
-    double[] xyt = odometer.getXyt();
-    Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    turnTo(getDestinationAngle(current, pt));
+    // moveStraightFor(dist - (BLOCK_WIDTH / TILE_SIZE));
+    // double[] xyt = odometer.getXyt();
+    // Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+    // turnTo(getDestinationAngle(current, pt));
     System.out.println("VALIDATING NOW");
     // Note: THE FOLLOWING PART ONLY WORKS IF WITHIN ~7CM (+-2cm) OF THE TARGET.
     int top = topUSDistance();
@@ -51,11 +51,11 @@ public class Navigation {
       // 7m radius of an obstacle.
 
       // If top USS not seeing same-ish as front USS (block too short, wall isn't)
-      blocks.add(new Block(pt, -1)); // Add as block with placeholder torque
+      // blocks.add(new Block(pt, -1)); // Add as block with placeholder torque
       System.out.println("Is a block");
       return true;
     } else { // Both are seeing roughly the same object (within 7cm) (tall wall)
-      obstacles.add(pt); // Add as obstacle
+      // obstacles.add(pt); // Add as obstacle
       System.out.println("Not a block");
       return false;
     }
