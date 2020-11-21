@@ -50,8 +50,9 @@ public class LightLocalizer {
 
       // the robot is on a line
       if (motorLeftStop && motorRightStop) {
+        System.out.println("=> Line detected. Correcting angle...");
         setSpeed(LOCAL_SPEED);
-        moveStraightFor(COLOR_SENSOR_TO_WHEEL_DIST);
+        moveStraightForMeters(COLOR_SENSOR_TO_WHEEL_DIST); //0.11354
         // depends of the position of the bot, can be -90
         setSpeed(LOCAL_SPEED);
         turnBy(rotation);
@@ -72,9 +73,9 @@ public class LightLocalizer {
    */
   public static void relocalize() {
     double[] xyt = odometer.getXyt();
-    System.out.println(xyt[0] + " " + xyt[1] + " " + xyt[2]);
+    //System.out.println(xyt[0] + " " + xyt[1] + " " + xyt[2]);
     setSpeed(LOCAL_SPEED);
-    System.out.println("relocalizing");
+    System.out.println("=> Relocalizing...");
     Navigation.turnTo(0);
 
     if (!adjustForward()) {
@@ -90,7 +91,7 @@ public class LightLocalizer {
 
     odometer.setXyt(Math.round(xyt[0] / TILE_SIZE) * TILE_SIZE, Math.round(xyt[1] / TILE_SIZE) * TILE_SIZE, 0);
     xyt = odometer.getXyt();
-    System.out.println(xyt[0] + " " + xyt[1] + " " + xyt[2]);
+    //System.out.println(xyt[0] + " " + xyt[1] + " " + xyt[2]);
   }
 
   /**
@@ -139,7 +140,7 @@ public class LightLocalizer {
       waitUntilNextStep();
     }
     setSpeed(LOCAL_SPEED);
-    moveStraightFor(COLOR_SENSOR_TO_WHEEL_DIST);
+    moveStraightForMeters(COLOR_SENSOR_TO_WHEEL_DIST);
     return true;
   }
 
@@ -182,14 +183,14 @@ public class LightLocalizer {
         break;
       } else if (tachoL <= convertDistance(-0.20)) {
         // stopped moving and didn't detect line
-        moveStraightFor(0.10);
+        moveStraightForMeters(0.10);
         return false;
       }
       tachoL = leftMotor.getTachoCount();
       waitUntilNextStep();
     }
     setSpeed(LOCAL_SPEED);
-    moveStraightFor(COLOR_SENSOR_TO_WHEEL_DIST);
+    moveStraightForMeters(COLOR_SENSOR_TO_WHEEL_DIST);
     return true;
   }
 

@@ -46,24 +46,29 @@ public class Main {
       System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
       return;
     } else {
-      System.out.println("Identified team as being " + (isRedTeam ? "red." : "green."));
+      System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }
 
-    // Uncomment the parts relevant to your methods/functionality
+    // TODO Determine full flow here.
 
+    // Uncomment the parts relevant to your methods/functionality
     // ================== LOCALIZATION ===================
-    // UltrasonicLocalizer.localize();
-    // LightLocalizer.forwardLocalize(90);
-    // TODO RESET ODO HERE
+    UltrasonicLocalizer.localize();
+    System.out.println("[STATUS] Performing light localization...");
+    LightLocalizer.forwardLocalize(90);
+    System.out.println("=> Light localization complete.");
     beep(3);
+    // NOTE: Odometer should be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
-    // Calculate tunnel entry point
-    // Navigation.travelTo(entry point);
-    // ================ TUNNEL TRAVERSAL =================
-    // Traverse tunnel
+    Navigation.goThroughTunnel();
+    odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
+    if (Navigation.inSearchZone() == false) {
+      Navigation.goToSearchZone();
+    }
     beep(3);
+    // ========== SEARCHING AND BLOCK DETECTION ==========
     double[] xyt = odometer.getXyt();
     carpetSearch(new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE), xyt[2], (isRedTeam ? szr : szg));
   }
@@ -80,6 +85,21 @@ public class Main {
         waitUntilNextStep();
       }
     }
+  }
+
+  /**
+   * Determines if a point is within a given region (in points). True if a point
+   * is ON the edge.
+   * 
+   * @param pt Point whose position to check.
+   * @param LL Lower left corner of the region (point).
+   * @param UR Upper right corner of the region (point).
+   * @return True if the point is within, false if not.
+   */
+  public static boolean isWithin(Point pt, Point LL, Point UR) {
+    boolean xGood = (pt.x <= UR.x && pt.x >= LL.x);
+    boolean yGood = (pt.y <= UR.y && pt.y >= LL.y);
+    return xGood && yGood;
   }
 
   /**

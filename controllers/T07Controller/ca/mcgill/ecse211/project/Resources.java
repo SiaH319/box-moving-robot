@@ -44,10 +44,11 @@ public class Resources {
    * <p>
    * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
-  public static final String SERVER_IP = "192.168.0.165"; // = DEFAULT_SERVER_IP;
+   // 192.168.1.105
+  public static final String SERVER_IP = "127.0.0.1"; // = DEFAULT_SERVER_IP;
 
   /** Your team number. */
-  public static final int TEAM_NUMBER = 7;
+  public static final int TEAM_NUMBER = 7; // TODO: CHANGE TO 7
 
   /** Enables printing of debug info from the WiFi class. */
   public static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
