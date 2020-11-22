@@ -1,6 +1,10 @@
 package ca.mcgill.ecse211.project;
 
-import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.Resources.BASE_WIDTH;
+import static ca.mcgill.ecse211.project.Resources.TILE_SIZE;
+import static ca.mcgill.ecse211.project.Resources.WHEEL_RAD;
+import static ca.mcgill.ecse211.project.Resources.leftMotor;
+import static ca.mcgill.ecse211.project.Resources.rightMotor;
 import static simlejos.ExecutionController.waitUntilNextStep;
 
 import java.util.concurrent.locks.Condition;
@@ -63,6 +67,8 @@ public class Odometer implements Runnable {
   /**
    * Returns the Odometer Object. Use this method to obtain an instance of
    * Odometer.
+   * 
+   * @return Reference to the odometer.
    */
   public static synchronized Odometer getOdometer() {
     if (odo == null) {
@@ -117,7 +123,8 @@ public class Odometer implements Runnable {
   /** Prints odometer information to the console. */
   public void printPosition() {
     lock.lock();
-    System.out.println("Odometer:\tx =" + String.format("% 02.2f", x) + "m\ty =" + String.format("% 02.2f", y)
+    System.out.println("Odometer:\tx =" + String.format("% 02.2f", x) 
+        + "m\ty =" + String.format("% 02.2f", y)
         + "m\ttheta =" + String.format("% 06.2f", theta) + " degrees");
     lock.unlock();
   }
@@ -125,8 +132,7 @@ public class Odometer implements Runnable {
   /**
    * Returns the Odometer data.
    * 
-   * <p>
-   * {@code odoData[0] = x; odoData[1] = y; odoData[2] = theta;}
+   * <p>{@code odoData[0] = x; odoData[1] = y; odoData[2] = theta;}
    * 
    * @return the odometer data.
    */

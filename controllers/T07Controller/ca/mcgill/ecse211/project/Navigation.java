@@ -129,7 +129,10 @@ public class Navigation {
     // 7m radius of an obstacle.
   }
 
-  /** Travels to the given destination. */
+  /**
+   *  Travels to the given destination.
+   * @param destination A point represnting the destination.
+   */
   public static void travelTo(Point destination) {
     double[] xyt = odometer.getXyt();
     Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
@@ -148,14 +151,15 @@ public class Navigation {
   public static boolean safeTravelTo(Point destination) {
     double[] xyt = odometer.getXyt();
     Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    System.out.println("=> Current location: (" + currentLocation.x + ", " + currentLocation.y + ")");
+    System.out.println("=> Current location: (" 
+          + currentLocation.x + ", " + currentLocation.y + ")");
     double currentTheta = xyt[2];
     double destinationTheta = getDestinationAngle(currentLocation, destination);
     turnBy(minimalAngle(currentTheta, destinationTheta));
     System.out.println("=> Destination: (" + destination.x + ", " + destination.y + ")");
     moveStraightForReturn(distanceBetween(currentLocation, destination));
-    while (distanceBetween(new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE),
-        destination) > 0.1) {
+    while (distanceBetween(new Point(odometer.getXyt()[0] 
+        / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE), destination) > 0.1) {
       int dist = UltrasonicLocalizer.getDistance();
       if (dist < 15) {
         stopMotors();
@@ -172,6 +176,7 @@ public class Navigation {
    * Turns the robot with a minimal angle towards the given input angle in
    * degrees, no matter what its current orientation is. This method is different
    * from {@code turnBy()}.
+   * @param angle Angle the robot should turn to in degrees.
    */
   public static void turnTo(double angle) {
     turnBy(minimalAngle(odometer.getXyt()[2], angle));
@@ -180,6 +185,10 @@ public class Navigation {
   /**
    * Returns the angle that the robot should point towards to face the destination
    * in degrees.
+   * @param current Current position of the robot.
+   * @param destination Destination of the robot.
+   * 
+   * @return Destination angle.
    */
   public static double getDestinationAngle(Point current, Point destination) {
     return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;
@@ -188,6 +197,10 @@ public class Navigation {
   /**
    * Returns the signed minimal angle from the initial angle to the destination
    * angle.
+   * @param initialAngle Current angle of the robot in degrees.
+   * @param destAngle Target heading of the robot in degrees.
+   * 
+   * @return Miniman angle difference in degrees.
    */
   public static double minimalAngle(double initialAngle, double destAngle) {
     double dtheta = destAngle - initialAngle;
@@ -199,7 +212,12 @@ public class Navigation {
     return dtheta;
   }
 
-  /** Returns the distance between the two points in tile lengths. */
+  /** Returns the distance between the two points in tile lengths.
+   * @param p1 First Point
+   * @param p2 Second Point  
+   * 
+   * @return Distance between the two points in m.
+   */
   public static double distanceBetween(Point p1, Point p2) {
     double dx = p2.x - p1.x;
     double dy = p2.y - p1.y;
@@ -357,7 +375,7 @@ public class Navigation {
   /**
    * Finds the point before the tunnel.
    * 
-   * Returns the point.
+   * @return Returns the point before the tunnel.
    */
   public static Point getPointBeforetunnel() {
     // Get team points first
@@ -467,9 +485,7 @@ public class Navigation {
   }
 
   /**
-   * Finds the point before the tunnel.
-   * 
-   * Returns the point.
+   * Sets up the points.
    */
   public static void setPoints() {
     if (isRedTeam) {
@@ -507,8 +523,6 @@ public class Navigation {
 
   /**
    * Goes through the tunnel plus 0.4 tile lengths ahead.
-   * 
-   * Returns the point.
    */
   public static void goThroughTunnel() {
     // Calculate point before tunnel, then travel to it
@@ -590,14 +604,15 @@ public class Navigation {
   }
 
   /**
-   * Checks weather the robot is in the search zone
+   * Checks weather the robot is in the search zone.
    * 
-   * Returns true if in search zone.
+   * @return true if in search zone.
    */
   public static boolean inSearchZone() {
     if (isRedTeam) {
       // If RED TEAM, use RED SEARCH ZONE coordinates
-      if (odometer.getXyt()[0] > SZR_LL_x && odometer.getXyt()[0] < SZR_UR_x && odometer.getXyt()[1] > SZR_LL_y
+      if (odometer.getXyt()[0] > SZR_LL_x && odometer.getXyt()[0] 
+          < SZR_UR_x && odometer.getXyt()[1] > SZR_LL_y
           && odometer.getXyt()[1] < SZR_UR_y) {
         return true;
       } else {
@@ -605,7 +620,8 @@ public class Navigation {
       }
     } else {
       // If GREEN TEAM, use GREEN SEARCH ZONE coordinates
-      if (odometer.getXyt()[0] > SZG_LL_x && odometer.getXyt()[0] < SZG_UR_x && odometer.getXyt()[1] > SZG_LL_y
+      if (odometer.getXyt()[0] > SZG_LL_x && odometer.getXyt()[0] 
+          < SZG_UR_x && odometer.getXyt()[1] > SZG_LL_y
           && odometer.getXyt()[1] < SZG_UR_y) {
         return true;
       } else {
@@ -638,7 +654,8 @@ public class Navigation {
     Point SZ_dest = LL_SZ;
     for (int i = 0; i < szCorners.length; i++) {
       Point currCorner = szCorners[i];
-      if (distanceBetween(currentLocation, currCorner) <= distanceBetween(currentLocation, SZ_dest)) {
+      if (distanceBetween(currentLocation, currCorner) 
+          <= distanceBetween(currentLocation, SZ_dest)) {
         // Closest point found; set appropriate offset
         if (i == 0) {
           // Lower-left corner
@@ -743,7 +760,7 @@ public class Navigation {
   /**
    * A method that takes as input a search zone and generates all valid tiles
    * inside the zone (valid meaning that there are no known obstacles, ie the ramp
-   * and bin)
+   * and bin).
    * 
    * @param szn Search zone (region)
    * @return ArrayList of points contianing all lower left corners of valid tiles.

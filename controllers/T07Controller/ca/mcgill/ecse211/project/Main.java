@@ -14,8 +14,12 @@ import simlejos.hardware.ev3.LocalEV3;
 
 /**
  * Main class of the program.
- * 
- * TODO Describe your project overview in detail here (in this Javadoc comment).
+ * The robot will first localize to the nearest tile corner and beep.
+ * Next, it will navigate to the entry of the tunnel and cross it.
+ * After exiting the tunnel, it will beep again.
+ * The robot will then navigate to the search zone and begin searching for blocks.
+ * Once the blocks are found, the robot will begin pushing them into the bins.
+ * Once time is almost up, the robot will return to the tunnel and to the initial starting position.
  */
 public class Main {
 
@@ -25,7 +29,9 @@ public class Main {
    */
   public static final int NUMBER_OF_THREADS = 2;
 
-  /** Main entry point. */
+  /** Main entry point of the program.
+   * @param args Typical argument for Main.
+  */
   public static void main(String[] args) {
     initialize();
 
@@ -43,7 +49,8 @@ public class Main {
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
       System.out.println("Green Team Number in Wifi: " + greenTeam);
       System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the simulation with the appropriate values.");
+      System.out.println("Stopping the program. Please restart the "
+          + "simulation with the appropriate values.");
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
@@ -105,14 +112,12 @@ public class Main {
    * concerning the competition such as the starting corner the robot is placed
    * in.<br>
    * 
-   * <p>
-   * Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
+   * <p>Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
    * code; you must use the WifiConnection class yourself in your own code as
    * appropriate. In this example, we simply show how to get and process different
    * types of data.<br>
    * 
-   * <p>
-   * There are two variables you MUST set manually (in Resources.java) before
+   * <p>There are two variables you MUST set manually (in Resources.java) before
    * using this code:
    * 
    * <ol>
@@ -123,8 +128,7 @@ public class Main {
    * <li>TEAM_NUMBER: your project team number.</li>
    * </ol>
    * 
-   * <p>
-   * Note: You can disable printing from the Wi-Fi code via
+   * <p>Note: You can disable printing from the Wi-Fi code via
    * ENABLE_DEBUG_WIFI_PRINT.
    * 
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier

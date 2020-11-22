@@ -122,6 +122,10 @@ public class UltrasonicLocalizer {
     return (int) (usData[0] * 100);
   }
 
+  /**
+   * Reads the top ultrasonic distance.
+   * @return Distance in cm.
+   */
   public static int getDistanceTop() {
     usSensorTop.fetchSample(usDataTop, 0);
     // System.out.println(usData[0] * 100);
@@ -133,6 +137,8 @@ public class UltrasonicLocalizer {
    * 
    * @param angle1 the first angle found in degrees
    * @param angle2 the second angle found in degrees
+   * 
+   * @return angle required to face 0.
    */
   public static double getAngleToZero(double angle1, double angle2) {
     double angleToZero;
@@ -166,7 +172,7 @@ public class UltrasonicLocalizer {
   /**
    * Reads an unfiltered US distance from the front us Sensor.
    * 
-   * @return Distance read by the front US sensor.
+   * @return Distance read by the front US sensor in cm.
    */
   public static int frontUSDistance() {
     usSensor.fetchSample(usData, 0);
