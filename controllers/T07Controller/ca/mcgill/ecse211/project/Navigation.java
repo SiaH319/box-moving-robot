@@ -40,6 +40,14 @@ public class Navigation {
   public static double Island_LL_y = island.ll.y;
   public static double Island_UR_x = island.ur.x;
   public static double Island_UR_y = island.ur.y;
+  public static double RRR_x = rr.right.x;
+  public static double RRR_y = rr.right.y;
+  public static double RRL_x = rr.left.x;
+  public static double RRL_y = rr.left.y;
+  public static double GRR_x = gr.right.x;
+  public static double GRR_y = gr.right.y;
+  public static double GRL_x = gr.left.x;
+  public static double GRL_y = gr.left.y;
 
   // Team coordinate variables
   public static double lowerLeftSzgX = 0;
@@ -54,7 +62,13 @@ public class Navigation {
   public static double lowerLeftTunnelY = 0;
   public static double upperRightTunnelX = 0;
   public static double upperRightTunnelY = 0;
+  public static double leftRamp_x = 0;
+  public static double leftRamp_y = 0;
+  public static double rightRamp_x = 0;
+  public static double rightRamp_y = 0;
   public static int startCorner;
+  
+  public static Point middleRamp = new Point(rightRamp_x - leftRamp_x, rightRamp_y);
 
   // Map orientation booleans
   public static boolean upperonmap = false;
@@ -77,7 +91,7 @@ public class Navigation {
 
     double[] xyt = odometer.getXyt();
     Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    Point intermediate = farestEdge(current, blockPos);
+    Point intermediate = farestEdge(blockPos);
     System.out.println("Current is " + current.x + " " + current.y);
     System.out.println("intermediate is " + intermediate.x + " " + intermediate.y);
     System.out.println("Dest is " + destination.x + " " + destination.y);
@@ -113,7 +127,7 @@ public class Navigation {
 	  if(Math.round(xyt[2]) <= 100 || Math.round(xyt[2]) >= 80) {
 		  orientation = false;
 	  }
-	  Point intermediate = farestEdgeXY(current, blockPos, orientation);
+	  Point intermediate = farestEdgeXY(blockPos, orientation);
 	  System.out.println("Current is " + current.x + " " + current.y);
 	  System.out.println("intermediate is " + intermediate.x + " " + intermediate.y);
 	  System.out.println("Dest is " + destination.x + " " + destination.y);
@@ -135,12 +149,11 @@ public class Navigation {
   /**
    * Returns the farest point around a block to the ramp position.
    * 
-   * @param ramp  Position of the ramp (point)
    * @param blockPos Position of the block (point)
    * @return Farest point one bot distance away from the edge of the block to the
    *         ramp position
    */
-  public static Point farestEdge(Point ramp, Point blockPos) {
+  public static Point farestEdge(Point blockPos) {
     // calculate the 4 points around the block (up down left right)
     // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
     // find the farest point of the 4 to the current position
@@ -154,7 +167,7 @@ public class Navigation {
 
     double[] distances = new double[4];
     for (int i = 0; i < 4; i++) {
-      distances[i] = distanceBetween(ramp, blockPoints[i]);
+      distances[i] = distanceBetween(middleRamp, blockPoints[i]);
     }
 
     int index = 0;
@@ -173,13 +186,12 @@ public class Navigation {
   /**
    * Returns the farest point in X or Y around a block to the ramp position.
    * 
-   * @param ramp  Position of the ramp (point)
    * @param blockPos Position of the block (point)
    * @param orientation True if bot is oriented in X
    * @return Farest point one bot distance away from the edge of the block to the
    *         ramp position
    */
-  public static Point farestEdgeXY(Point ramp, Point blockPos, boolean orientation) {
+  public static Point farestEdgeXY(Point blockPos, boolean orientation) {
     // calculate the 4 points around the block (up down left right)
     // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
     // find the farest point of the 4 to the current position
@@ -198,7 +210,7 @@ public class Navigation {
 
     double[] distances = new double[2];
     for (int i = 0; i < 2; i++) {
-      distances[i] = distanceBetween(ramp, blockPoints[i]);
+      distances[i] = distanceBetween(middleRamp, blockPoints[i]);
     }
 
     int index = 0;

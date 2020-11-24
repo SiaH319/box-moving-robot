@@ -76,6 +76,21 @@ public class Main {
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
     // TODO search
+    
+    Point block = new Point(7,6);
+    Point farestEdege = farestEdge(block);
+    navigateTo(middleRamp, block);
+    
+    double torque = pushFor(Resources.TILE_SIZE);
+    
+    while(Math.round(odometer.getXyt()[0]) != middleRamp.x && Math.round(odometer.getXyt()[1]) != middleRamp.y)
+    
+    if(torque > 3) { //random constant
+    	reposition(middleRamp, block);
+    }
+    else {
+    	torque = pushFor(Resources.TILE_SIZE);
+    }
   }
 
   /**
