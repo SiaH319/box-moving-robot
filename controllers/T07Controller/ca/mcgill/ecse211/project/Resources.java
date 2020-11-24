@@ -35,7 +35,7 @@ public class Resources {
 
   // Wi-Fi client parameters
   /** The default server IP used by the profs and TA's. */
-  public static final String DEFAULT_SERVER_IP = "127.0.0.1";
+  public static final String DEFAULT_SERVER_IP = "173.179.242.252";
 
   /**
    * The IP address of the server that sends data to the robot. For the beta demo
@@ -45,10 +45,10 @@ public class Resources {
    * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
   // 192.168.1.105
-  public static final String SERVER_IP = "127.0.0.1"; // = DEFAULT_SERVER_IP;
+  public static final String SERVER_IP = "173.179.242.252"; // = DEFAULT_SERVER_IP;
 
   /** Your team number. */
-  public static final int TEAM_NUMBER = 7;
+  public static final int TEAM_NUMBER = 0;
 
   /** Enables printing of debug info from the WiFi class. */
   public static final boolean ENABLE_DEBUG_WIFI_PRINT = true;

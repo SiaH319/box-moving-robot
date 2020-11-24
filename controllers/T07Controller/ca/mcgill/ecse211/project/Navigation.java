@@ -68,7 +68,7 @@ public class Navigation {
   public static double rightRamp_y = 0;
   public static int startCorner;
   
-  public static Point middleRamp = new Point(rightRamp_x - leftRamp_x, rightRamp_y);
+  public static Point middleRamp = new Point(9.5, 7);
 
   // Map orientation booleans
   public static boolean upperonmap = false;
@@ -101,7 +101,7 @@ public class Navigation {
     setSpeed(LOCAL_SPEED);
     turnTo(Math.toDegrees(getDestinationAngle(intermediate, blockPos)));
 
-    // end if the destination waypoint the same as the closest point
+    // end if the destination waypoint the same as the farest point
     if (!intermediate.equals(destination)) {
       // navigate around the block
       avoidBlock(intermediate, destination, blockPos);

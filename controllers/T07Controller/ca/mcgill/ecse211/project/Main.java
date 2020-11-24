@@ -77,19 +77,26 @@ public class Main {
     // ========== SEARCHING AND BLOCK DETECTION ==========
     // TODO search
     
-    Point block = new Point(7,6);
+    Point middleRamp = new Point(9.5, 7);
+    
+    Point block = new Point(7,6.5);
     Point farestEdege = farestEdge(block);
-    navigateTo(middleRamp, block);
+    //navigateTo(block, block);
     
-    double torque = pushFor(Resources.TILE_SIZE);
+    double torque = pushFor(2);
+    System.out.println(odometer.getXyt()[0]);
+    System.out.println(odometer.getXyt()[1]);
     
-    while(Math.round(odometer.getXyt()[0]) != middleRamp.x && Math.round(odometer.getXyt()[1]) != middleRamp.y)
+    while(Math.round(odometer.getXyt()[0]) != middleRamp.x && Math.round(odometer.getXyt()[1]) != middleRamp.y) {
+    	System.out.println("In loop");
     
-    if(torque > 3) { //random constant
-    	reposition(middleRamp, block);
-    }
-    else {
-    	torque = pushFor(Resources.TILE_SIZE);
+    	if(torque > 3) { //random constant
+    		System.out.println("OBSTACLE");
+    		//reposition(middleRamp, block);
+    	}
+    	else {
+    		torque = pushFor(Resources.TILE_SIZE);
+    	}
     }
   }
 
