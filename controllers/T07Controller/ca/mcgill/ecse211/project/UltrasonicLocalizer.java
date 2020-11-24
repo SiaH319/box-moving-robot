@@ -31,12 +31,15 @@ public class UltrasonicLocalizer {
   private static double theta_2;
 
 
+  public static boolean isObject;
+  
   /**
    * Detect object (box or obstacle) tile in front of the current tile 
    * when the robot is position in the middle of the current tile
    * 
    */
   public static void searchObject() {
+    isObject = false;
     turnBy(-45);
     odometer.setTheta(0);
     double ideal;
@@ -54,6 +57,8 @@ public class UltrasonicLocalizer {
 
 
         if (round(actual) < round(ideal) - error) {
+          isObject = true;
+
           System.out.println ("object found at angle " + odometer.getXyt()[2]
               + ", actual = " + actual + ", ideal = " + ideal);
         }
@@ -65,6 +70,8 @@ public class UltrasonicLocalizer {
         actual = getDistance();
 
         if (round(actual) < round(ideal) - error) {
+          isObject = true;
+
           System.out.println ("object found at angle " + odometer.getXyt()[2]
               + ", actual = " + actual + ", ideal = " + ideal);
         }
@@ -76,6 +83,8 @@ public class UltrasonicLocalizer {
         actual = getDistance();
 
         if (round(actual) < round(ideal) - error) {
+          isObject = true;
+
           System.out.println ("object found at angle " + odometer.getXyt()[2]
               + ", actual = " + actual + ", ideal = " + ideal);
         }
@@ -88,6 +97,8 @@ public class UltrasonicLocalizer {
         actual = getDistance();
 
         if (round(actual) < round(ideal) - error) {
+          isObject = true;
+
           System.out.println ("object found at angle " + odometer.getXyt()[2]
               + ", actual = " + actual + ", ideal = " + ideal);
         }
