@@ -37,7 +37,7 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-
+/*
     if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
@@ -54,7 +54,8 @@ public class Main {
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
-    }
+    }*/
+    UltrasonicLocalizer.searchObject();
 
     // Uncomment the parts relevant to the methods/functionality
 

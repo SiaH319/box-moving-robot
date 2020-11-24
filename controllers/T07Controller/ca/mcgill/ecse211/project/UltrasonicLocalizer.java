@@ -2,6 +2,10 @@ package ca.mcgill.ecse211.project;
 
 import static ca.mcgill.ecse211.project.Navigation.*;
 import static ca.mcgill.ecse211.project.Resources.*;
+import static java.lang.Math.cos;
+import static java.lang.Math.round;
+import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
 import static simlejos.ExecutionController.*;
 
 import ca.mcgill.ecse211.playingfield.*;
@@ -26,6 +30,74 @@ public class UltrasonicLocalizer {
   private static double theta_1;
   private static double theta_2;
 
+
+  /**
+   * Detect object (box or obstacle) tile in front of the current tile 
+   * when the robot is position in the middle of the current tile
+   * 
+   */
+  public static double searchObject() {
+    turnBy(-45);
+    odometer.setTheta(0);
+    double ideal;
+    double actual;
+    double error = 3;
+
+    leftMotor.rotate(convertAngle(90), true);
+    rightMotor.rotate(convertAngle(-90), true);
+    while (round(odometer.getXyt()[2]) != 180) {
+
+      if (0 < odometer.getXyt()[2] && odometer.getXyt()[2] <= 26.6) {
+        ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(45 - odometer.getXyt()[2])) 
+            * Math.tan(toRadians(45 - odometer.getXyt()[2])));
+        actual = getDistance();
+
+
+        if (round(actual) < round(ideal) - error) {
+          System.out.println ("object found at angle " + odometer.getXyt()[2]
+              + ", actual = " + actual + ", ideal = " + ideal);
+        }
+      }
+
+
+      if (26.6 <= odometer.getXyt()[2] && odometer.getXyt()[2] <= 45) {
+        ideal = 1.5 * TILE_SIZE * 100  / (cos(toRadians(45-odometer.getXyt()[2])));
+        actual = getDistance();
+
+        if (round(actual) < round(ideal) - error) {
+          System.out.println ("object found at angle " + odometer.getXyt()[2]
+              + ", actual = " + actual + ", ideal = " + ideal);
+        }
+      }
+
+
+      if (45 <= odometer.getXyt()[2] && odometer.getXyt()[2] <= 63.4) {
+        ideal = 1.5 * TILE_SIZE * 100 / (cos(toRadians(odometer.getXyt()[2]-45)));
+        actual = getDistance();
+
+        if (round(actual) < round(ideal) - error) {
+          System.out.println ("object found at angle " + odometer.getXyt()[2]
+              + ", actual = " + actual + ", ideal = " + ideal);
+        }
+      }
+
+
+      if (63.4 <= odometer.getXyt()[2] && odometer.getXyt()[2] <= 90) {
+        ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(odometer.getXyt()[2] -45)) 
+            * Math.tan(toRadians(odometer.getXyt()[2]-45)));
+        actual = getDistance();
+
+        if (round(actual) < round(ideal) - error) {
+          System.out.println ("object found at angle " + odometer.getXyt()[2]
+              + ", actual = " + actual + ", ideal = " + ideal);
+        }
+      }
+
+    }
+
+    return 0;
+
+  }
   /**
    * Main method of the UltrasonicLocalizer. Localizes the bot to 1,1.
    */

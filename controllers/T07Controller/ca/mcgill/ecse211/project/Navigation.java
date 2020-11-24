@@ -64,6 +64,8 @@ public class Navigation {
   /** Do not instantiate this class. */
   private Navigation() {
   }
+  
+  
 
   /**
    * This function navigates to a given unknown object's position on the map and
