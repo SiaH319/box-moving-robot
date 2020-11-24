@@ -36,7 +36,7 @@ public class UltrasonicLocalizer {
    * when the robot is position in the middle of the current tile
    * 
    */
-  public static double searchObject() {
+  public static void searchObject() {
     turnBy(-45);
     odometer.setTheta(0);
     double ideal;
@@ -94,8 +94,6 @@ public class UltrasonicLocalizer {
       }
 
     }
-
-    return 0;
 
   }
   /**
