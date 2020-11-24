@@ -3,10 +3,10 @@ package ca.mcgill.ecse211.project;
 import static ca.mcgill.ecse211.project.Resources.*;
 import static ca.mcgill.ecse211.project.Main.*;
 import static ca.mcgill.ecse211.project.LightLocalizer.relocalize;
+
 import java.util.ArrayList;
 import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
 import static java.lang.Math.*;
-
 import ca.mcgill.ecse211.playingfield.*;
 import static simlejos.ExecutionController.*;
 
@@ -64,7 +64,248 @@ public class Navigation {
   /** Do not instantiate this class. */
   private Navigation() {
   }
+  
+  /**
+   * Drives the bot to the farest edge of a block then navigates around it to
+   * reach a destination point.
+   * 
+   * @param destination Final waypoint around a block.
+   * @param blockPos    Position of the block itself.
+   */
+  public static void navigateTo(Point destination, Point blockPos) {
+    // go to the closest point on the block
 
+    double[] xyt = odometer.getXyt();
+    Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+    Point intermediate = farestEdge(current, blockPos);
+    System.out.println("Current is " + current.x + " " + current.y);
+    System.out.println("intermediate is " + intermediate.x + " " + intermediate.y);
+    System.out.println("Dest is " + destination.x + " " + destination.y);
+    travelTo(intermediate);
+
+    // face the block
+    setSpeed(LOCAL_SPEED);
+    turnTo(Math.toDegrees(getDestinationAngle(intermediate, blockPos)));
+
+    // end if the destination waypoint the same as the closest point
+    if (!intermediate.equals(destination)) {
+      // navigate around the block
+      avoidBlock(intermediate, destination, blockPos);
+      // finish facing the block again
+      turnTo(Math.toDegrees(getDestinationAngle(destination, blockPos)));
+    }
+  }
+  
+  /**
+   * Drives the bot to the farest edge of a block then navigates around it to
+   * reach a destination point depending if the bot is in X or Y.
+   * Must occur when the bot touches an object (check the torque)
+   * 
+   * @param destination Final waypoint around a block.
+   * @param blockPos Position of the block itself.
+   */
+  public static void reposition(Point destination, Point blockPos) {
+	  double[] xyt = odometer.getXyt();
+	  Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+	  boolean orientation = true;
+	  
+	  //check if the bot is in X or Y position
+	  if(Math.round(xyt[2]) <= 100 || Math.round(xyt[2]) >= 80) {
+		  orientation = false;
+	  }
+	  Point intermediate = farestEdgeXY(current, blockPos, orientation);
+	  System.out.println("Current is " + current.x + " " + current.y);
+	  System.out.println("intermediate is " + intermediate.x + " " + intermediate.y);
+	  System.out.println("Dest is " + destination.x + " " + destination.y);
+	  travelTo(intermediate);
+	  
+	  // face the block
+	    setSpeed(LOCAL_SPEED);
+	    turnTo(Math.toDegrees(getDestinationAngle(intermediate, blockPos)));
+
+	    // end if the destination waypoint the same as the closest point
+	    if (!intermediate.equals(destination)) {
+	      // navigate around the block
+	      avoidBlock(intermediate, destination, blockPos);
+	      // finish facing the block again
+	      turnTo(Math.toDegrees(getDestinationAngle(destination, blockPos)));
+	    }
+  }
+
+  /**
+   * Returns the farest point around a block to the ramp position.
+   * 
+   * @param ramp  Position of the ramp (point)
+   * @param blockPos Position of the block (point)
+   * @return Farest point one bot distance away from the edge of the block to the
+   *         ramp position
+   */
+  public static Point farestEdge(Point ramp, Point blockPos) {
+    // calculate the 4 points around the block (up down left right)
+    // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
+    // find the farest point of the 4 to the current position
+    // return the farest point
+    Point[] blockPoints;
+    blockPoints = new Point[4];
+    blockPoints[0] = new Point(blockPos.x, blockPos.y + PUSH_POSITION_OFFSET); // up
+    blockPoints[1] = new Point(blockPos.x, blockPos.y - PUSH_POSITION_OFFSET); // down
+    blockPoints[2] = new Point(blockPos.x - PUSH_POSITION_OFFSET, blockPos.y); // left
+    blockPoints[3] = new Point(blockPos.x + PUSH_POSITION_OFFSET, blockPos.y); // right
+
+    double[] distances = new double[4];
+    for (int i = 0; i < 4; i++) {
+      distances[i] = distanceBetween(ramp, blockPoints[i]);
+    }
+
+    int index = 0;
+    double max = distances[index];
+    for (int i = 1; i < distances.length; i++) {
+      if (distances[i] > max) {
+        max = distances[i];
+        index = i;
+      }
+    }
+
+    Point farestPoint = blockPoints[index];
+    return farestPoint;
+  }
+  
+  /**
+   * Returns the farest point in X or Y around a block to the ramp position.
+   * 
+   * @param ramp  Position of the ramp (point)
+   * @param blockPos Position of the block (point)
+   * @param orientation True if bot is oriented in X
+   * @return Farest point one bot distance away from the edge of the block to the
+   *         ramp position
+   */
+  public static Point farestEdgeXY(Point ramp, Point blockPos, boolean orientation) {
+    // calculate the 4 points around the block (up down left right)
+    // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
+    // find the farest point of the 4 to the current position
+    // return the farest point
+    Point[] blockPoints;
+    blockPoints = new Point[2];
+    if(orientation) {
+    	 blockPoints[0] = new Point(blockPos.x - PUSH_POSITION_OFFSET, blockPos.y); // left
+    	 blockPoints[1] = new Point(blockPos.x + PUSH_POSITION_OFFSET, blockPos.y); // right
+    }
+    else {
+    	 	blockPoints[0] = new Point(blockPos.x, blockPos.y + PUSH_POSITION_OFFSET); // up
+    	    blockPoints[1] = new Point(blockPos.x, blockPos.y - PUSH_POSITION_OFFSET); // down
+    }
+   
+
+    double[] distances = new double[2];
+    for (int i = 0; i < 2; i++) {
+      distances[i] = distanceBetween(ramp, blockPoints[i]);
+    }
+
+    int index = 0;
+    double max = distances[index];
+    for (int i = 1; i < distances.length; i++) {
+      if (distances[i] > max) {
+        max = distances[i];
+        index = i;
+      }
+    }
+
+    Point farestPoint = blockPoints[index];
+    return farestPoint;
+  }
+  
+  /**
+   * Navigates from a far waypoint to the block to a final waypoint without
+   * touching the block. The bot will always start by facing the block at the
+   * start position.
+   * 
+   * @param start       Current position of the bot (point)
+   * @param destination Target position of the bot (point)
+   * @param blockPos    Position of the block (point)
+   */
+  public static void avoidBlock(Point start, Point destination, Point blockPos) {
+    double blockAngle = Math.toDegrees(getDestinationAngle(start, blockPos));
+    double destAngle = Math.toDegrees(getDestinationAngle(start, destination));
+    System.out.println("base case angle: " + ((int) (destAngle - blockAngle) + 360) % 360);
+    if ((int) (destAngle - blockAngle) == 0) {
+      // points are along the same axis, so 4 rotations and 3 travels are required
+      setSpeed(LOCAL_SPEED);
+      turnBy(-90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
+      setSpeed(LOCAL_SPEED);
+      turnBy(90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor((2 * PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
+      setSpeed(LOCAL_SPEED);
+      turnBy(90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
+      setSpeed(LOCAL_SPEED);
+      turnBy(90);
+    } else if (((int) (destAngle - blockAngle) + 360) % 360 > 180) {
+      // actual angle should be about 315 degrees when mod 360
+      // point is on the clockwise adjacent side (left)
+      setSpeed(LOCAL_SPEED);
+      turnBy(-90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
+      setSpeed(LOCAL_SPEED);
+      turnBy(90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor(PUSH_POSITION_OFFSET * TILE_SIZE);
+      setSpeed(LOCAL_SPEED);
+      turnBy(90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor(NAV_OFFSET * TILE_SIZE);
+    } else {
+      // actual angle should be about 45 degrees when mod 360
+      // point is on the counter-clockwise adjacent side (right)
+      setSpeed(LOCAL_SPEED);
+      turnBy(90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
+      setSpeed(LOCAL_SPEED);
+      turnBy(-90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor(PUSH_POSITION_OFFSET * TILE_SIZE);
+      setSpeed(LOCAL_SPEED);
+      turnBy(-90);
+      setSpeed(ROTATE_SPEED);
+      moveStraightFor(NAV_OFFSET * TILE_SIZE);
+    }
+  }
+  
+  /**
+   * Pushes a block forward over a fixed distance and returns the average torque.
+   * This methods assumes that we are 1/2 a tile behind the block (in the dir. we
+   * want to push).
+   * 
+   * @param dist Positive distance the block should be pushed over (in m).
+   * @return Average torque over the push period.
+   */
+  public static double pushFor(double dist) {
+    setSpeed(FORWARD_SPEED);
+    moveStraightFor(Resources.PUSH_TRAVEL_OFFSET); // have the bot touching the box
+    System.out.println("pushing for " + dist);
+    final double distTacho = convertDistance(dist);
+    leftMotor.resetTachoCount();
+    rightMotor.resetTachoCount();
+    moveStraightForReturn(dist);
+
+    double avg = 0;
+    int readings = 0;
+    while (Math.abs(leftMotor.getTachoCount()) <= Math.abs(distTacho)) {
+      // while distance wasn't reached calculate average torque and wait.
+      double trk = (leftMotor.getTorque() + rightMotor.getTorque()) / 2;
+      avg = (avg * readings + trk) / ++readings;
+      waitUntilNextStep();
+    }
+
+    leftMotor.stop();
+    rightMotor.stop();
+    return avg;
+  } 
   /**
    * This function navigates to a given unknown object's position on the map and
    * checks if the object is a block or an obstacle. If it is a block, return true
