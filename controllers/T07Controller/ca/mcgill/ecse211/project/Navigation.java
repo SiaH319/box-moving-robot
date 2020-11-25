@@ -40,7 +40,10 @@ public class Navigation {
   public static double Island_LL_y = island.ll.y;
   public static double Island_UR_x = island.ur.x;
   public static double Island_UR_y = island.ur.y;
-
+  public static double RR_LL_x= rr.left.x;
+  public static double RR_LL_y= rr.left.y;
+  public static double GR_LL_x= gr.left.x;
+  public static double GR_LL_y= gr.left.y;
   // Team coordinate variables
   public static double lowerLeftSzgX = 0;
   public static double lowerLeftSzgY = 0;
@@ -54,6 +57,9 @@ public class Navigation {
   public static double lowerLeftTunnelY = 0;
   public static double upperRightTunnelX = 0;
   public static double upperRightTunnelY = 0;
+  public static double lowerLeftRampX = 0;
+  public static double lowerLeftRampY = 0;
+  
   public static int startCorner;
   public static String closestSzg;
   // Map orientation booleans
@@ -565,6 +571,9 @@ public class Navigation {
       lowerLeftTunnelY = TNR_LL_y;
       upperRightTunnelX = TNR_UR_x;
       upperRightTunnelY = TNR_UR_y;
+      lowerLeftRampX = rr.left.x;
+      lowerLeftRampY = rr.left.y;
+
       startCorner = Resources.redCorner;
     } else {
       // Set GREEN TEAM coordinates
@@ -579,7 +588,9 @@ public class Navigation {
       lowerLeftTunnelX = TNG_LL_x;
       lowerLeftTunnelY = TNG_LL_y;
       upperRightTunnelX = TNG_UR_x;
-      upperRightTunnelY = TNG_UR_y;
+      upperRightTunnelY = TNG_UR_y;  
+      lowerLeftRampX = gr.left.x;
+      lowerLeftRampY = gr.left.y;
       startCorner = Resources.greenCorner;
     }
   }
