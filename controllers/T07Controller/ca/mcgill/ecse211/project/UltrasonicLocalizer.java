@@ -34,10 +34,12 @@ public class UltrasonicLocalizer {
   public static boolean isObject;
   
   /**
-   * Detect object (box or obstacle) tile in front of the current tile 
-   * when the robot is position in the middle of the current tile
+   * Detect object (box or obstacle) positioned inside the front tile
+   * when the robot is positioned in the middle of the current tile
    * 
+   * This method assumes that there is at most one object in a tile
    */
+  
   public static void searchObject() {
     isObject = false;
     turnBy(-45);
@@ -93,7 +95,7 @@ public class UltrasonicLocalizer {
 
       if (63.4 <= odometer.getXyt()[2] && odometer.getXyt()[2] <= 90) {
         ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(odometer.getXyt()[2] -45)) 
-            * Math.tan(toRadians(odometer.getXyt()[2]-45)));
+            * Math.tan(toRadians(odometer.getXyt()[2] - 45)));
         actual = getDistance();
 
         if (round(actual) < round(ideal) - error) {
@@ -105,7 +107,13 @@ public class UltrasonicLocalizer {
       }
 
     }
-
+    
+    
+   // doesnt work :( turnBy(45);
+    
+   /*doesnt work :(
+    leftMotor.rotate(convertAngle(-45), true);
+    rightMotor.rotate(convertAngle(45), true);*/
   }
   /**
    * Main method of the UltrasonicLocalizer. Localizes the bot to 1,1.
