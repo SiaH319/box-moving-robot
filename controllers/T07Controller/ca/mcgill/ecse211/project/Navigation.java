@@ -157,7 +157,6 @@ public class Navigation {
     // find the farest point of the 4 to the current position
     // return the farest point
 	Point middleRamp = new Point((rightRamp_x + leftRamp_x)/2, rightRamp_y);
-	System.out.println(middleRamp.x);
     Point[] blockPoints;
     blockPoints = new Point[4];
     blockPoints[0] = new Point(blockPos.x, blockPos.y + PUSH_POSITION_OFFSET); // up
@@ -301,14 +300,14 @@ public class Navigation {
     setSpeed(FORWARD_SPEED);
     moveStraightFor(Resources.PUSH_TRAVEL_OFFSET); // have the bot touching the box
     System.out.println("pushing for " + dist);
-    final double distTacho = convertDistance(dist);
+    final int distTacho = convertDistance(dist);
     leftMotor.resetTachoCount();
     rightMotor.resetTachoCount();
-    moveStraightForReturn(dist);
+    moveStraightForReturn(dist * 3.28084);
 
     double avg = 0;
     int readings = 0;
-    while (Math.abs(leftMotor.getTachoCount()) <= Math.abs(distTacho)) {
+    while (Math.abs(leftMotor.getTachoCount()) < Math.abs(distTacho)) {
       // while distance wasn't reached calculate average torque and wait.
       double trk = (leftMotor.getTorque() + rightMotor.getTorque()) / 2;
       avg = (avg * readings + trk) / ++readings;

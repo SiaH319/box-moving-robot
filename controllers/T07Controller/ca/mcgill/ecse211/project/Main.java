@@ -85,22 +85,30 @@ public class Main {
     
     Point waypoint = pushPosition(block, 90);
     
-    navigateTo(waypoint, block);
+    //navigateTo(waypoint, block);
     
-    //double torque = pushFor(2);
+    double torque = pushFor(TILE_SIZE);
+    System.out.println(torque);
+    
+    double currentX = odometer.getXyt()[0] * 3.28084;
+    double currentY = odometer.getXyt()[1] * 3.28084;
    
+    while(currentX != middleRamp.x && currentY != middleRamp.y) {
+    	currentX = odometer.getXyt()[0] * 3.28084;
+    	currentY = odometer.getXyt()[1] * 3.28084;
+    	System.out.println(currentX);
+    	System.out.println(currentY);
     
-    /*while(Math.round(odometer.getXyt()[0]) != middleRamp.x && Math.round(odometer.getXyt()[1]) != middleRamp.y) {
-    	System.out.println("In loop");
-    
-    	if(torque > 3) { //random constant
+    	if(torque > 1) { //random constant
     		System.out.println("OBSTACLE");
     		//reposition(middleRamp, block);
     	}
     	else {
     		torque = pushFor(Resources.TILE_SIZE);
+    		System.out.println(torque);
     	}
-    }*/
+    	 waitUntilNextStep();
+    }
   }
 
   /**
