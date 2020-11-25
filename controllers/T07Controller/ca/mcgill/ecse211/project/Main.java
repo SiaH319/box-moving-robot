@@ -56,7 +56,8 @@ public class Main {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }*/
     UltrasonicLocalizer.searchObject();
-
+    //UltrasonicLocalizer.moveToDetect();
+    UltrasonicLocalizer.moveToObject();
     // Uncomment the parts relevant to the methods/functionality
 
     // ================== LOCALIZATION ===================

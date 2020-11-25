@@ -7,7 +7,8 @@ import static java.lang.Math.round;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 import static simlejos.ExecutionController.*;
-
+import java.util.ArrayList;
+import java.util.ListIterator;
 import ca.mcgill.ecse211.playingfield.*;
 
 public class UltrasonicLocalizer {
@@ -32,38 +33,52 @@ public class UltrasonicLocalizer {
 
 
   public static boolean isObject;
-  
+  public static ArrayList<Double> objectUS = new  ArrayList<Double>();
+  public static ArrayList<Double> objectAngle = new ArrayList<Double>();
+  public static double angleToMove;
+  public static double distToMove;
   /**
    * Detect object (box or obstacle) positioned inside the front tile
-   * when the robot is positioned in the middle of the current tile
+   * when the sensor of the robot is positioned in the middle of the current tile
    * 
    * This method assumes that there is at most one object in a tile
    */
-  
+
   public static void searchObject() {
     isObject = false;
+    if (objectUS != null && objectAngle != null) {
+      objectUS.clear();
+      objectAngle.clear();
+    }
     turnBy(-45);
     odometer.setTheta(0);
     double ideal;
     double actual;
     double error = 3;
+    angleToMove = 0;
+    distToMove = 0;
 
     leftMotor.rotate(convertAngle(90), true);
     rightMotor.rotate(convertAngle(-90), true);
-    while (round(odometer.getXyt()[2]) != 180) {
+
+    while (round(odometer.getXyt()[2]) != 90) {
 
       if (0 < odometer.getXyt()[2] && odometer.getXyt()[2] <= 26.6) {
         ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(45 - odometer.getXyt()[2])) 
             * Math.tan(toRadians(45 - odometer.getXyt()[2])));
         actual = getDistance();
-
-
+        objectFound(actual, ideal, error);
+        /*
         if (round(actual) < round(ideal) - error) {
           isObject = true;
 
           System.out.println ("object found at angle " + odometer.getXyt()[2]
               + ", actual = " + actual + ", ideal = " + ideal);
-        }
+
+          objectUS.add(actual);
+          objectAngle.add(actual);
+
+        }*/
       }
 
 
@@ -71,12 +86,8 @@ public class UltrasonicLocalizer {
         ideal = 1.5 * TILE_SIZE * 100  / (cos(toRadians(45-odometer.getXyt()[2])));
         actual = getDistance();
 
-        if (round(actual) < round(ideal) - error) {
-          isObject = true;
+        objectFound(actual, ideal, error);
 
-          System.out.println ("object found at angle " + odometer.getXyt()[2]
-              + ", actual = " + actual + ", ideal = " + ideal);
-        }
       }
 
 
@@ -84,12 +95,8 @@ public class UltrasonicLocalizer {
         ideal = 1.5 * TILE_SIZE * 100 / (cos(toRadians(odometer.getXyt()[2]-45)));
         actual = getDistance();
 
-        if (round(actual) < round(ideal) - error) {
-          isObject = true;
+        objectFound(actual, ideal, error);
 
-          System.out.println ("object found at angle " + odometer.getXyt()[2]
-              + ", actual = " + actual + ", ideal = " + ideal);
-        }
       }
 
 
@@ -98,22 +105,80 @@ public class UltrasonicLocalizer {
             * Math.tan(toRadians(odometer.getXyt()[2] - 45)));
         actual = getDistance();
 
-        if (round(actual) < round(ideal) - error) {
-          isObject = true;
+        objectFound(actual, ideal, error);
 
-          System.out.println ("object found at angle " + odometer.getXyt()[2]
-              + ", actual = " + actual + ", ideal = " + ideal);
-        }
       }
 
     }
-    
-    
-   // doesnt work :( turnBy(45);
-    
-   /*doesnt work :(
-    leftMotor.rotate(convertAngle(-45), true);
-    rightMotor.rotate(convertAngle(45), true);*/
+    if (isObject) {
+      if (objectUS.size()<=10 && objectAngle.size()<=10) { // not enough number of sample
+        isObject = false;
+        System.out.println("no object found in the front tile");
+
+      }
+      else {
+        System.out.println("us object list "+objectUS);
+        System.out.println("Angle object list "+objectAngle);
+        int mid = medianIndex(objectUS);
+        angleToMove = objectAngle.get(mid);
+        distToMove = minDist(objectUS);
+      }
+    }
+    else {
+      System.out.println("no object found in the front tile");
+    }
+    turnBy(-45);
+
+  }
+
+
+  public static void objectFound(double act, double id, double err) {
+    if (round(act) < round(id) - err) {
+      isObject = true;
+
+      System.out.println ("object found at angle " + odometer.getXyt()[2]
+          + ", actual = " + act + ", ideal = " + id);
+      objectUS.add(act);
+      objectAngle.add(odometer.getXyt()[2]); 
+    }
+  }
+
+  public static void moveByOneTile() {
+    setSpeed(FORWARD_SPEED);
+    leftMotor.rotate(convertDistance(TILE_SIZE), true);
+    rightMotor.rotate(convertDistance(TILE_SIZE), false);
+  }
+
+  public static int medianIndex(ArrayList<Double> arr) {
+    int index = 0;
+    if (arr != null) {
+      round(arr.size()/2);
+    }
+
+    return index;
+  }
+
+  public static Double minDist(ArrayList<Double> arr) {
+    Double smallest = (double) 0;
+    if (arr != null) {
+      smallest = arr.get(0);
+
+      for (int i=1;i<arr.size();i++) {
+        if(arr.get(i) < smallest) {
+          smallest = arr.get(i);
+        }
+      }
+    }
+
+    return smallest;
+  }
+
+  public static void moveToObject() {
+    turnBy(angleToMove-45);
+    setSpeed(FORWARD_SPEED);
+    System.out.println(distToMove);
+     leftMotor.rotate(convertDistance(distToMove/100), true);
+    rightMotor.rotate(convertDistance(distToMove/100), false);
   }
   /**
    * Main method of the UltrasonicLocalizer. Localizes the bot to 1,1.
