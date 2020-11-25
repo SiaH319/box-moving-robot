@@ -143,6 +143,67 @@ public class Navigation {
     turnBy(minimalAngle(currentTheta, destinationTheta));
     moveStraightFor(distanceBetween(currentLocation, destination));
   }
+  
+  /**
+   * Moves robot to Point(x,y) while scanning for obstacles, re-routes where necessary
+   * Assumes that odometer is currently in meters
+   *
+   * @param destination A Point given in TILE LENGTHS (e.g., (15, 0))
+   */
+  public static void travelToSafely(Point destination) {
+    System.out.println("=> Proceeding to (" + destination.x + ", " + destination.y + ")...");
+    
+    // While not at destination, continuously try to navigate there
+    boolean atDestination = false;
+    while (!atDestination) {
+      // Get current location in TILE LENGTHS from odometer; store in Point
+      double[] xyt = odometer.getXyt();
+      Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+      double currentTheta = xyt[2];
+    
+      // Check if at destination
+      double distanceToDest = distanceBetween(currentLocation, destination);
+      System.out.println("=> Distance to destination: " + distanceToDest);
+      if (distanceToDest < 1) {
+        // Within a tile size of destination; simply travelTo()
+        System.out.println("=> Less than 1!");
+        
+        travelTo(destination); // NOTE: travelTo assumes odometer is in meters
+
+        System.out.println("=> Arrived safely at destination.");
+        
+        // Exit loop (set atDestination to true)
+        atDestination = true;
+      } else {
+        // Not at destination; try to find path...
+        System.out.println("=> Finding best route...");
+        
+        // Turn towards destination point
+        double destinationTheta = getDestinationAngle(currentLocation, destination);
+        turnBy(minimalAngle(currentTheta, destinationTheta));
+        
+        // Check if path is clear (sweep tile in front and validate any object)
+        UltrasonicLocalizer.searchObject();
+        
+        // If an obstacle is present, rotate 90 degrees and try again
+        boolean obstaclePresent = UltrasonicLocalizer.isObject;
+        while (obstaclePresent) {
+          System.out.println("=> Obstacle detected. Re-routing...");
+          // Rotate 90 degrees
+          turnBy(90);
+          
+          // Check if path is clear
+          UltrasonicLocalizer.searchObject();
+
+          // If no obstacle is present, set obstaclePresent to false (exits loop!)
+          obstaclePresent = UltrasonicLocalizer.isObject;
+        }
+        
+        // Move forward one tile (or some other distance?) once there's no obstacle
+        moveStraightFor(1);
+      }
+    }  
+  }
 
   /**
    * Travels to a given point and stops if an obstacle is detected.
@@ -654,6 +715,7 @@ public class Navigation {
 
     // Find closest corner of search zone and set as destination "dest"
     Point SZ_dest = LL_SZ;
+    double searchZoneStartAngle = 0;
     for (int i = 0; i < szCorners.length; i++) {
       Point currCorner = szCorners[i];
       if (distanceBetween(currentLocation, currCorner) 
@@ -664,27 +726,39 @@ public class Navigation {
           System.out.println("=> Lower-left corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x + 0.5, currCorner.y + 0.5);
           closestSzg = "LL";
+          searchZoneStartAngle = 0;
         } else if (i == 1) {
           // Lower-right corner
           System.out.println("=> Lower-right corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x - 0.5, currCorner.y + 0.5);
           closestSzg = "LR";
-
+          searchZoneStartAngle = -90;
         } else if (i == 2) {
           // Upper-left corner
           System.out.println("=> Upper-left corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x + 0.5, currCorner.y - 0.5);
           closestSzg = "UL";
-
+          searchZoneStartAngle = 90;
         } else {
           // Upper-right corner
           System.out.println("=> Upper-right corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x - 0.5, currCorner.y - 0.5);
           closestSzg = "UR";
+          searchZoneStartAngle = 180;
         }
       }
     }
-
+    
+    /*
+    // NEW METHOD:
+    // Implement generalized navigation taking Point(x,y) as value!
+    odometer.setX(odometer.getXyt()[0] * TILE_SIZE);
+    odometer.setY(odometer.getXyt()[1] * TILE_SIZE);
+    travelToSafely(SZ_dest);
+    turnTo(searchZoneStartAngle);
+    relocalize();
+    */
+    
     // Turn towards destination point
     System.out.println("=> Proceeding to (" + SZ_dest.x + ", " + SZ_dest.y + ")...");
     double destinationTheta = getDestinationAngle(currentLocation, SZ_dest);
@@ -718,7 +792,7 @@ public class Navigation {
       // Path is clear; proceed to destination
       System.out.println("=> Path clear. Proceeding...");
       moveStraightFor(distanceToTravel);
-      turnTo(0);
+      turnTo(searchZoneStartAngle);
       relocalize();
 
       // Update odometer
