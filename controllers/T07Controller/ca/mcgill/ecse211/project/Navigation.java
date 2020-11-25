@@ -55,7 +55,7 @@ public class Navigation {
   public static double upperRightTunnelX = 0;
   public static double upperRightTunnelY = 0;
   public static int startCorner;
-
+  public static String closestSzg;
   // Map orientation booleans
   public static boolean upperonmap = false;
   public static boolean leftonmap = false;
@@ -662,19 +662,25 @@ public class Navigation {
         if (i == 0) {
           // Lower-left corner
           System.out.println("=> Lower-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 1, currCorner.y + 1);
+          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y + 0.5);
+          closestSzg = "LL";
         } else if (i == 1) {
           // Lower-right corner
           System.out.println("=> Lower-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 1, currCorner.y + 1);
+          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y + 0.5);
+          closestSzg = "LR";
+
         } else if (i == 2) {
           // Upper-left corner
           System.out.println("=> Upper-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 1, currCorner.y - 1);
+          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y - 0.5);
+          closestSzg = "UL";
+
         } else {
           // Upper-right corner
           System.out.println("=> Upper-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 1, currCorner.y - 1);
+          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y - 0.5);
+          closestSzg = "UR";
         }
       }
     }

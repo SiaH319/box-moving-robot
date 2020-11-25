@@ -111,14 +111,14 @@ public class UltrasonicLocalizer {
 
     }
     if (isObject) {
-      if (objectUS.size()<=10 && objectAngle.size()<=10) { // not enough number of sample
+      if (objectUS.size() <= 10 && objectAngle.size() <= 10) { // not enough number of sample
         isObject = false;
         System.out.println("no object found in the front tile");
-
       }
+
       else {
-        System.out.println("us object list "+objectUS);
-        System.out.println("Angle object list "+objectAngle);
+        //System.out.println("us object list " + objectUS);
+        //System.out.println("Angle object list "+ objectAngle);
         int mid = medianIndex(objectUS);
         angleToMove = objectAngle.get(mid);
         distToMove = minDist(objectUS);
@@ -136,8 +136,8 @@ public class UltrasonicLocalizer {
     if (round(act) < round(id) - err) {
       isObject = true;
 
-      System.out.println ("object found at angle " + odometer.getXyt()[2]
-          + ", actual = " + act + ", ideal = " + id);
+      //System.out.println ("object found at angle " + odometer.getXyt()[2]
+       //   + ", actual = " + act + ", ideal = " + id);
       objectUS.add(act);
       objectAngle.add(odometer.getXyt()[2]); 
     }
@@ -158,14 +158,14 @@ public class UltrasonicLocalizer {
     return index;
   }
 
-  public static Double minDist(ArrayList<Double> arr) {
+  public static Double minDist(ArrayList<Double> dist) {
     Double smallest = (double) 0;
-    if (arr != null) {
-      smallest = arr.get(0);
+    if (dist != null) {
+      smallest = dist.get(0);
 
-      for (int i=1;i<arr.size();i++) {
-        if(arr.get(i) < smallest) {
-          smallest = arr.get(i);
+      for (int i = 1; i < dist.size(); i++) {
+        if (dist.get(i) < smallest) {
+          smallest = dist.get(i);
         }
       }
     }
@@ -174,12 +174,22 @@ public class UltrasonicLocalizer {
   }
 
   public static void moveToObject() {
-    turnBy(angleToMove-45);
+    turnBy(angleToMove - 45);
     setSpeed(FORWARD_SPEED);
     System.out.println(distToMove);
-     leftMotor.rotate(convertDistance(distToMove/100), true);
-    rightMotor.rotate(convertDistance(distToMove/100), false);
+    leftMotor.rotate(convertDistance(distToMove / 100), true);
+    rightMotor.rotate(convertDistance(distToMove / 100), false); 
+
+    if (Navigation.blockOrObstacle()) {
+      System.out.println("A block is detected");
+    }
+
+    else {
+      System.out.println("An obstacle is detected");
+    }
   }
+
+
   /**
    * Main method of the UltrasonicLocalizer. Localizes the bot to 1,1.
    */
