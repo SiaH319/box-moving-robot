@@ -76,18 +76,21 @@ public class Main {
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
     // TODO search
+    setPoints();
     
-    Point middleRamp = new Point(9.5, 7);
-    
+    Point middleRamp = new Point((rightRamp_x + leftRamp_x)/2, rightRamp_y);
     Point block = new Point(7,6.5);
+   
     Point farestEdege = farestEdge(block);
-    //navigateTo(block, block);
     
-    double torque = pushFor(2);
-    System.out.println(odometer.getXyt()[0]);
-    System.out.println(odometer.getXyt()[1]);
+    Point waypoint = pushPosition(block, 90);
     
-    while(Math.round(odometer.getXyt()[0]) != middleRamp.x && Math.round(odometer.getXyt()[1]) != middleRamp.y) {
+    navigateTo(waypoint, block);
+    
+    //double torque = pushFor(2);
+   
+    
+    /*while(Math.round(odometer.getXyt()[0]) != middleRamp.x && Math.round(odometer.getXyt()[1]) != middleRamp.y) {
     	System.out.println("In loop");
     
     	if(torque > 3) { //random constant
@@ -97,7 +100,7 @@ public class Main {
     	else {
     		torque = pushFor(Resources.TILE_SIZE);
     	}
-    }
+    }*/
   }
 
   /**
@@ -111,6 +114,26 @@ public class Main {
       for (int j = 0; j < 2000; j++) {
         waitUntilNextStep();
       }
+    }
+  }
+  
+  /**
+   * Calculates the position the bot should be in to push a given box.
+   * 
+   * @param p     The point for the block's coordinates
+   * @param theta The direction you want to push the block in. Can only be {0, 90,
+   *              180, 270}.
+   * @return Returns the final coordinates of the push position as a point.
+   */
+  public static Point pushPosition(Point p, double theta) {
+    if (theta == 0) { // up
+      return new Point(p.x, p.y - Resources.PUSH_POSITION_OFFSET);
+    } else if (theta == 90) { // right
+      return new Point(p.x - Resources.PUSH_POSITION_OFFSET, p.y);
+    } else if (theta == 180) { // down
+      return new Point(p.x, p.y + Resources.PUSH_POSITION_OFFSET);
+    } else { // 270 degrees //left
+      return new Point(p.x + Resources.PUSH_POSITION_OFFSET, p.y);
     }
   }
 

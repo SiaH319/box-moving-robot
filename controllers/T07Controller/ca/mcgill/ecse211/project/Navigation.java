@@ -68,8 +68,6 @@ public class Navigation {
   public static double rightRamp_y = 0;
   public static int startCorner;
   
-  public static Point middleRamp = new Point(9.5, 7);
-
   // Map orientation booleans
   public static boolean upperonmap = false;
   public static boolean leftonmap = false;
@@ -158,6 +156,8 @@ public class Navigation {
     // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
     // find the farest point of the 4 to the current position
     // return the farest point
+	Point middleRamp = new Point((rightRamp_x + leftRamp_x)/2, rightRamp_y);
+	System.out.println(middleRamp.x);
     Point[] blockPoints;
     blockPoints = new Point[4];
     blockPoints[0] = new Point(blockPos.x, blockPos.y + PUSH_POSITION_OFFSET); // up
@@ -196,6 +196,7 @@ public class Navigation {
     // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
     // find the farest point of the 4 to the current position
     // return the farest point
+	Point middleRamp = new Point((rightRamp_x + leftRamp_x)/2, rightRamp_y);
     Point[] blockPoints;
     blockPoints = new Point[2];
     if(orientation) {
@@ -755,6 +756,10 @@ public class Navigation {
       lowerLeftTunnelY = TNR_LL_y;
       upperRightTunnelX = TNR_UR_x;
       upperRightTunnelY = TNR_UR_y;
+      leftRamp_x =  RRL_x;
+      leftRamp_y =  RRL_y;
+      rightRamp_x = RRR_x;
+      rightRamp_y = RRR_y;
       startCorner = Resources.redCorner;
     } else {
       // Set GREEN TEAM coordinates
@@ -770,6 +775,10 @@ public class Navigation {
       lowerLeftTunnelY = TNG_LL_y;
       upperRightTunnelX = TNG_UR_x;
       upperRightTunnelY = TNG_UR_y;
+      leftRamp_x =  GRL_x;
+      leftRamp_y =  GRL_y;
+      rightRamp_x = GRR_x;
+      rightRamp_y = GRR_y;
       startCorner = Resources.greenCorner;
     }
   }
