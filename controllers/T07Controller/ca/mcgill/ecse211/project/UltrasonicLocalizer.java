@@ -36,8 +36,8 @@ public class UltrasonicLocalizer {
   public static boolean isObject = false;
   public static boolean isObs = false;
 
-  public static boolean nearObs = false;
-  public static int whereNearObs = 0; //0: left, 1: right, 2: up, 3: down
+  public static boolean nextToObs = false;
+  public static int whereObs; //0: left, 1: right, 2: up, 3: down
   public static boolean isObjectFurther = false;
   public static int isRightTurn = 1; // leftTurn = -1
 
@@ -64,14 +64,16 @@ public class UltrasonicLocalizer {
   private static double LLSZ_Y = 5;
   private static double URSZ_X = 10;
   private static double URSZ_Y = 9;
-  private static double LLR_X = 9;
+  private static double LLR_X = 7;
   private static double LLR_Y = 7;
-  private static String clstSzg = "LL";
+  private static String clstSzg = "UR";
 
 
   public static ArrayList<Point> cleanPoint = new  ArrayList<Point>();
   public static ArrayList<Point> obsPoint = new ArrayList<Point>();
   public static Point currPt;
+  public static Point nextPt;
+
   static Point rampLL1 = new Point(LLR_X, LLR_Y);
   static Point rampLL2 = new Point(LLR_X, LLR_Y + 1);
 
@@ -109,17 +111,14 @@ public class UltrasonicLocalizer {
     }
 
     if (clstSzg == "LR") {
-      currPt = new Point(LLSZ_X - 1, LLSZ_Y);
+      currPt = new Point(URSZ_X - 1, LLSZ_Y);
       isLtoR = -1; //isRtoL = -1
       isRightTurn = 1; // leftTurn = -1
 
-      isDecreasingY = true;
+      isDecreasingY = false;
     }
 
     backWardAdjust();
-    System.out.println("current tile LL = " + currPt);
-    //cleanPoint.add(currPt);
-
 
     while (true) {
 
@@ -139,35 +138,44 @@ public class UltrasonicLocalizer {
         moveToObject();
         break;
       }*/
-      while(true){
-        moveByOneTile();
-        currPt = new Point(currPt.x + xPt, currPt.y);
+      while(true) {
         //cleanPoint.add(currPt);
+        nextPt = new Point(currPt.x + xPt, currPt.y);
 
         System.out.println("current tile LL = " + currPt);
         closeToObs(); //check if front tile is out of search zone or has an obstacle/ramp
-        if (nearObs) {
-          System.out.println("avoid obstacle");
+        if (isLtoR != 1 && obsPoint.contains(new Point(currPt.x - 1, currPt.y)))  {
+          System.out.println("avoid obstacle/ramp");
           break;
-      }
-        else if (!inSRZ()) {
+        }
+
+        else if (isLtoR == 1 && obsPoint.contains(new Point(currPt.x + 1, currPt.y)))  {
+          System.out.println("avoid obstacle/ramp");
+          break;
+        }
+
+
+        if (!NextTileInSRZ()) {
           System.out.println("stay inside the search zone");
           break;
         }
 
+        moveByOneTile();
+        currPt = new Point(currPt.x + xPt, currPt.y);        
+
       }
       turn();
       //}
-      /* if (nearObs || isObs) {
+      /* if (nextToObs || isObs) {
       turn();
     }*/
     }
   }
-  
+
   public static void backWardAdjust() {
     setSpeed(FORWARD_SPEED);
-    leftMotor.rotate(convertDistance(-TILE_SIZE/4), true);
-    rightMotor.rotate(convertDistance(-TILE_SIZE/4), false);
+    leftMotor.rotate(convertDistance(-TILE_SIZE / 4), true);
+    rightMotor.rotate(convertDistance(-TILE_SIZE / 4), false);
     System.out.println("Move backward a bit");
   }
 
@@ -178,7 +186,6 @@ public class UltrasonicLocalizer {
     // isRightTurn = 1;  leftTurn = -1
     if (isDecreasingY) {
       yPt = -1;
-
     }
     else {
       yPt = 1;
@@ -187,17 +194,20 @@ public class UltrasonicLocalizer {
 
 
     double turnAngle;
-    if (isLtoR == 1) {
+    if (isRightTurn == 1) {
       turnAngle = 90;
     }
     else {
       turnAngle = -90;
     }
     turnBy(turnAngle);
-   
+
     //   searchObject();
     /*
     if (isObject) {
+           todo whereObs == 0)  {//0: left, 1: right, 2: up, 3: down)
+
+        }
       moveToObject();
       // if block found, stop
       //@TODO: OBJECT FOUND?
@@ -218,8 +228,8 @@ public class UltrasonicLocalizer {
       //@TODO: OBJECT FOUND?
     }
      */
-    isLtoR = isLtoR * (-1);
-
+    isRightTurn = isRightTurn * (-1);
+    isLtoR = isLtoR* (-1);
   }
 
   /**
@@ -227,9 +237,24 @@ public class UltrasonicLocalizer {
    * 
    * @return true if in search zone.
    */
-  public static boolean inSRZ() {
-    if (currPt.x > LLSZ_X && currPt.x  < URSZ_X 
-        && currPt.y > LLSZ_Y && currPt.y < URSZ_Y) {
+  public static boolean NextTileInSRZ() {
+    if (nextPt.x >= LLSZ_X && nextPt.x  < URSZ_X 
+        && nextPt.y >= LLSZ_Y && nextPt.y < URSZ_Y) {
+
+
+      boolean one = currPt.x >= LLSZ_X;
+
+      boolean two = currPt.x  <= URSZ_X ;
+
+      boolean three = currPt.x >= LLSZ_X;
+
+      boolean four = currPt.y <= URSZ_Y;
+
+      System.out.println(
+          "currPt.x >= LLSZ_X = " + one + 
+          ", currPt.x  <= URSZ_X = " + two 
+          + ", currPt.y > LLSZ_Y = " + three 
+          + ", currPt.y < URSZ_Y = " + four);
       return true;
     } 
     else {
@@ -244,28 +269,27 @@ public class UltrasonicLocalizer {
     Point down = new Point(currPt.x, currPt.y - 1);
     Point right = new Point(currPt.x + 1, currPt.y);
     Point up = new Point(currPt.x, currPt.y + 1);
-    nearObs = false;
-    if (obsPoint.contains(left)||obsPoint.contains(right)
-        || obsPoint.contains(up) || obsPoint.contains(down)) {
-      nearObs = true;
-    }
-    /*
+    nextToObs = false;
+
     if (obsPoint.contains(left)) {
-      nearObs = true;
-      whereNearObs = 0; //0: left, 1: right, 2: up, 3: down
+      nextToObs = true;
+      whereObs = 0; //0: left, 1: right, 2: up, 3: down
+      System.out.println("obstacle on the left ");
     }
     else if (obsPoint.contains(right)) {
-      nearObs = true;
-      whereNearObs = 1; //0: left, 1: right, 2: up, 3: down
+      nextToObs = true;
+      whereObs = 1; //0: left, 1: right, 2: up, 3: down
+
     }
-    else if (obsPoint.contains(up)) {
-      nearObs = true;
-      whereNearObs = 2; //0: left, 1: right, 2: up, 3: down
+    /*else if (obsPoint.contains(up)) {
+      nextToObs = true;
+      wherenextToObs = 2; //0: left, 1: right, 2: up, 3: down
     }
     else if (obsPoint.contains(down)) {
-      nearObs = true;
-      whereNearObs = 3; //0: left, 1: right, 2: up, 3: down
+      nextToObs = true;
+      wherenextToObs = 3; //0: left, 1: right, 2: up, 3: down
     }*/
+    whereObs = 10;
   }
 
 
