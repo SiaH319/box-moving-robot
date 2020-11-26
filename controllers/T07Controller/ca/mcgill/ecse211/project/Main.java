@@ -76,40 +76,67 @@ public class Main {
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
     // TODO search
+    
+    //assuming you are in front of the block and you know a safe path to the ramp
     setPoints();
     
-    Point middleRamp = new Point((rightRamp_x + leftRamp_x)/2, rightRamp_y);
-    Point block = new Point(7,6.5);
-   
-    Point farestEdege = farestEdge(block);
+    //initial parameters
+    Point block = new Point(1,1); // change for point returned by search method
+    Point waypoint = pushPosition(block, odometer.getXyt()[2] + 180); //angle has to be 0, 90, 180 or 270
+    ArrayList<Point> cleanTile = new ArrayList<Point>();
     
-    Point waypoint = pushPosition(block, 90);
+    safeTravelTo(block);
     
-    //navigateTo(waypoint, block);
+    //assuming you want to start pushing the block to the ramp
+    //stops one tile before the ramp
+   /*for(int i = cleanTile.size()-1; i < cleanTile.size(); i--) {
+	   
+	   double currentX = odometer.getXyt()[0];
+	   double currentY = odometer.getXyt()[1];
+	   
+	   //create algorithm to position the bot depending on the next tile
+	   
+	   travelTo(cleanTile.get(i));
+   }*/
+     //find block weight
+    double torque = round(pushFor(TILE_SIZE), 2);
     
-    double torque = pushFor(TILE_SIZE);
-    System.out.println(torque);
-    
-    double currentX = odometer.getXyt()[0] * 3.28084;
-    double currentY = odometer.getXyt()[1] * 3.28084;
-   
-    while(currentX != middleRamp.x && currentY != middleRamp.y) {
-    	currentX = odometer.getXyt()[0] * 3.28084;
-    	currentY = odometer.getXyt()[1] * 3.28084;
-    	System.out.println(currentX);
-    	System.out.println(currentY);
-    
-    	if(torque > 1) { //random constant
-    		System.out.println("OBSTACLE");
-    		//reposition(middleRamp, block);
-    	}
-    	else {
-    		torque = pushFor(Resources.TILE_SIZE);
-    		System.out.println(torque);
-    	}
-    	 waitUntilNextStep();
+    if(torque == 1.15) {
+    	System.out.println("Container with weight 1 identified");
+    		
     }
+    else if(torque == 1.21) {
+    	System.out.println("Container with weight 2 identified");
+    		
+    }
+    else if(torque == 1.32) {
+    	System.out.println("Container with weight 3 identified");
+    		
+    }
+    else if(torque == 1.44) {
+    	System.out.println("Container with weight 4 identified");
+    		
+    }
+    
+    //push block into the bin
+    pushFor(TILE_SIZE);
+    
+    //go back to initial position with travelSafe
   }
+  /**
+   * Method took from stack overflow
+   * @param value
+   * @param places
+   * @return
+   */
+  public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    return (double) tmp / factor;
+	}
 
   /**
    * Helper method to beep for a given number of times.

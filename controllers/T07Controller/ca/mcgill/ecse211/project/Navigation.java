@@ -77,6 +77,8 @@ public class Navigation {
   private Navigation() {
   }
   
+  
+  
   /**
    * Drives the bot to the farest edge of a block then navigates around it to
    * reach a destination point.
@@ -89,7 +91,7 @@ public class Navigation {
 
     double[] xyt = odometer.getXyt();
     Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    Point intermediate = farestEdge(blockPos);
+    Point intermediate = closestEdge(current, blockPos);
     System.out.println("Current is " + current.x + " " + current.y);
     System.out.println("intermediate is " + intermediate.x + " " + intermediate.y);
     System.out.println("Dest is " + destination.x + " " + destination.y);
@@ -108,6 +110,44 @@ public class Navigation {
     }
   }
   
+  /**
+   * Returns the closest point around a block to the current position.
+   * 
+   * @param current  Current position of the bot (point)
+   * @param blockPos Position of the block (point)
+   * @return Closest point one bot distance away from the edge of the block to the
+   *         current bot position
+   */
+  public static Point closestEdge(Point current, Point blockPos) {
+    // calculate the 4 points around the block (up down left right)
+    // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
+    // find the closest point of the 4 to the current position
+    // return the closest point
+    Point[] blockPoints;
+    blockPoints = new Point[4];
+    blockPoints[0] = new Point(blockPos.x, blockPos.y + PUSH_POSITION_OFFSET); // up
+    blockPoints[1] = new Point(blockPos.x, blockPos.y - PUSH_POSITION_OFFSET); // down
+    blockPoints[2] = new Point(blockPos.x - PUSH_POSITION_OFFSET, blockPos.y); // left
+    blockPoints[3] = new Point(blockPos.x + PUSH_POSITION_OFFSET, blockPos.y); // right
+
+    double[] distances = new double[4];
+    for (int i = 0; i < 4; i++) {
+      distances[i] = distanceBetween(current, blockPoints[i]);
+    }
+
+    int index = 0;
+    double min = distances[index];
+    for (int i = 1; i < distances.length; i++) {
+      if (distances[i] < min) {
+        min = distances[i];
+        index = i;
+      }
+    }
+
+    Point closestPoint = blockPoints[index];
+    return closestPoint;
+  }
+  //maybe can be deleted
   /**
    * Drives the bot to the farest edge of a block then navigates around it to
    * reach a destination point depending if the bot is in X or Y.
@@ -303,6 +343,8 @@ public class Navigation {
     final int distTacho = convertDistance(dist);
     leftMotor.resetTachoCount();
     rightMotor.resetTachoCount();
+    
+    
     moveStraightForReturn(dist * 3.28084);
 
     double avg = 0;
@@ -311,6 +353,7 @@ public class Navigation {
       // while distance wasn't reached calculate average torque and wait.
       double trk = (leftMotor.getTorque() + rightMotor.getTorque()) / 2;
       avg = (avg * readings + trk) / ++readings;
+   
       waitUntilNextStep();
     }
 
@@ -384,7 +427,7 @@ public class Navigation {
 
   /**
    *  Travels to the given destination.
-   * @param destination A point represnting the destination.
+   * @param destination A point representing the destination.
    */
   public static void travelTo(Point destination) {
     double[] xyt = odometer.getXyt();
