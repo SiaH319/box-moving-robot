@@ -737,7 +737,7 @@ public class Navigation {
           System.out.println("=> Lower-left corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x + 0.5, currCorner.y + 0.5);
           closestSzg = "LL";
-          searchZoneStartAngle = 0;
+          searchZoneStartAngle = 90;
         } else if (i == 1) {
           // Lower-right corner
           System.out.println("=> Lower-right corner of search zone is closest.");
@@ -755,7 +755,7 @@ public class Navigation {
           System.out.println("=> Upper-right corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x - 0.5, currCorner.y - 0.5);
           closestSzg = "UR";
-          searchZoneStartAngle = 180;
+          searchZoneStartAngle = -90;
         }
       }
     }

@@ -59,7 +59,6 @@ public class Main {
     //  UltrasonicLocalizer.moveToObject();
      UltrasonicLocalizer.travelSearch();
 
-    
 
     // Uncomment the parts relevant to the methods/functionality
 

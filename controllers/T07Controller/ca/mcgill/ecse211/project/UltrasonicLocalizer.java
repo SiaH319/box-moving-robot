@@ -45,6 +45,10 @@ public class UltrasonicLocalizer {
   public static ArrayList<Double> objectAngle = new ArrayList<Double>();
   public static double angleToMove;
   public static double distToMove;
+
+  public static int isLtoR = 1; //isRtoL = -1
+  public static boolean isDecreasingY = true;
+
   /*
   private static double LLSZ_X = Navigation.lowerLeftSzgX;
   private static double LLSZ_Y = Navigation.lowerLeftSzgY;
@@ -62,7 +66,7 @@ public class UltrasonicLocalizer {
   private static double URSZ_Y = 9;
   private static double LLR_X = 9;
   private static double LLR_Y = 7;
-  private static String clstSzg = "UL";
+  private static String clstSzg = "LL";
 
 
   public static ArrayList<Point> cleanPoint = new  ArrayList<Point>();
@@ -71,7 +75,8 @@ public class UltrasonicLocalizer {
   static Point rampLL1 = new Point(LLR_X, LLR_Y);
   static Point rampLL2 = new Point(LLR_X, LLR_Y + 1);
 
-
+  static int xPt = 0;
+  static int yPt = 0;
   static void travelSearch() {
     int maxX = (int) (URSZ_X - LLSZ_X - 1);;
     int maxY = (int) (URSZ_Y - LLSZ_Y - 1);;
@@ -81,77 +86,140 @@ public class UltrasonicLocalizer {
 
     if (clstSzg == "UL") {
       currPt = new Point(LLSZ_X, URSZ_Y - 1);
+      isLtoR = 1; //isRtoL = -1
+      isRightTurn = 1; // leftTurn = -1
+
+      isDecreasingY = true;
     }
 
     if (clstSzg == "UR") {
       currPt = new Point(URSZ_X - 1, URSZ_Y - 1);
+      isLtoR = -1; //isRtoL = -1
+      isRightTurn = -1; // leftTurn = -1
+
+      isDecreasingY = true;
     }
 
     if (clstSzg == "LL") {
       currPt = new Point(LLSZ_X, LLSZ_Y);
+      isLtoR = 1; //isRtoL = -1
+      isRightTurn = -1; // leftTurn = -1
+
+      isDecreasingY = false;
     }
 
     if (clstSzg == "LR") {
       currPt = new Point(LLSZ_X - 1, LLSZ_Y);
+      isLtoR = -1; //isRtoL = -1
+      isRightTurn = 1; // leftTurn = -1
+
+      isDecreasingY = true;
     }
 
-
+    backWardAdjust();
     System.out.println("current tile LL = " + currPt);
-    cleanPoint.add(currPt);
+    //cleanPoint.add(currPt);
 
-    while(true) {
-      closeToObs(); //check if front tile is out of search zone or has an obstacle/ramp
-      if (nearObs) {
-        turn();
+
+    while (true) {
+
+      if (isLtoR == 1) {
+        xPt = 1;
       }
-/*
-      searchObject();
+
+      else {
+        xPt = -1;
+      }
 
 
+
+      // searchObject();
+      /*
       if (isObject) {
         moveToObject();
-
-        if(!isObs) { //block found
-        }
+        break;
       }*/
+      while(true){
+        moveByOneTile();
+        currPt = new Point(currPt.x + xPt, currPt.y);
+        //cleanPoint.add(currPt);
 
-      moveByOneTile();
-      currPt = new Point(currPt.x + 1, currPt.y);
-      cleanPoint.add(currPt);
+        System.out.println("current tile LL = " + currPt);
+        closeToObs(); //check if front tile is out of search zone or has an obstacle/ramp
+        if (nearObs) {
+          System.out.println("avoid obstacle");
+          break;
+      }
+        else if (!inSRZ()) {
+          System.out.println("stay inside the search zone");
+          break;
+        }
 
-      System.out.println("current tile LL = " + currPt);
-
+      }
+      turn();
+      //}
+      /* if (nearObs || isObs) {
+      turn();
+    }*/
     }
+  }
+  
+  public static void backWardAdjust() {
+    setSpeed(FORWARD_SPEED);
+    leftMotor.rotate(convertDistance(-TILE_SIZE/4), true);
+    rightMotor.rotate(convertDistance(-TILE_SIZE/4), false);
+    System.out.println("Move backward a bit");
   }
 
 
 
   public static void turn() {
-
+    System.out.println("turning");
     // isRightTurn = 1;  leftTurn = -1
+    if (isDecreasingY) {
+      yPt = -1;
 
-    if (isRightTurn == 1) {
-      turnBy(90);
-      searchObject();
-
-      if (isObject) {
-        moveToObject();
-       // @TODO: BLCOK FOUND?
-        //@TODO: OBJECT FOUND?
-      }
-      
-      moveByOneTile();
-
-      turnBy(90);
-      searchObject();
-
-      if (isObject) {
-        moveToObject();
-      }
-
-      moveByOneTile();
-      isRightTurn = isRightTurn*(-1);
     }
+    else {
+      yPt = 1;
+
+    }
+
+
+    double turnAngle;
+    if (isLtoR == 1) {
+      turnAngle = 90;
+    }
+    else {
+      turnAngle = -90;
+    }
+    turnBy(turnAngle);
+   
+    //   searchObject();
+    /*
+    if (isObject) {
+      moveToObject();
+      // if block found, stop
+      //@TODO: OBJECT FOUND?
+    }*/
+
+    moveByOneTile();
+    currPt = new Point(currPt.x, currPt.y + yPt);
+    System.out.println("current tile LL = " + currPt);
+
+    turnBy(turnAngle);
+    backWardAdjust();
+
+    //    searchObject();
+    /*
+    if (isObject) {
+      moveToObject();
+      // if block found, stop
+      //@TODO: OBJECT FOUND?
+    }
+     */
+    isLtoR = isLtoR * (-1);
+
   }
 
   /**
@@ -159,21 +227,12 @@ public class UltrasonicLocalizer {
    * 
    * @return true if in search zone.
    */
-  public static boolean inSearchZone() {
-    System.out.println(LLSZ_X + "," + LLSZ_Y + "&" + URSZ_X +"," + URSZ_Y);
-    System.out.println("odo reading = " + odometer.getXyt()[0]/TILE_SIZE + "," + odometer.getXyt()[1]/TILE_SIZE );
-
-    System.out.println(odometer.getXyt()[0]/TILE_SIZE > LLSZ_X );
-    System.out.println(odometer.getXyt()[0]/TILE_SIZE  < URSZ_X );
-
-    System.out.println(odometer.getXyt()[1]/TILE_SIZE > LLSZ_Y);
-
-    System.out.println(odometer.getXyt()[1]/TILE_SIZE < URSZ_Y );
-
-    if (odometer.getXyt()[0]/TILE_SIZE > LLSZ_X && odometer.getXyt()[0]/TILE_SIZE  < URSZ_X && odometer.getXyt()[1]/TILE_SIZE > LLSZ_Y
-        && odometer.getXyt()[1]/TILE_SIZE < URSZ_Y) {
+  public static boolean inSRZ() {
+    if (currPt.x > LLSZ_X && currPt.x  < URSZ_X 
+        && currPt.y > LLSZ_Y && currPt.y < URSZ_Y) {
       return true;
-    } else {
+    } 
+    else {
       return false;
 
     }
@@ -186,7 +245,11 @@ public class UltrasonicLocalizer {
     Point right = new Point(currPt.x + 1, currPt.y);
     Point up = new Point(currPt.x, currPt.y + 1);
     nearObs = false;
-/*
+    if (obsPoint.contains(left)||obsPoint.contains(right)
+        || obsPoint.contains(up) || obsPoint.contains(down)) {
+      nearObs = true;
+    }
+    /*
     if (obsPoint.contains(left)) {
       nearObs = true;
       whereNearObs = 0; //0: left, 1: right, 2: up, 3: down
@@ -298,9 +361,6 @@ public class UltrasonicLocalizer {
   public static void objectFound(double act, double id, double err) {
     if (round(act) < round(id) - err) {
       isObject = true;
-
-      //System.out.println ("object found at angle " + odometer.getXyt()[2]
-      //   + ", actual = " + act + ", ideal = " + id);
       objectUS.add(act);
       objectAngle.add(odometer.getXyt()[2]); 
     }
@@ -369,6 +429,9 @@ public class UltrasonicLocalizer {
     if (Navigation.blockOrObstacle()) {
       System.out.println("distToMove = " + distToMove);
       System.out.println("A block is detected");
+      leftMotor.stop();
+      rightMotor.stop();
+
     }
 
     else {
