@@ -44,8 +44,8 @@ public class Resources {
    * <p>
    * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
-  // 192.168.1.105
-  public static final String SERVER_IP = "127.0.0.1"; // = DEFAULT_SERVER_IP;
+ 
+  public static final String SERVER_IP = "192.168.0.184"; // = DEFAULT_SERVER_IP;
 
   /** Your team number. */
   public static final int TEAM_NUMBER = 7;
@@ -132,6 +132,12 @@ public class Resources {
 
   /** The block width in m. */
   public static final double BLOCK_WIDTH = 0.10; // 10cm
+  
+  /**
+   * The distance the bot needs to travel from the push position offset to touch
+   * the box.
+   */
+  public static final double PUSH_TRAVEL_OFFSET = TILE_SIZE / 10;
 
   // Hardware resources
 

@@ -37,7 +37,7 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-    /*
+    
     if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
@@ -54,33 +54,91 @@ public class Main {
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
-    }*/
+    }
     //    UltrasonicLocalizer.searchObject();
     //  UltrasonicLocalizer.moveToObject();
-     UltrasonicLocalizer.travelSearch();
+    // UltrasonicLocalizer.travelSearch();
 
 
     // Uncomment the parts relevant to the methods/functionality
 
     // ================== LOCALIZATION ===================
-    // UltrasonicLocalizer.localize();
-    // System.out.println("[STATUS] Performing light localization...");
-    // LightLocalizer.forwardLocalize(90);
-    // System.out.println("=> Light localization complete.");
+     UltrasonicLocalizer.localize();
+     System.out.println("[STATUS] Performing light localization...");
+     LightLocalizer.forwardLocalize(90);
+     System.out.println("=> Light localization complete.");
     // beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
-    // Navigation.goThroughTunnel();
-    // odometer.printPosition();
+     Navigation.goThroughTunnel();
+     odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
-    // Go to search zone
-    // if (Navigation.inSearchZone() == false) {
-    // Navigation.goToSearchZone();
-    // }
+     //Go to search zone
+     if (Navigation.inSearchZone() == false) {
+     Navigation.goToSearchZone();
+     }
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
     // TODO search
+     
+     setPoints();
+     
+     Point block = new Point(7,6);
+     travelToSafely(block);
+     
+     //assuming you want to start pushing the block to the ramp
+     //stops one tile before the ramp
+    /*for(int i = cleanTile.size()-1; i < cleanTile.size(); i--) {
+ 	   
+ 	   
+ 	   
+ 	   //create algorithm to position the bot depending on the next tile
+ 	   
+ 	   travelTo(cleanTile.get(i));
+    }*/
+      //find block weight
+     /*double currentX = odometer.getXyt()[0];
+ 	 double currentY = odometer.getXyt()[1];
+ 	 System.out.println("X : " + currentX + "Y : " + currentY);*/
+     double torque = round(pushFor(TILE_SIZE), 2);
+     
+     if(torque == 1.15) {
+     	System.out.println("Container with weight 1 identified");
+     		
+     }
+     else if(torque == 1.21) {
+     	System.out.println("Container with weight 2 identified");
+     		
+     }
+     else if(torque == 1.32) {
+     	System.out.println("Container with weight 3 identified");
+     		
+     }
+     else if(torque == 1.44) {
+     	System.out.println("Container with weight 4 identified");
+     		
+     }
+     
+     //push block into the bin
+     pushFor(TILE_SIZE);
+     
+     //go back to initial position with travelSafe
   }
+  
+  /**
+   * Method took from stack overflow
+   * @param value
+   * @param places
+   * @return
+   */
+  public static double round(double value, int places) {
+	    if (places < 0) throw new IllegalArgumentException();
+
+	    long factor = (long) Math.pow(10, places);
+	    value = value * factor;
+	    long tmp = Math.round(value);
+	    return (double) tmp / factor;
+	}
 
   /**
    * Helper method to beep for a given number of times.
