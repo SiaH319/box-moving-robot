@@ -151,11 +151,26 @@ public class Navigation {
   }
   
   /**
-   * Moves robot to Point(x,y) while scanning for obstacles, re-routes where necessary
-   * Assumes that odometer is currently in meters
-   *
-   * @param destination A Point given in TILE LENGTHS (e.g., (15, 0))
+   *  Travels to the given destination.
+   * @param destination A point represnting the destination.
    */
+  public static void travelTo(Point destination) {
+    double[] xyt = odometer.getXyt();
+    Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
+    double currentTheta = xyt[2];
+    double destinationTheta = getDestinationAngle(currentLocation, destination);
+    System.out.println("travelTo(): Proceeding to (" + destination.x + ", " + destination.y + ", " + destinationTheta + ") from (" + currentLocation.x + ", " + currentLocation.y + ", " + currentTheta + ")...");
+    System.out.println("travelTo(): Turning by " + minimalAngle(currentTheta, destinationTheta));
+    turnBy(minimalAngle(currentTheta, destinationTheta));
+    moveStraightFor(distanceBetween(currentLocation, destination));
+  }
+  
+  /**
+   * Moves robot to Point(x,y) while scanning for obstacles, rereoutes where necessary
+   *
+   * @param destination given as point in TILE LENGTHS (e.g., (15, 0))
+   */
+  
   public static void travelToSafely(Point destination) {
     System.out.println("=> Proceeding to (" + destination.x + ", " + destination.y + ")...");
     
@@ -166,16 +181,16 @@ public class Navigation {
       double[] xyt = odometer.getXyt();
       Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
       double currentTheta = xyt[2];
-    
+
       // Check if at destination
       double distanceToDest = distanceBetween(currentLocation, destination);
       System.out.println("=> Distance to destination: " + distanceToDest);
-      if (distanceToDest < 1) {
-        // Within a tile size of destination; simply travelTo()
-        System.out.println("=> Less than 1!");
-        
-        travelTo(destination); // NOTE: travelTo assumes odometer is in meters
+      if (distanceToDest < 0.66) {
+        // Close enough to destination; simply travelTo()
+        System.out.println("=> Within one tile length. Travelling...");
 
+        travelTo(destination); // NOTE: travelTo assumes odometer is in meters
+        
         System.out.println("=> Arrived safely at destination.");
         
         // Exit loop (set atDestination to true)
@@ -187,58 +202,32 @@ public class Navigation {
         // Turn towards destination point
         double destinationTheta = getDestinationAngle(currentLocation, destination);
         turnBy(minimalAngle(currentTheta, destinationTheta));
-        
+
         // Check if path is clear (sweep tile in front and validate any object)
+        double originalTheta = odometer.getXyt()[2]; // Save odometer heading
         UltrasonicLocalizer.searchObject();
-        
+        odometer.setTheta(originalTheta); // Restore odometer heading (corrects reset in searchObject())
+                
         // If an obstacle is present, rotate 90 degrees and try again
         boolean obstaclePresent = UltrasonicLocalizer.isObject;
         while (obstaclePresent) {
           System.out.println("=> Obstacle detected. Re-routing...");
           // Rotate 90 degrees
-          turnBy(90);
+          turnBy(-90);
           
-          // Check if path is clear
+          // Check if path is clear (sweep tile in front and validate any object)
+          originalTheta = odometer.getXyt()[2]; // Save heading
           UltrasonicLocalizer.searchObject();
+          odometer.setTheta(originalTheta); // Restore heading (corrects reset from search)
 
           // If no obstacle is present, set obstaclePresent to false (exits loop!)
           obstaclePresent = UltrasonicLocalizer.isObject;
         }
         
         // Move forward one tile (or some other distance?) once there's no obstacle
-        moveStraightFor(1);
+        moveStraightFor(1.00);
       }
     }  
-  }
-
-  /**
-   * Travels to a given point and stops if an obstacle is detected.
-   * 
-   * @param destination Point
-   * @return True if reached destination, false if stopped.
-   */
-  public static boolean safeTravelTo(Point destination) {
-    double[] xyt = odometer.getXyt();
-    Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    System.out.println("=> Current location: (" 
-          + currentLocation.x + ", " + currentLocation.y + ")");
-    double currentTheta = xyt[2];
-    double destinationTheta = getDestinationAngle(currentLocation, destination);
-    turnBy(minimalAngle(currentTheta, destinationTheta));
-    System.out.println("=> Destination: (" + destination.x + ", " + destination.y + ")");
-    moveStraightForReturn(distanceBetween(currentLocation, destination));
-    while (distanceBetween(new Point(odometer.getXyt()[0] 
-        / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE), destination) > 0.1) {
-      int dist = UltrasonicLocalizer.getDistance();
-      if (dist < 15) {
-        stopMotors();
-        System.out.println("=> Obstruction found. Validating...");
-        return false;
-      }
-      waitUntilNextStep();
-    }
-    System.out.println("=> Arrived at destination.");
-    return true;
   }
 
   /**
