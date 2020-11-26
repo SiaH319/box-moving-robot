@@ -151,21 +151,6 @@ public class Navigation {
   }
   
   /**
-   *  Travels to the given destination.
-   * @param destination A point represnting the destination.
-   */
-  public static void travelTo(Point destination) {
-    double[] xyt = odometer.getXyt();
-    Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    double currentTheta = xyt[2];
-    double destinationTheta = getDestinationAngle(currentLocation, destination);
-    System.out.println("travelTo(): Proceeding to (" + destination.x + ", " + destination.y + ", " + destinationTheta + ") from (" + currentLocation.x + ", " + currentLocation.y + ", " + currentTheta + ")...");
-    System.out.println("travelTo(): Turning by " + minimalAngle(currentTheta, destinationTheta));
-    turnBy(minimalAngle(currentTheta, destinationTheta));
-    moveStraightFor(distanceBetween(currentLocation, destination));
-  }
-  
-  /**
    * Moves robot to Point(x,y) while scanning for obstacles, rereoutes where necessary
    *
    * @param destination given as point in TILE LENGTHS (e.g., (15, 0))
@@ -603,30 +588,18 @@ public class Navigation {
         if (horizontaltunnel) {
           turnTo(90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x + (upperRightTunnelX - lowerLeftTunnelX + 1.4));
-          odometer.setY(destination.y);
         } else {
           turnTo(180);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       } else {
         // UPPER-RIGHT
         if (horizontaltunnel) {
           turnTo(-90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX + 1.4));
-          odometer.setY(destination.y);
         } else {
           turnTo(-180);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       }
     } else {
@@ -637,55 +610,43 @@ public class Navigation {
         if (horizontaltunnel) {
           turnTo(90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x + upperRightTunnelX - lowerLeftTunnelX + 1.4);
-          odometer.setY(destination.y);
         } else {
           turnTo(0);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       } else {
         // LOWER-RIGHT
         if (horizontaltunnel) {
           turnTo(-90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX + 1.4));
-          odometer.setY(destination.y);
         } else {
           turnTo(0);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       }
     }
   }
 
   /**
-   * Checks weather the robot is in the search zone.
+   * Checks whether the robot is in the search zone.
    * 
    * @return true if in search zone.
    */
   public static boolean inSearchZone() {
     if (isRedTeam) {
       // If RED TEAM, use RED SEARCH ZONE coordinates
-      if (odometer.getXyt()[0] > SZR_LL_x && odometer.getXyt()[0] 
-          < SZR_UR_x && odometer.getXyt()[1] > SZR_LL_y
-          && odometer.getXyt()[1] < SZR_UR_y) {
+      if (odometer.getXyt()[0]/TILE_SIZE > SZR_LL_x && odometer.getXyt()[0]/TILE_SIZE 
+          < SZR_UR_x && odometer.getXyt()[1]/TILE_SIZE > SZR_LL_y
+          && odometer.getXyt()[1]/TILE_SIZE < SZR_UR_y) {
         return true;
       } else {
         return false;
       }
     } else {
       // If GREEN TEAM, use GREEN SEARCH ZONE coordinates
-      if (odometer.getXyt()[0] > SZG_LL_x && odometer.getXyt()[0] 
-          < SZG_UR_x && odometer.getXyt()[1] > SZG_LL_y
-          && odometer.getXyt()[1] < SZG_UR_y) {
+      if (odometer.getXyt()[0]/TILE_SIZE > SZG_LL_x && odometer.getXyt()[0]/TILE_SIZE 
+          < SZG_UR_x && odometer.getXyt()[1]/TILE_SIZE > SZG_LL_y
+          && odometer.getXyt()[1]/TILE_SIZE < SZG_UR_y) {
         return true;
       } else {
         return false;
@@ -724,84 +685,35 @@ public class Navigation {
         if (i == 0) {
           // Lower-left corner
           System.out.println("=> Lower-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y + 0.5);
-          closestSzg = "LL";
-          searchZoneStartAngle = 90;
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y + 1);
+          searchZoneStartAngle = 0;
         } else if (i == 1) {
           // Lower-right corner
           System.out.println("=> Lower-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y + 0.5);
-          closestSzg = "LR";
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y + 1);
           searchZoneStartAngle = -90;
         } else if (i == 2) {
           // Upper-left corner
           System.out.println("=> Upper-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y - 0.5);
-          closestSzg = "UL";
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y - 1);
           searchZoneStartAngle = 90;
         } else {
           // Upper-right corner
           System.out.println("=> Upper-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y - 0.5);
-          closestSzg = "UR";
-          searchZoneStartAngle = -90;
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y - 1);
+          searchZoneStartAngle = 180;
         }
       }
     }
     
-    /*
-    // NEW METHOD:
-    // Implement generalized navigation taking Point(x,y) as value!
-    odometer.setX(odometer.getXyt()[0] * TILE_SIZE);
-    odometer.setY(odometer.getXyt()[1] * TILE_SIZE);
+    // Travel to nearest corner in search zone
     travelToSafely(SZ_dest);
+    
+    // Turn to start heading and relocalize
     turnTo(searchZoneStartAngle);
     relocalize();
-    */
     
-    // Turn towards destination point
-    System.out.println("=> Proceeding to (" + SZ_dest.x + ", " + SZ_dest.y + ")...");
-    double destinationTheta = getDestinationAngle(currentLocation, SZ_dest);
-    turnBy(minimalAngle(currentTheta, destinationTheta));
-    // System.out.println("Turning by: " + minimalAngle(currentTheta,
-    // destinationTheta));
-
-    // Check for obstacles in path; adjust path as necessary
-    // double usDistance = (getDistanceTop() / 100.0) / TILE_SIZE;
-    double usDistance = (getDistance() / 100.0) / TILE_SIZE;
-    double distanceToTravel = distanceBetween(currentLocation, SZ_dest);
-    // System.out.println("=> Tiles to next obstacle: " + usDistance);
-    // System.out.println("=> Tiles to travel: " + distanceToTravel);
-    if (usDistance <= distanceToTravel) {
-      // Path is NOT clear; adjust heading until clear and try again
-      System.out.println("=> Obstacle detected. Attempting to re-route...");
-      // TODO: MAKE GENERALIZED
-      // TODO: Maybe add block validation to check obstacle?
-
-      // Do 90 degree turns around object
-      turnTo(odometer.getXyt()[2] - 90);
-      moveStraightFor(0.66);
-      // UPDATE ODO
-      turnTo(odometer.getXyt()[2] + 90);
-      moveStraightFor(distanceToTravel - usDistance);
-      // UPDATE ODO
-
-      // Continue...
-      goToSearchZone();
-    } else {
-      // Path is clear; proceed to destination
-      System.out.println("=> Path clear. Proceeding...");
-      moveStraightFor(distanceToTravel);
-      turnTo(searchZoneStartAngle);
-      relocalize();
-
-      // Update odometer
-      odometer.setX(SZ_dest.x);
-      odometer.setY(SZ_dest.y);
-      System.out.println("=> Arrived safely at destination.");
-      odometer.printPosition();
-    }
-
+    System.out.println("=> Arrived safely in search zone.");
   }
 
   /**
