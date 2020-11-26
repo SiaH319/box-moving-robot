@@ -641,6 +641,9 @@ public class Navigation {
 
           //odometer.setX(destination.x);
           //odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        } else {
+          turnTo(180);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
         }
       } else {
         // UPPER-RIGHT
@@ -656,6 +659,9 @@ public class Navigation {
 
          // odometer.setX(destination.x);
           //odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        } else {
+          turnTo(-180);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
         }
       }
     } else {
@@ -675,6 +681,9 @@ public class Navigation {
 
           //odometer.setX(destination.x);
           //odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        } else {
+          turnTo(0);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
         }
       } else {
         // LOWER-RIGHT
@@ -690,6 +699,9 @@ public class Navigation {
 
           //odometer.setX(destination.x);
           //odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
+        } else {
+          turnTo(0);
+          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
         }
       }
     }
@@ -697,6 +709,7 @@ public class Navigation {
 
   /**
    * Checks weather the robot is in the search zone.
+   * Checks whether the robot is in the search zone.
    * 
    * @return true if in search zone.
    */
@@ -706,6 +719,9 @@ public class Navigation {
       if (odometer.getXyt()[0] > SZR_LL_x && odometer.getXyt()[0] 
           < SZR_UR_x && odometer.getXyt()[1] > SZR_LL_y
           && odometer.getXyt()[1] < SZR_UR_y) {
+      if (odometer.getXyt()[0]/TILE_SIZE > SZR_LL_x && odometer.getXyt()[0]/TILE_SIZE 
+          < SZR_UR_x && odometer.getXyt()[1]/TILE_SIZE > SZR_LL_y
+          && odometer.getXyt()[1]/TILE_SIZE < SZR_UR_y) {
         return true;
       } else {
         return false;
@@ -715,6 +731,9 @@ public class Navigation {
       if (odometer.getXyt()[0] > SZG_LL_x && odometer.getXyt()[0] 
           < SZG_UR_x && odometer.getXyt()[1] > SZG_LL_y
           && odometer.getXyt()[1] < SZG_UR_y) {
+      if (odometer.getXyt()[0]/TILE_SIZE > SZG_LL_x && odometer.getXyt()[0]/TILE_SIZE 
+          < SZG_UR_x && odometer.getXyt()[1]/TILE_SIZE > SZG_LL_y
+          && odometer.getXyt()[1]/TILE_SIZE < SZG_UR_y) {
         return true;
       } else {
         return false;
@@ -756,17 +775,21 @@ public class Navigation {
           SZ_dest = new Point(currCorner.x + 0.5, currCorner.y + 0.5);
           closestSzg = "LL";
           searchZoneStartAngle = 90;
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y + 1);
+          searchZoneStartAngle = 0;
         } else if (i == 1) {
           // Lower-right corner
           System.out.println("=> Lower-right corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x - 0.5, currCorner.y + 0.5);
           closestSzg = "LR";
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y + 1);
           searchZoneStartAngle = -90;
         } else if (i == 2) {
           // Upper-left corner
           System.out.println("=> Upper-left corner of search zone is closest.");
           SZ_dest = new Point(currCorner.x + 0.5, currCorner.y - 0.5);
           closestSzg = "UL";
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y - 1);
           searchZoneStartAngle = 90;
         } else {
           // Upper-right corner
@@ -774,6 +797,8 @@ public class Navigation {
           SZ_dest = new Point(currCorner.x - 0.5, currCorner.y - 0.5);
           closestSzg = "UR";
           searchZoneStartAngle = -90;
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y - 1);
+          searchZoneStartAngle = 180;
         }
       }
     }
@@ -783,7 +808,10 @@ public class Navigation {
     // Implement generalized navigation taking Point(x,y) as value!
     odometer.setX(odometer.getXyt()[0] * TILE_SIZE);
     odometer.setY(odometer.getXyt()[1] * TILE_SIZE);
+    // Travel to nearest corner in search zone
     travelToSafely(SZ_dest);
+    
+    // Turn to start heading and relocalize
     turnTo(searchZoneStartAngle);
     relocalize();
     */
@@ -831,6 +859,7 @@ public class Navigation {
       odometer.printPosition();
     }
 
+    System.out.println("=> Arrived safely in search zone.");
   }
 
   /**
