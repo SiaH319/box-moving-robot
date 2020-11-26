@@ -31,13 +31,13 @@ public class Main {
 
   /** Main entry point of the program.
    * @param args Typical argument for Main.
-  */
+   */
   public static void main(String[] args) {
     initialize();
 
     // Start the odometer thread
     new Thread(odometer).start();
-/*
+    /*
     if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
@@ -55,9 +55,12 @@ public class Main {
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }*/
-    UltrasonicLocalizer.searchObject();
-    //UltrasonicLocalizer.moveToDetect();
-    UltrasonicLocalizer.moveToObject();
+    //    UltrasonicLocalizer.searchObject();
+    //  UltrasonicLocalizer.moveToObject();
+     UltrasonicLocalizer.travelSearch();
+
+    
+
     // Uncomment the parts relevant to the methods/functionality
 
     // ================== LOCALIZATION ===================

@@ -28,15 +28,184 @@ public class UltrasonicLocalizer {
   // US localization variables
   private static int distance;
   private static double theta;
+
   private static double theta_1;
   private static double theta_2;
 
 
-  public static boolean isObject;
+  public static boolean isObject = false;
+  public static boolean isObs = false;
+
+  public static boolean nearObs = false;
+  public static int whereNearObs = 0; //0: left, 1: right, 2: up, 3: down
+  public static boolean isObjectFurther = false;
+  public static int isRightTurn = 1; // leftTurn = -1
+
   public static ArrayList<Double> objectUS = new  ArrayList<Double>();
   public static ArrayList<Double> objectAngle = new ArrayList<Double>();
   public static double angleToMove;
   public static double distToMove;
+  /*
+  private static double LLSZ_X = Navigation.lowerLeftSzgX;
+  private static double LLSZ_Y = Navigation.lowerLeftSzgY;
+  private static double URSZ_X = Navigation.upperRightSzgX;
+  private static double URSZ_Y = Navigation.upperRightSzgY;
+  private static double LLR_X = Navigation.lowerLeftRampX;
+  private static double LLR_Y = Navigation.lowerLeftRampY;
+  private static String clstSzg = Navigation.closestSzg;
+   */
+
+  //hard coding for testing purposes
+  private static double LLSZ_X = 6;
+  private static double LLSZ_Y = 5;
+  private static double URSZ_X = 10;
+  private static double URSZ_Y = 9;
+  private static double LLR_X = 9;
+  private static double LLR_Y = 7;
+  private static String clstSzg = "UL";
+
+
+  public static ArrayList<Point> cleanPoint = new  ArrayList<Point>();
+  public static ArrayList<Point> obsPoint = new ArrayList<Point>();
+  public static Point currPt;
+  static Point rampLL1 = new Point(LLR_X, LLR_Y);
+  static Point rampLL2 = new Point(LLR_X, LLR_Y + 1);
+
+
+  static void travelSearch() {
+    int maxX = (int) (URSZ_X - LLSZ_X - 1);;
+    int maxY = (int) (URSZ_Y - LLSZ_Y - 1);;
+
+    obsPoint.add(rampLL1);
+    obsPoint.add(rampLL2);
+
+    if (clstSzg == "UL") {
+      currPt = new Point(LLSZ_X, URSZ_Y - 1);
+    }
+
+    if (clstSzg == "UR") {
+      currPt = new Point(URSZ_X - 1, URSZ_Y - 1);
+    }
+
+    if (clstSzg == "LL") {
+      currPt = new Point(LLSZ_X, LLSZ_Y);
+    }
+
+    if (clstSzg == "LR") {
+      currPt = new Point(LLSZ_X - 1, LLSZ_Y);
+    }
+
+
+    System.out.println("current tile LL = " + currPt);
+    cleanPoint.add(currPt);
+
+    while(true) {
+      closeToObs(); //check if front tile is out of search zone or has an obstacle/ramp
+      if (nearObs) {
+        turn();
+      }
+/*
+      searchObject();
+
+
+      if (isObject) {
+        moveToObject();
+
+        if(!isObs) { //block found
+        }
+      }*/
+
+      moveByOneTile();
+      currPt = new Point(currPt.x + 1, currPt.y);
+      cleanPoint.add(currPt);
+
+      System.out.println("current tile LL = " + currPt);
+
+    }
+  }
+
+
+
+  public static void turn() {
+
+    // isRightTurn = 1;  leftTurn = -1
+
+    if (isRightTurn == 1) {
+      turnBy(90);
+      searchObject();
+
+      if (isObject) {
+        moveToObject();
+       // @TODO: BLCOK FOUND?
+        //@TODO: OBJECT FOUND?
+      }
+      
+      moveByOneTile();
+
+      turnBy(90);
+      searchObject();
+
+      if (isObject) {
+        moveToObject();
+      }
+
+      moveByOneTile();
+      isRightTurn = isRightTurn*(-1);
+    }
+  }
+
+  /**
+   * Checks whether the robot is in the search zone.
+   * 
+   * @return true if in search zone.
+   */
+  public static boolean inSearchZone() {
+    System.out.println(LLSZ_X + "," + LLSZ_Y + "&" + URSZ_X +"," + URSZ_Y);
+    System.out.println("odo reading = " + odometer.getXyt()[0]/TILE_SIZE + "," + odometer.getXyt()[1]/TILE_SIZE );
+
+    System.out.println(odometer.getXyt()[0]/TILE_SIZE > LLSZ_X );
+    System.out.println(odometer.getXyt()[0]/TILE_SIZE  < URSZ_X );
+
+    System.out.println(odometer.getXyt()[1]/TILE_SIZE > LLSZ_Y);
+
+    System.out.println(odometer.getXyt()[1]/TILE_SIZE < URSZ_Y );
+
+    if (odometer.getXyt()[0]/TILE_SIZE > LLSZ_X && odometer.getXyt()[0]/TILE_SIZE  < URSZ_X && odometer.getXyt()[1]/TILE_SIZE > LLSZ_Y
+        && odometer.getXyt()[1]/TILE_SIZE < URSZ_Y) {
+      return true;
+    } else {
+      return false;
+
+    }
+  }
+
+
+  public static void closeToObs() { //detect whether their is an obstacle/ramp in the front tile
+    Point left = new Point(currPt.x - 1, currPt.y);
+    Point down = new Point(currPt.x, currPt.y - 1);
+    Point right = new Point(currPt.x + 1, currPt.y);
+    Point up = new Point(currPt.x, currPt.y + 1);
+    nearObs = false;
+/*
+    if (obsPoint.contains(left)) {
+      nearObs = true;
+      whereNearObs = 0; //0: left, 1: right, 2: up, 3: down
+    }
+    else if (obsPoint.contains(right)) {
+      nearObs = true;
+      whereNearObs = 1; //0: left, 1: right, 2: up, 3: down
+    }
+    else if (obsPoint.contains(up)) {
+      nearObs = true;
+      whereNearObs = 2; //0: left, 1: right, 2: up, 3: down
+    }
+    else if (obsPoint.contains(down)) {
+      nearObs = true;
+      whereNearObs = 3; //0: left, 1: right, 2: up, 3: down
+    }*/
+  }
+
+
   /**
    * Detect object (box or obstacle) positioned inside the front tile
    * when the sensor of the robot is positioned in the middle of the current tile
@@ -54,7 +223,7 @@ public class UltrasonicLocalizer {
     odometer.setTheta(0);
     double ideal;
     double actual;
-    double error = 3;
+    double error = 15;
     angleToMove = 0;
     distToMove = 0;
 
@@ -68,17 +237,6 @@ public class UltrasonicLocalizer {
             * Math.tan(toRadians(45 - odometer.getXyt()[2])));
         actual = getDistance();
         objectFound(actual, ideal, error);
-        /*
-        if (round(actual) < round(ideal) - error) {
-          isObject = true;
-
-          System.out.println ("object found at angle " + odometer.getXyt()[2]
-              + ", actual = " + actual + ", ideal = " + ideal);
-
-          objectUS.add(actual);
-          objectAngle.add(actual);
-
-        }*/
       }
 
 
@@ -117,14 +275,19 @@ public class UltrasonicLocalizer {
       }
 
       else {
-        //System.out.println("us object list " + objectUS);
-        //System.out.println("Angle object list "+ objectAngle);
+
         int mid = medianIndex(objectUS);
-        angleToMove = objectAngle.get(mid);
-        distToMove = minDist(objectUS);
+        angleToMove = objectAngle.get(mid + 7);
+        distToMove = minDist(objectUS) + 2;
+        //if (round(distToMove)>=31) {
+        //isObject = false;
+        System.out.println(distToMove);
+
       }
     }
     else {
+      isObject = false;
+
       System.out.println("no object found in the front tile");
     }
     turnBy(-45);
@@ -137,7 +300,7 @@ public class UltrasonicLocalizer {
       isObject = true;
 
       //System.out.println ("object found at angle " + odometer.getXyt()[2]
-       //   + ", actual = " + act + ", ideal = " + id);
+      //   + ", actual = " + act + ", ideal = " + id);
       objectUS.add(act);
       objectAngle.add(odometer.getXyt()[2]); 
     }
@@ -152,7 +315,7 @@ public class UltrasonicLocalizer {
   public static int medianIndex(ArrayList<Double> arr) {
     int index = 0;
     if (arr != null) {
-      round(arr.size()/2);
+      round(arr.size() / 2);
     }
 
     return index;
@@ -174,20 +337,66 @@ public class UltrasonicLocalizer {
   }
 
   public static void moveToObject() {
+    double newAngleToMove = 0;
+    double newDistToMove = 0;
+    double oldAngleToMove = 0;
+    double oldDistToMove = 0;
+
+
+    oldAngleToMove = angleToMove;
+    oldDistToMove = distToMove;
+
     turnBy(angleToMove - 45);
     setSpeed(FORWARD_SPEED);
-    System.out.println(distToMove);
     leftMotor.rotate(convertDistance(distToMove / 100), true);
-    rightMotor.rotate(convertDistance(distToMove / 100), false); 
+    rightMotor.rotate(convertDistance(distToMove / 100), false);
+    isObs = false;
+
+    if (distToMove >= 30) {
+      searchObject();
+
+      newAngleToMove = angleToMove;
+      newDistToMove = distToMove - 2.5;
+
+      turnBy(newAngleToMove - 45);
+      setSpeed(FORWARD_SPEED);
+
+      leftMotor.rotate(convertDistance(newDistToMove / 100), true);
+      rightMotor.rotate(convertDistance(newDistToMove / 100), false); 
+    }
+
 
     if (Navigation.blockOrObstacle()) {
+      System.out.println("distToMove = " + distToMove);
       System.out.println("A block is detected");
     }
 
     else {
       System.out.println("An obstacle is detected");
+      isObs = true;
+      isObjectFurther = false;
+
+      if (newAngleToMove != 0 && newDistToMove != 0) {
+        moveAwayFromObject(newDistToMove, newAngleToMove);
+        isObjectFurther = true;
+      }
+      moveAwayFromObject(oldDistToMove, oldAngleToMove);
     }
   }
+
+  /**
+   * revert method moveToObject()
+   * this method is called if an obstacle is detected (isObs == true)
+   * 
+   * */
+  public static void moveAwayFromObject(double dist, double angle) {
+    setSpeed(FORWARD_SPEED);
+    System.out.println(dist);
+    leftMotor.rotate(convertDistance(-dist / 100), true);
+    rightMotor.rotate(convertDistance(-dist / 100), false); 
+    turnBy(-(angle - 45));
+  }
+
 
 
   /**
