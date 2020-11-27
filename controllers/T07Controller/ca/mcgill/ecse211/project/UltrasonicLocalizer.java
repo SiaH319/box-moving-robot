@@ -73,7 +73,8 @@ public class UltrasonicLocalizer {
   public static boolean isBox;
   public static ArrayList<Point> cleanPoint = new  ArrayList<Point>(); //collect LL point of the tile without any objects (ramp/obstacle/box)
   public static ArrayList<Point> obsPoint = new ArrayList<Point>(); // collect LL point of the tile with ramp/obstacle
-  public static ArrayList<Point> boxPoint = new ArrayList<Point>(); // collect LL point of the tile with box
+  public static Point boxDetectPt; // point where you detect the box
+  public static int boxDetectDir; // orientation of the robot when detecting the box
 
   public static Point currPt; // current LL point of the tile
   public static Point nextPt;
@@ -130,72 +131,22 @@ public class UltrasonicLocalizer {
         if (isObject) { //object handling
           moveToObject();
           if (!isObs) { // if box found stop searching
-            boxPoint.add(nextPt); // position of the box
+            boxDetected();
             break;
-          } else { // if obstacle is found avoid
-            if (isDecreasingY) {
-              //check tile below the robot is inside the search zone
-              if (currPt.x >= LLSZ_X && currPt.x  < URSZ_X 
-                  && currPt.y-1 >= LLSZ_Y && currPt.y-1 < URSZ_Y) {
-                // go below the obstacle
-
-                if (isLtoR == 1) { //left to right & below
-                  while (!isBox) {
-                    avoidObsLtoRDown();
-                    }
-                  if (!NextTileInSRZ()) {
-                    System.out.println("stay inside the search zone");
-                    break;
-                  }
-                  closeToObs(); //check if front tile is out of search zone or has an obstacle/ramp
-                  if (isLtoR != 1 && obsPoint.contains(new Point(currPt.x - 1, currPt.y)))  {
-                    System.out.println("avoid hitting ramp");
-                    break;
-                  } else if (isLtoR == 1 && obsPoint.contains(new Point(currPt.x + 1, currPt.y)))  {
-                    System.out.println("avoid hitting ramp");
-                    break;
-                  }
-                  
-                }
-
-
-                else { // right to left & below
-
-                }
-              }
-
-
-
-              else {
-                // go above the obstacle
-
-              }
-
-
-            }
-
-            else { //increasing Y
-              //check tile above the robot is inside the search zone
-              if (currPt.x >= LLSZ_X && currPt.x  < URSZ_X 
-                  && currPt.y + 1 >= LLSZ_Y && currPt.y + 1 < URSZ_Y) {
-                // go above the obstacle
-              }
-              else {
-                // go below the obstacle
-
-              }
-            }
-
-          }
-        } //object handling closed
+          } else { // if obstacle found, obstacle handling
+            break;
+          } //close obstacle handling
+        }
         moveByOneTile();
         currPt = new Point(currPt.x + xPt, currPt.y);     
-      } //first while closed
-      if (!isObs) {
-        break;
       }
 
-      turn();
+      if (!isObject){
+        turn();
+      }
+      else {
+        break;
+      }
 
     } // second while
   }
@@ -245,12 +196,24 @@ public class UltrasonicLocalizer {
     turnBy(90);
   }
 
+  public static void boxDetected() {
+    boxDetectPt = currPt; // position of the box
+    if (isLtoR == 1) {
+      boxDetectDir = 90;
+    }
+    else {
+      boxDetectDir = -90;
+    }
+    System.out.println("Robot detects a box when it is at " + boxDetectPt + 
+        " and at " + boxDetectDir + " degree");
+  }
+
 
   public static boolean isBoxFound() {
     if (isObject) {
       moveToObject();
       if (!isObs) { // if box found stop searching
-        boxPoint.add(nextPt); // position of the box
+        boxDetected(); // position of the robot recorded when it detects the box
         return true;
       }
     }
