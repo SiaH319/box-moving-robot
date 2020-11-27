@@ -37,7 +37,7 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-    /*
+
     if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
@@ -54,32 +54,33 @@ public class Main {
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
-    }*/
+    }
     //    UltrasonicLocalizer.searchObject();
     //  UltrasonicLocalizer.moveToObject();
-     UltrasonicLocalizer.travelSearch();
 
 
     // Uncomment the parts relevant to the methods/functionality
 
     // ================== LOCALIZATION ===================
-    // UltrasonicLocalizer.localize();
-    // System.out.println("[STATUS] Performing light localization...");
-    // LightLocalizer.forwardLocalize(90);
-    // System.out.println("=> Light localization complete.");
+    UltrasonicLocalizer.localize();
+    System.out.println("[STATUS] Performing light localization...");
+    LightLocalizer.forwardLocalize(90);
+    System.out.println("=> Light localization complete.");
     // beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
-    // Navigation.goThroughTunnel();
-    // odometer.printPosition();
+    Navigation.goThroughTunnel();
+    odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     // if (Navigation.inSearchZone() == false) {
-    // Navigation.goToSearchZone();
+    Navigation.goToSearchZone();
     // }
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
-    // TODO search
+    UltrasonicLocalizer.travelSearch();
+    System.out.println("=> First box is found.");
+
   }
 
   /**
