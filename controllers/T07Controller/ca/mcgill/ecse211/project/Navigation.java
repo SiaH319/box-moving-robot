@@ -686,23 +686,30 @@ public class Navigation {
         if (i == 0) {
           // Lower-left corner
           System.out.println("=> Lower-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 1, currCorner.y + 1);
-          searchZoneStartAngle = 0;
+          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y + 0.5);
+          searchZoneStartAngle = 90;
+          closestSzg = "LL"; // this is for the search method
         } else if (i == 1) {
           // Lower-right corner
           System.out.println("=> Lower-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 1, currCorner.y + 1);
+          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y + 0.5);
           searchZoneStartAngle = -90;
+          closestSzg = "LR"; // this is for the search method
+
         } else if (i == 2) {
           // Upper-left corner
           System.out.println("=> Upper-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 1, currCorner.y - 1);
+          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y - 0.5);
           searchZoneStartAngle = 90;
+          closestSzg = "UL"; // this is for the search method
+
         } else {
           // Upper-right corner
           System.out.println("=> Upper-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 1, currCorner.y - 1);
-          searchZoneStartAngle = 180;
+          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y - 0.5);
+          searchZoneStartAngle = -90;
+          closestSzg = "UR"; // this is for the search method
+
         }
       }
     }
