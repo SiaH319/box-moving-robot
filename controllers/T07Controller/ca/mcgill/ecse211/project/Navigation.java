@@ -59,7 +59,7 @@ public class Navigation {
   public static double upperRightTunnelY = 0;
   public static double lowerLeftRampX = 0;
   public static double lowerLeftRampY = 0;
-  
+
   public static int startCorner;
   public static String closestSzg;
   // Map orientation booleans
@@ -70,15 +70,15 @@ public class Navigation {
   /** Do not instantiate this class. */
   private Navigation() {
   }
-  
-  
+
+
 
   /**
    * This function navigates to a given unknown object's position on the map and
    * checks if the object is a block or an obstacle. If it is a block, return true
    * and update the blocks list in Resources. Otherwise, return false and update
    * the obstacles list in Resources.
-   * 
+   *
    * @param pt       Target object's position (point).
    * @param curr     Current position (point).
    * @param curTheta Current heading of the robot.
@@ -121,7 +121,7 @@ public class Navigation {
    * Compares the front and top ultrasonic sensor values to determine if the
    * obstacle in front of the robot is a block or not. Note that this method only
    * works if the robot is within ~7cm (+-2cm) of the obstacle and facing it.
-   * 
+   *
    * @return True if the obstacle in front of the robot is a block, false if it is
    *         a wall.
    */
@@ -149,24 +149,8 @@ public class Navigation {
     turnBy(minimalAngle(currentTheta, destinationTheta));
     moveStraightFor(distanceBetween(currentLocation, destination));
   }
-  
-  
-  /**
-   *  Travels to the given destination.
-   * @param destination A point represnting the destination.
-   */
-  /*
-  public static void travelTo(Point destination) {
-    double[] xyt = odometer.getXyt();
-    Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    double currentTheta = xyt[2];
-    double destinationTheta = getDestinationAngle(currentLocation, destination);
-    System.out.println("travelTo(): Proceeding to (" + destination.x + ", " + destination.y + ", " + destinationTheta + ") from (" + currentLocation.x + ", " + currentLocation.y + ", " + currentTheta + ")...");
-    System.out.println("travelTo(): Turning by " + minimalAngle(currentTheta, destinationTheta));
-    turnBy(minimalAngle(currentTheta, destinationTheta));
-    moveStraightFor(distanceBetween(currentLocation, destination));
-  }*/
-  
+
+
   /**
    * Moves robot to Point(x,y) while scanning for obstacles, rereoutes where necessary
    *
@@ -175,7 +159,7 @@ public class Navigation {
   
   public static void travelToSafely(Point destination) {
     System.out.println("=> Proceeding to (" + destination.x + ", " + destination.y + ")...");
-    
+
     // While not at destination, continuously try to navigate there
     boolean atDestination = false;
     while (!atDestination) {
@@ -192,15 +176,15 @@ public class Navigation {
         System.out.println("=> Within one tile length. Travelling...");
 
         travelTo(destination); // NOTE: travelTo assumes odometer is in meters
-        
+
         System.out.println("=> Arrived safely at destination.");
-        
+
         // Exit loop (set atDestination to true)
         atDestination = true;
       } else {
         // Not at destination; try to find path...
         System.out.println("=> Finding best route...");
-        
+
         // Turn towards destination point
         double destinationTheta = getDestinationAngle(currentLocation, destination);
         turnBy(minimalAngle(currentTheta, destinationTheta));
@@ -209,14 +193,14 @@ public class Navigation {
         double originalTheta = odometer.getXyt()[2]; // Save odometer heading
         UltrasonicLocalizer.searchObject();
         odometer.setTheta(originalTheta); // Restore odometer heading (corrects reset in searchObject())
-                
+
         // If an obstacle is present, rotate 90 degrees and try again
         boolean obstaclePresent = UltrasonicLocalizer.isObject;
         while (obstaclePresent) {
           System.out.println("=> Obstacle detected. Re-routing...");
           // Rotate 90 degrees
           turnBy(-90);
-          
+
           // Check if path is clear (sweep tile in front and validate any object)
           originalTheta = odometer.getXyt()[2]; // Save heading
           UltrasonicLocalizer.searchObject();
@@ -225,11 +209,11 @@ public class Navigation {
           // If no obstacle is present, set obstaclePresent to false (exits loop!)
           obstaclePresent = UltrasonicLocalizer.isObject;
         }
-        
+
         // Move forward one tile (or some other distance?) once there's no obstacle
         moveStraightFor(1.00);
       }
-    }  
+    }
   }
 
   /**
@@ -247,7 +231,7 @@ public class Navigation {
    * in degrees.
    * @param current Current position of the robot.
    * @param destination Destination of the robot.
-   * 
+   *
    * @return Destination angle.
    */
   public static double getDestinationAngle(Point current, Point destination) {
@@ -259,7 +243,7 @@ public class Navigation {
    * angle.
    * @param initialAngle Current angle of the robot in degrees.
    * @param destAngle Target heading of the robot in degrees.
-   * 
+   *
    * @return Miniman angle difference in degrees.
    */
   public static double minimalAngle(double initialAngle, double destAngle) {
@@ -274,8 +258,8 @@ public class Navigation {
 
   /** Returns the distance between the two points in tile lengths.
    * @param p1 First Point
-   * @param p2 Second Point  
-   * 
+   * @param p2 Second Point
+   *
    * @return Distance between the two points in m.
    */
   public static double distanceBetween(Point p1, Point p2) {
@@ -286,7 +270,7 @@ public class Navigation {
 
   /**
    * Moves the robot straight for the given distance.
-   * 
+   *
    * @param distance in feet (tile sizes), may be negative
    */
   public static void moveStraightFor(double distance) {
@@ -297,7 +281,7 @@ public class Navigation {
 
   /**
    * Moves the robot straight for the given distance.
-   * 
+   *
    * @param distance in meters, may be negative
    */
   public static void moveStraightForMeters(double distance) {
@@ -309,7 +293,7 @@ public class Navigation {
   /**
    * Moves the robot straight for the given distance. Returns immediately so as to
    * not stop the execution of subsequent code.
-   * 
+   *
    * @param distance in feet (tile sizes), may be negative
    */
   public static void moveStraightForReturn(double distance) {
@@ -321,7 +305,7 @@ public class Navigation {
   /**
    * Moves the robot straight for the given distance. Returns immediately so as to
    * not stop the execution of subsequent code.
-   * 
+   *
    * @param distance in meters, may be negative
    */
   public static void moveStraightForReturnMeters(double distance) {
@@ -350,7 +334,7 @@ public class Navigation {
    * {@code turnBy(90)} will make the robot turn to 180 degrees, but calling
    * {@code turnTo(90)} should do nothing (since the robot is already at 90
    * degrees).
-   * 
+   *
    * @param angle the angle by which to turn, in degrees
    */
   public static void turnBy(double angle) {
@@ -382,7 +366,7 @@ public class Navigation {
   /**
    * Converts input distance to the total rotation of each wheel needed to cover
    * that distance.
-   * 
+   *
    * @param distance the input distance in meters
    * @return the wheel rotations necessary to cover the distance in degrees
    */
@@ -393,7 +377,7 @@ public class Navigation {
   /**
    * Converts input angle to total rotation of each wheel needed to rotate robot
    * by that angle.
-   * 
+   *
    * @param angle the input angle in degrees
    * @return the wheel rotations (in degrees) necessary to rotate the robot by the
    *         angle
@@ -404,7 +388,7 @@ public class Navigation {
 
   /**
    * Sets the speed of both motors to the same values.
-   * 
+   *
    * @param speed the speed in degrees per second
    */
   public static void setSpeed(int speed) {
@@ -413,7 +397,7 @@ public class Navigation {
 
   /**
    * Sets the speed of both motors to different values.
-   * 
+   *
    * @param leftSpeed  the speed of the left motor in degrees per second
    * @param rightSpeed the speed of the right motor in degrees per second
    */
@@ -424,7 +408,7 @@ public class Navigation {
 
   /**
    * Sets the acceleration of both motors.
-   * 
+   *
    * @param acceleration the acceleration in degrees per second squared
    */
   public static void setAcceleration(int acceleration) {
@@ -434,7 +418,7 @@ public class Navigation {
 
   /**
    * Finds the point before the tunnel.
-   * 
+   *
    * @return Returns the point before the tunnel.
    */
   public static Point getPointBeforetunnel() {
@@ -579,7 +563,7 @@ public class Navigation {
       lowerLeftTunnelX = TNG_LL_x;
       lowerLeftTunnelY = TNG_LL_y;
       upperRightTunnelX = TNG_UR_x;
-      upperRightTunnelY = TNG_UR_y;  
+      upperRightTunnelY = TNG_UR_y;
       lowerLeftRampX = gr.left.x;
       lowerLeftRampY = gr.left.y;
       startCorner = Resources.greenCorner;
@@ -605,30 +589,18 @@ public class Navigation {
         if (horizontaltunnel) {
           turnTo(90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x + (upperRightTunnelX - lowerLeftTunnelX + 1.4));
-          odometer.setY(destination.y);
         } else {
           turnTo(180);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       } else {
         // UPPER-RIGHT
         if (horizontaltunnel) {
           turnTo(-90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX + 1.4));
-          odometer.setY(destination.y);
         } else {
           turnTo(-180);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y - (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       }
     } else {
@@ -639,55 +611,43 @@ public class Navigation {
         if (horizontaltunnel) {
           turnTo(90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x + upperRightTunnelX - lowerLeftTunnelX + 1.4);
-          odometer.setY(destination.y);
         } else {
           turnTo(0);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       } else {
         // LOWER-RIGHT
         if (horizontaltunnel) {
           turnTo(-90);
           moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
-
-          odometer.setX(destination.x - (upperRightTunnelX - lowerLeftTunnelX + 1.4));
-          odometer.setY(destination.y);
         } else {
           turnTo(0);
           moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
-
-          odometer.setX(destination.x);
-          odometer.setY(destination.y + (upperRightTunnelY - lowerLeftTunnelY + 1.4));
         }
       }
     }
   }
 
   /**
-   * Checks weather the robot is in the search zone.
-   * 
+   * Checks whether the robot is in the search zone.
+   *
    * @return true if in search zone.
    */
   public static boolean inSearchZone() {
     if (isRedTeam) {
       // If RED TEAM, use RED SEARCH ZONE coordinates
-      if (odometer.getXyt()[0] > SZR_LL_x && odometer.getXyt()[0] 
-          < SZR_UR_x && odometer.getXyt()[1] > SZR_LL_y
-          && odometer.getXyt()[1] < SZR_UR_y) {
+      if (odometer.getXyt()[0]/TILE_SIZE > SZR_LL_x && odometer.getXyt()[0]/TILE_SIZE
+          < SZR_UR_x && odometer.getXyt()[1]/TILE_SIZE > SZR_LL_y
+          && odometer.getXyt()[1]/TILE_SIZE < SZR_UR_y) {
         return true;
       } else {
         return false;
       }
     } else {
       // If GREEN TEAM, use GREEN SEARCH ZONE coordinates
-      if (odometer.getXyt()[0] > SZG_LL_x && odometer.getXyt()[0] 
-          < SZG_UR_x && odometer.getXyt()[1] > SZG_LL_y
-          && odometer.getXyt()[1] < SZG_UR_y) {
+      if (odometer.getXyt()[0]/TILE_SIZE > SZG_LL_x && odometer.getXyt()[0]/TILE_SIZE
+          < SZG_UR_x && odometer.getXyt()[1]/TILE_SIZE > SZG_LL_y
+          && odometer.getXyt()[1]/TILE_SIZE < SZG_UR_y) {
         return true;
       } else {
         return false;
@@ -720,95 +680,46 @@ public class Navigation {
     double searchZoneStartAngle = 0;
     for (int i = 0; i < szCorners.length; i++) {
       Point currCorner = szCorners[i];
-      if (distanceBetween(currentLocation, currCorner) 
+      if (distanceBetween(currentLocation, currCorner)
           <= distanceBetween(currentLocation, SZ_dest)) {
         // Closest point found; set appropriate offset
         if (i == 0) {
           // Lower-left corner
           System.out.println("=> Lower-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y + 0.5);
-          closestSzg = "LL";
-          searchZoneStartAngle = 90;
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y + 1);
+          searchZoneStartAngle = 0;
         } else if (i == 1) {
           // Lower-right corner
           System.out.println("=> Lower-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y + 0.5);
-          closestSzg = "LR";
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y + 1);
           searchZoneStartAngle = -90;
         } else if (i == 2) {
           // Upper-left corner
           System.out.println("=> Upper-left corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x + 0.5, currCorner.y - 0.5);
-          closestSzg = "UL";
+          SZ_dest = new Point(currCorner.x + 1, currCorner.y - 1);
           searchZoneStartAngle = 90;
         } else {
           // Upper-right corner
           System.out.println("=> Upper-right corner of search zone is closest.");
-          SZ_dest = new Point(currCorner.x - 0.5, currCorner.y - 0.5);
-          closestSzg = "UR";
-          searchZoneStartAngle = -90;
+          SZ_dest = new Point(currCorner.x - 1, currCorner.y - 1);
+          searchZoneStartAngle = 180;
         }
       }
     }
-    
-    /*
-    // NEW METHOD:
-    // Implement generalized navigation taking Point(x,y) as value!
-    odometer.setX(odometer.getXyt()[0] * TILE_SIZE);
-    odometer.setY(odometer.getXyt()[1] * TILE_SIZE);
+
+    // Travel to nearest corner in search zone
     travelToSafely(SZ_dest);
+
+    // Turn to start heading and relocalize
     turnTo(searchZoneStartAngle);
     relocalize();
-    */
-    
-    // Turn towards destination point
-    System.out.println("=> Proceeding to (" + SZ_dest.x + ", " + SZ_dest.y + ")...");
-    double destinationTheta = getDestinationAngle(currentLocation, SZ_dest);
-    turnBy(minimalAngle(currentTheta, destinationTheta));
-    // System.out.println("Turning by: " + minimalAngle(currentTheta,
-    // destinationTheta));
 
-    // Check for obstacles in path; adjust path as necessary
-    // double usDistance = (getDistanceTop() / 100.0) / TILE_SIZE;
-    double usDistance = (getDistance() / 100.0) / TILE_SIZE;
-    double distanceToTravel = distanceBetween(currentLocation, SZ_dest);
-    // System.out.println("=> Tiles to next obstacle: " + usDistance);
-    // System.out.println("=> Tiles to travel: " + distanceToTravel);
-    if (usDistance <= distanceToTravel) {
-      // Path is NOT clear; adjust heading until clear and try again
-      System.out.println("=> Obstacle detected. Attempting to re-route...");
-      // TODO: MAKE GENERALIZED
-      // TODO: Maybe add block validation to check obstacle?
-
-      // Do 90 degree turns around object
-      turnTo(odometer.getXyt()[2] - 90);
-      moveStraightFor(0.66);
-      // UPDATE ODO
-      turnTo(odometer.getXyt()[2] + 90);
-      moveStraightFor(distanceToTravel - usDistance);
-      // UPDATE ODO
-
-      // Continue...
-      goToSearchZone();
-    } else {
-      // Path is clear; proceed to destination
-      System.out.println("=> Path clear. Proceeding...");
-      moveStraightFor(distanceToTravel);
-      turnTo(searchZoneStartAngle);
-      relocalize();
-
-      // Update odometer
-      odometer.setX(SZ_dest.x);
-      odometer.setY(SZ_dest.y);
-      System.out.println("=> Arrived safely at destination.");
-      odometer.printPosition();
-    }
-
+    System.out.println("=> Arrived safely in search zone.");
   }
 
   /**
    * Sorts an ArrayList of Points based on their distance to a given point.
-   * 
+   *
    * @param list ArrayList of points
    * @param curr Point around which to sort.
    * @return Returns a new arraylist containing the same points but sorted by
@@ -845,7 +756,7 @@ public class Navigation {
    * A method that takes as input a search zone and generates all valid tiles
    * inside the zone (valid meaning that there are no known obstacles, ie the ramp
    * and bin).
-   * 
+   *
    * @param szn Search zone (region)
    * @return ArrayList of points contianing all lower left corners of valid tiles.
    */
