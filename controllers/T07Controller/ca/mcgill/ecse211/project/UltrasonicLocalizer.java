@@ -7,8 +7,10 @@ import static java.lang.Math.round;
 import static java.lang.Math.toDegrees;
 import static java.lang.Math.toRadians;
 import static simlejos.ExecutionController.*;
+
 import java.util.ArrayList;
 import java.util.ListIterator;
+
 import ca.mcgill.ecse211.playingfield.*;
 
 public class UltrasonicLocalizer {
@@ -57,25 +59,37 @@ public class UltrasonicLocalizer {
   public static double upperRightSzgY = 9;
   public static double lowerLeftRampX = 9;
   public static double lowerLeftRampY = 7;
-  public static String closestSzg = "LL";*/
-
+  public static String closestSzg = "LR";
+*/
 
   /////////////////////////////////////////////////////////////////////////////////
 
   public static boolean isBox;
-  public static ArrayList<Point> cleanPoint = new  ArrayList<Point>(); //collect LL point of the tile without any objects (ramp/obstacle/box)
-  public static ArrayList<Point> obsPoint = new ArrayList<Point>(); // collect LL point of the tile with ramp/obstacle
+  public static ArrayList<Point> cleanPoint = new  ArrayList<Point>(); 
+  //collect LL point of the tile without any objects (ramp/obstacle/box)
+  public static ArrayList<Point> obsPoint = new ArrayList<Point>(); 
+  // collect LL point of the tile with ramp/obstacle
   public static Point boxDetectPt; // point where you detect the box
   public static int boxDetectDir; // orientation of the robot when detecting the box
 
   public static Point currPt; // current LL point of the tile
   public static Point nextPt;
 
-  static Point rampLL1 = new Point(lowerLeftRampX, lowerLeftRampY); //LL points of the 2 tiles with ramp
+  static Point rampLL1 = new Point(lowerLeftRampX, lowerLeftRampY); 
+  //LL points of the 2 tiles with ramp
   static Point rampLL2 = new Point(lowerLeftRampX, lowerLeftRampY + 1);
   public static boolean cannotMove = false;
   static int xPt = 0;
   static int yPt = 0;
+
+  public static boolean avoidObsLtoRUp = false;
+  public static boolean avoidObsLtoRDown = false;
+  public static boolean avoidObsRtoLUp = false;
+  public static boolean avoidObsRtoLDown = false;
+  public static int turnAngle = 0;
+  public static int moveX = 0;
+  public static int moveY = 0;
+
 
 
   /**
@@ -86,11 +100,13 @@ public class UltrasonicLocalizer {
    * Collect the LL points of the tiles with a box
    * Collect the LL points of the tiles with obstacle/ramp
    */
- public static void travelSearch() {
+  public static void travelSearch() {
     initialization();
     System.out.println("closest=" + closestSzg + "current tile LL = " + currPt);
 
     while (true) {
+      boolean obsTurn = false;
+
 
       if (isLtoR == 1) {
         xPt = 1;
@@ -100,6 +116,7 @@ public class UltrasonicLocalizer {
 
 
       while (true) {
+        obsTurn = false;
         cleanPoint.add(currPt);
         nextPt = new Point(currPt.x + xPt, currPt.y);
         System.out.println("current tile LL = " + currPt);
@@ -115,7 +132,7 @@ public class UltrasonicLocalizer {
         }
 
         /*check outside search zone*/
-        if (!NextTileInSRZ()) {
+        if (!nextTileInSRZ()) {
           System.out.println("stay inside the search zone");
           break;
         }
@@ -130,8 +147,14 @@ public class UltrasonicLocalizer {
 
             /////////////Obstacle avoidance goes here
 
+            if (isLtoR == 1 && currPt.x + 2 > upperRightSzgX - 1) {
+              obsTurn = true;
+            } else if (isLtoR != 1 && currPt.x - 2 < lowerLeftSzgX) {
+              obsTurn = true;
+            }
+
             if ((isDecreasingY && isLtoR == 1
-                && (currPt.y - 1 >= lowerLeftSzgY ))
+                && (currPt.y - 1 >= lowerLeftSzgY))
 
                 || (!isDecreasingY && isLtoR == 1
                 && (currPt.y + 1 > upperRightSzgY - 1))) {
@@ -140,7 +163,7 @@ public class UltrasonicLocalizer {
               avoidObsLtoRDown = true;
 
             } else if ((isDecreasingY && isLtoR == 1
-                && (currPt.y - 1 < lowerLeftSzgY ))
+                && (currPt.y - 1 < lowerLeftSzgY))
 
                 || (!isDecreasingY && isLtoR == 1
                 && (currPt.y + 1 <= upperRightSzgY - 1))) {
@@ -149,7 +172,7 @@ public class UltrasonicLocalizer {
               avoidObsLtoRUp = true;
 
             } else if ((isDecreasingY && isLtoR == -1
-                && (currPt.y - 1 >= lowerLeftSzgY ))
+                && (currPt.y - 1 >= lowerLeftSzgY))
 
                 || (!isDecreasingY && isLtoR == -1
                 && (currPt.y + 1 > upperRightSzgY - 1))) {
@@ -158,7 +181,7 @@ public class UltrasonicLocalizer {
               avoidObsRtoLDown = true;
 
             } else if ((isDecreasingY && isLtoR == -1
-                && (currPt.y - 1 < lowerLeftSzgY ))
+                && (currPt.y - 1 < lowerLeftSzgY))
 
                 || (!isDecreasingY && isLtoR == -1
                 && (currPt.y + 1 <= upperRightSzgY - 1))) {
@@ -171,47 +194,48 @@ public class UltrasonicLocalizer {
 
             avoidInitialize();
 
-
             isBox = false;
 
-            turnBy(turnAngle); //LtoRup: -90, RtoLDown: -90
+            turnBy(turnAngle); 
             searchObject();
             if (isBoxFound()) {
               break;
             }
 
             moveByOneTile(); // y= y-1
-            currPt = new Point(currPt.x, currPt.y + moveY); //LtoRup: y=y+1,  RtoLDown: Y = Y-1
+            currPt = new Point(currPt.x, currPt.y + moveY);  
             System.out.println("current tile LL = " + currPt);
 
-            turnBy(-turnAngle); //LtoRup:: 90, RtoLDown:
+            turnBy(-turnAngle);  
             searchObject();
             if (isBoxFound()) {
-              break;
+              break; // stop searching when a box is found
             }
 
             moveByOneTile();
-            currPt = new Point(currPt.x + moveX, currPt.y); //RtoLDown: X = X-1
+            currPt = new Point(currPt.x + moveX, currPt.y);  
             System.out.println("current tile LL = " + currPt);
-
+            if (obsTurn) {
+              break; // stop searching when a box is found
+            }
 
             searchObject();
             if (isBoxFound()) {
-              break;
+              break; // stop searching when a box is found
             }
             moveByOneTile();
-            currPt = new Point(currPt.x + moveX, currPt.y);//RtoLDown: X = X-1
+            currPt = new Point(currPt.x + moveX, currPt.y); 
             System.out.println("current tile LL = " + currPt);
 
 
-            turnBy(-turnAngle); //LtoRup:: 90, //RtoLDown: 90
+            turnBy(-turnAngle);  
             searchObject();
             if (isBoxFound()) {
-              break;
+              break; // stop searching when a box is found
             }
 
             moveByOneTile();
-            currPt = new Point(currPt.x, currPt.y - moveY); ////RtoLDown: same
+            currPt = new Point(currPt.x, currPt.y - moveY); 
             System.out.println("current tile LL = " + currPt);
             turnBy(turnAngle);
 
@@ -227,7 +251,7 @@ public class UltrasonicLocalizer {
             closeToObs(); //check if front tile is out of search zone or has an obstacle/ramp
             if (isLtoR != 1
                 && (obsPoint.contains(new Point(currPt.x - 1, currPt.y))
-                || (currPt.x - 1 < lowerLeftSzgX)))  {
+                    || (currPt.x - 1 < lowerLeftSzgX)))  {
               break;
             } else if ((isLtoR == 1 && obsPoint.contains(new Point(currPt.x + 1, currPt.y))
                 || (currPt.x + 1 > upperRightSzgX - 1))) {
@@ -242,10 +266,79 @@ public class UltrasonicLocalizer {
         currPt = new Point(currPt.x + xPt, currPt.y);
       }
 
-      if (!isObject){
-        turn();
-      }
-      else {
+      if (obsTurn) {
+        if (isLtoR == 1) {
+          turnBy(-180);
+          backWardAdjust();
+          isLtoR = isLtoR * (-1);
+          isRightTurn = isRightTurn * (-1);
+
+        } else {
+          turnBy(180);
+          backWardAdjust();
+          isLtoR = isLtoR * (-1);
+          isRightTurn = isRightTurn * (-1);
+
+        }
+      } else if (!isObject) {
+
+        ////Turn goes here
+
+        System.out.println("turning");
+        // isRightTurn = 1;  leftTurn = -1
+        if (isDecreasingY) {
+          yPt = -1;
+        } else {
+          yPt = 1;
+        }
+
+
+        double turnAngle;
+        if (isRightTurn == 1) {
+          turnAngle = 90;
+        } else {
+          turnAngle = -90;
+        }
+
+        while(obsPoint.contains(new Point(currPt.x, currPt.y + yPt))){
+          setSpeed(FORWARD_SPEED);
+          leftMotor.rotate(convertDistance(-TILE_SIZE), true);
+          rightMotor.rotate(convertDistance(-TILE_SIZE), false);
+          currPt = new Point(currPt.x - xPt, currPt.y);
+        }
+
+        turnBy(turnAngle);
+        if (obsPoint.contains(new Point(currPt.x, currPt.y + yPt))) { // if ramp, move backward
+          setSpeed(FORWARD_SPEED);
+          leftMotor.rotate(convertDistance(-TILE_SIZE), true);
+          rightMotor.rotate(convertDistance(-TILE_SIZE), false);
+          currPt = new Point(currPt.x - xPt, currPt.y);
+
+        }
+        searchObject();
+        if (isObject) {
+          moveToObject();
+          if (!isObs) { // if block stop
+            break;
+          } else { // if object avoid
+            setSpeed(FORWARD_SPEED);
+            leftMotor.rotate(convertDistance(-TILE_SIZE), true);
+            rightMotor.rotate(convertDistance(-TILE_SIZE), false);
+          }
+
+        }
+        moveByOneTile();
+        currPt = new Point(currPt.x, currPt.y + yPt);
+        System.out.println("current tile LL = " + currPt);
+
+        turnBy(turnAngle);
+        backWardAdjust();
+
+        isRightTurn = isRightTurn * (-1);
+        isLtoR = isLtoR * (-1);
+        ////Turn finishes here
+
+      } else {
         break;
       }
 
@@ -253,17 +346,10 @@ public class UltrasonicLocalizer {
   }
 
 
-
-  public static boolean avoidObsLtoRUp = false;
-
-  public static boolean avoidObsLtoRDown = false;
-
-  public static boolean avoidObsRtoLUp = false;
-
-  public static boolean avoidObsRtoLDown = false;
-  public static int turnAngle = 0;
-  public static int moveX = 0;
-  public static int moveY = 0;
+  /**
+   * Initialize for obstacle avoidance
+   * depending on the current angle and position.
+   * */
 
   public static void avoidInitialize() {
 
@@ -271,20 +357,16 @@ public class UltrasonicLocalizer {
       turnAngle = -90;
       moveX = 1;
       moveY = 1;
-
-    }
-    else if(avoidObsLtoRDown) {
+    } else if (avoidObsLtoRDown) {
       turnAngle = 90;
       moveX = 1;
       moveY = -1;
-    }
-    else if(avoidObsRtoLUp) {
+    } else if (avoidObsRtoLUp) {
 
       turnAngle = 90;
       moveX = -1;
       moveY = 1;
-    }
-    else if(avoidObsRtoLDown) {
+    } else if (avoidObsRtoLDown) {
       turnAngle = -90;
       moveX = -1;
       moveY = -1;
@@ -293,13 +375,14 @@ public class UltrasonicLocalizer {
 
   }
 
-
+  /**
+   * Store the current position and angle of the robot when it detects a box.
+   * */
   public static void boxDetected() {
     boxDetectPt = currPt; // position of the box
     if (isLtoR == 1) {
       boxDetectDir = 90;
-    }
-    else {
+    } else {
       boxDetectDir = -90;
     }
     System.out.println("Robot detects a box when it is at " + boxDetectPt +
@@ -307,7 +390,9 @@ public class UltrasonicLocalizer {
 
   }
 
-
+  /**
+   * check if a box is found.
+   * */
   public static boolean isBoxFound() {
     if (isObject) {
       moveToObject();
@@ -323,11 +408,6 @@ public class UltrasonicLocalizer {
 
 
 
-
-
-
-
-
   /**
    * move backward a bit for searching purposes.
    * */
@@ -338,7 +418,9 @@ public class UltrasonicLocalizer {
     System.out.println("Move backward a bit");
   }
 
-
+  /**
+   * initialize the lower left corner of the tiles.
+   * */
   public static void initialization() {
     //obsPoint with ramp points
     obsPoint.add(rampLL1);
@@ -352,89 +434,35 @@ public class UltrasonicLocalizer {
       isLtoR = 1; // moves from left to right (increasing x)
       isRightTurn = 1; // will turnby 90 degree first
       isDecreasingY = true; //moves from up to down (decreasing y)
-    }
 
-    else if (closestSzg == "UR") {
+    } else if (closestSzg == "UR") {
       currPt = new Point(upperRightSzgX - 1, upperRightSzgY - 1);
       isLtoR = -1; //moves from right to left (decreasing x)
       isRightTurn = -1; // will turnby -90 degree first
       isDecreasingY = true; //moves from up to down (decreasing y)
-    }
 
-    else if (closestSzg == "LL") {
+    } else if (closestSzg == "LL") {
       currPt = new Point(lowerLeftSzgX, lowerLeftSzgY);
       isLtoR = 1; // moves from left to right (increasing x)
       isRightTurn = -1; // will turnby -90 degree first
       isDecreasingY = false; //moves from down to up (increasing y)
-    }
 
-    else if (closestSzg == "LR") {
+    } else if (closestSzg == "LR") {
       currPt = new Point(upperRightSzgX - 1, lowerLeftSzgY);
       isLtoR = -1; //moves from right to left (decreasing x)
       isRightTurn = 1; // will turnby 90 degree first
       isDecreasingY = false; //moves from down to up (increasing y)
     }
-    //backWardAdjust(); // adjust its position for searching purposes
   }
 
-  /**Turn the robot so that it can move in a zig zag way.
-   * and update its point
-   * */
-  public static void turn() {
-    System.out.println("turning");
-    // isRightTurn = 1;  leftTurn = -1
-    if (isDecreasingY) {
-      yPt = -1;
-    } else {
-      yPt = 1;
 
-    }
-
-
-    double turnAngle;
-    if (isRightTurn == 1) {
-      turnAngle = 90;
-    } else {
-      turnAngle = -90;
-    }
-    turnBy(turnAngle);
-
-    //   searchObject();
-    /*
-    if (isObject) {
-           todo whereObs == 0)  {//0: left, 1: right, 2: up, 3: down)
-
-        }
-      moveToObject();
-      // if block found, stop
-      //@TODO: OBJECT FOUND?
-    }*/
-
-    moveByOneTile();
-    currPt = new Point(currPt.x, currPt.y + yPt);
-    System.out.println("current tile LL = " + currPt);
-
-    turnBy(turnAngle);
-    backWardAdjust();
-
-    //    searchObject();
-    /*
-    if (isObject) {
-      moveToObject();
-      // if block found, stop
-      //@TODO: OBJECT FOUND?
-    }
-     */
-    isRightTurn = isRightTurn * (-1);
-    isLtoR = isLtoR * (-1);
-  }
 
   /**
    * Checks whether the robot is in the search zone.
    *
    * @return true if in search zone.
    */
-  public static boolean NextTileInSRZ(){
+  public static boolean nextTileInSRZ(){
     if (nextPt.x >= lowerLeftSzgX && nextPt.x  < upperRightSzgX
         && nextPt.y >= lowerLeftSzgY && nextPt.y < upperRightSzgY) {
       return true;
@@ -444,32 +472,23 @@ public class UltrasonicLocalizer {
     }
   }
 
-
+  /**
+   * check if the next tile is the same as the ramp tile.
+   * */
   public static void closeToObs() { //detect whether their is an obstacle/ramp in the front tile
     Point left = new Point(currPt.x - 1, currPt.y);
-    Point down = new Point(currPt.x, currPt.y - 1);
     Point right = new Point(currPt.x + 1, currPt.y);
-    Point up = new Point(currPt.x, currPt.y + 1);
     nextToObs = false;
 
     if (obsPoint.contains(left)) {
       nextToObs = true;
       whereObs = 0; //0: left, 1: right, 2: up, 3: down
-    }
-    else if (obsPoint.contains(right)) {
+    } else if (obsPoint.contains(right)) {
       nextToObs = true;
       whereObs = 1; //0: left, 1: right, 2: up, 3: down
+    }
 
-    }
-    /*else if (obsPoint.contains(up)) {
-      nextToObs = true;
-      wherenextToObs = 2; //0: left, 1: right, 2: up, 3: down
-    }
-    else if (obsPoint.contains(down)) {
-      nextToObs = true;
-      wherenextToObs = 3; //0: left, 1: right, 2: up, 3: down
-    }*/
-    whereObs = 10;
+    whereObs = 10; //just a random number
   }
 
 
@@ -534,16 +553,12 @@ public class UltrasonicLocalizer {
     if (isObject) {
       if (objectUS.size() <= 10 && objectAngle.size() <= 10) { // not enough number of sample
         isObject = false;
-      }
-
-      else {
+      } else {
         int mid = medianIndex(objectUS);
         angleToMove = objectAngle.get(mid + 7);
         distToMove = minDist(objectUS) + 2;
       }
-    }
-
-    else {
+    } else {
       isObject = false;
     }
     turnBy(-45);
@@ -646,9 +661,7 @@ public class UltrasonicLocalizer {
       leftMotor.stop();
       rightMotor.stop();
 
-    }
-
-    else {
+    } else {
       System.out.println("An obstacle is detected");
       isObs = true;
       isObjectFurther = false;

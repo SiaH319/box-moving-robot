@@ -73,18 +73,17 @@ public class Main {
     odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
-     if (Navigation.inSearchZone() == false) {
     Navigation.goToSearchZone();
-     }
+
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
-   // UltrasonicLocalizer.travelSearch();
+    UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
 
     // TODO search
-    Point ramp = new Point(lowerLeftRampX + 0.5, lowerLeftRampY - 1);
+    /*Point ramp = new Point(lowerLeftRampX + 0.5, lowerLeftRampY - 1);
     findPath(ramp);
-   
+
     //Point blockDetect = boxDetectPt;
     Point blockDetect = new Point(7,7);
     Point waypoint  = pushPosition(blockDetect, 0);
@@ -103,11 +102,11 @@ public class Main {
     System.out.println(paths.get(1).angle);
     System.out.println(paths.get(1).startPosition.x);
     System.out.println(paths.get(1).startPosition.y);
-    
-    
-    
+
+
+     */ 
   }
-  
+
   /**
    * Calculates the position the bot should be in to push a given box.
    * 
