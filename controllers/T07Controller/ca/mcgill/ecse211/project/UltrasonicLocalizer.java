@@ -79,14 +79,14 @@ public class UltrasonicLocalizer {
 
 
   /**
-   * Traverses the map (zig-zag) to find boxes 
+   * Traverses the map (zig-zag) to find boxes
    * => it moves straight until it detects something or while it is inside the search zone
    * then turn and move straight in the other direction and repeat.
    * Collect the LL points of the clean tiles
    * Collect the LL points of the tiles with a box
    * Collect the LL points of the tiles with obstacle/ramp
    */
-  static void travelSearch() {
+  static Point travelSearch() {
     initialization();
     System.out.println("closest=" + closestSzg + "current tile LL = " + currPt);
 
@@ -125,7 +125,7 @@ public class UltrasonicLocalizer {
         if (isObject) { //object handling
           moveToObject();
           if (!isObs) { // if box found stop searching
-            boxDetected();
+            block = boxDetected();
             break;
           } else { // if obstacle found, obstacle handling
 
@@ -185,7 +185,7 @@ public class UltrasonicLocalizer {
             currPt = new Point(currPt.x, currPt.y + moveY); //LtoRup: y=y+1,  RtoLDown: Y = Y-1
             System.out.println("current tile LL = " + currPt);
 
-            turnBy(-turnAngle); //LtoRup:: 90, RtoLDown: 
+            turnBy(-turnAngle); //LtoRup:: 90, RtoLDown:
             searchObject();
             if (isBoxFound()) {
               break;
@@ -226,7 +226,7 @@ public class UltrasonicLocalizer {
 
 
             closeToObs(); //check if front tile is out of search zone or has an obstacle/ramp
-            if (isLtoR != 1 
+            if (isLtoR != 1
                 && (obsPoint.contains(new Point(currPt.x - 1, currPt.y))
                 || (currPt.x - 1 < lowerLeftSzgX)))  {
               break;
@@ -240,7 +240,7 @@ public class UltrasonicLocalizer {
 
         }
         moveByOneTile();
-        currPt = new Point(currPt.x + xPt, currPt.y);     
+        currPt = new Point(currPt.x + xPt, currPt.y);
       }
 
       if (!isObject){
@@ -251,6 +251,7 @@ public class UltrasonicLocalizer {
       }
 
     } // second while
+    return block;
   }
 
 
@@ -303,8 +304,10 @@ public class UltrasonicLocalizer {
     else {
       boxDetectDir = -90;
     }
-    System.out.println("Robot detects a box when it is at " + boxDetectPt + 
+    System.out.println("Robot detects a box when it is at " + boxDetectPt +
         " and at " + boxDetectDir + " degree");
+
+    return  boxDetectPt;
   }
 
 
@@ -345,25 +348,25 @@ public class UltrasonicLocalizer {
     obsPoint.add(rampLL2);
 
     //Set initial values depending on the position of the robot
-    //Once the robot crosses the bridge and gets into the searchzone, 
+    //Once the robot crosses the bridge and gets into the searchzone,
     //it goes to the closest corner of the searchzone (UR, UL, LL, LR of the searchzone)
     if (closestSzg == "UL") {
       currPt = new Point(lowerLeftSzgX, upperRightSzgY - 1); // LL point of the current tile
-      isLtoR = 1; // moves from left to right (increasing x) 
+      isLtoR = 1; // moves from left to right (increasing x)
       isRightTurn = 1; // will turnby 90 degree first
       isDecreasingY = true; //moves from up to down (decreasing y)
     }
 
     else if (closestSzg == "UR") {
       currPt = new Point(upperRightSzgX - 1, upperRightSzgY - 1);
-      isLtoR = -1; //moves from right to left (decreasing x) 
+      isLtoR = -1; //moves from right to left (decreasing x)
       isRightTurn = -1; // will turnby -90 degree first
       isDecreasingY = true; //moves from up to down (decreasing y)
     }
 
     else if (closestSzg == "LL") {
       currPt = new Point(lowerLeftSzgX, lowerLeftSzgY);
-      isLtoR = 1; // moves from left to right (increasing x) 
+      isLtoR = 1; // moves from left to right (increasing x)
       isRightTurn = -1; // will turnby -90 degree first
       isDecreasingY = false; //moves from down to up (increasing y)
     }
@@ -431,11 +434,11 @@ public class UltrasonicLocalizer {
 
   /**
    * Checks whether the robot is in the search zone.
-   * 
+   *
    * @return true if in search zone.
    */
   public static boolean NextTileInSRZ(){
-    if (nextPt.x >= lowerLeftSzgX && nextPt.x  < upperRightSzgX 
+    if (nextPt.x >= lowerLeftSzgX && nextPt.x  < upperRightSzgX
         && nextPt.y >= lowerLeftSzgY && nextPt.y < upperRightSzgY) {
       return true;
     } else {
@@ -501,7 +504,7 @@ public class UltrasonicLocalizer {
     while (round(odometer.getXyt()[2]) != 90) {
 
       if (0 < odometer.getXyt()[2] && odometer.getXyt()[2] <= 26.6) {
-        ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(45 - odometer.getXyt()[2])) 
+        ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(45 - odometer.getXyt()[2]))
             * Math.tan(toRadians(45 - odometer.getXyt()[2])));
         actual = getDistance();
         objectFound(actual, ideal, error);
@@ -523,7 +526,7 @@ public class UltrasonicLocalizer {
 
 
       if (63.4 <= odometer.getXyt()[2] && odometer.getXyt()[2] <= 90) {
-        ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(odometer.getXyt()[2] - 45)) 
+        ideal =  1.5 * TILE_SIZE * 100  / (3 * cos(toRadians(odometer.getXyt()[2] - 45))
             * Math.tan(toRadians(odometer.getXyt()[2] - 45)));
         actual = getDistance();
         objectFound(actual, ideal, error);
@@ -557,7 +560,7 @@ public class UltrasonicLocalizer {
     if (round(act) < round(id) - err) {
       isObject = true;
       objectUS.add(act);
-      objectAngle.add(odometer.getXyt()[2]); 
+      objectAngle.add(odometer.getXyt()[2]);
     }
   }
 
@@ -628,7 +631,7 @@ public class UltrasonicLocalizer {
       setSpeed(FORWARD_SPEED);
 
       leftMotor.rotate(convertDistance(newDistToMove / 100), true);
-      rightMotor.rotate(convertDistance(newDistToMove / 100), false); 
+      rightMotor.rotate(convertDistance(newDistToMove / 100), false);
     }
 
 
@@ -671,7 +674,7 @@ public class UltrasonicLocalizer {
     setSpeed(FORWARD_SPEED);
     System.out.println(dist);
     leftMotor.rotate(convertDistance(-dist / 100), true);
-    rightMotor.rotate(convertDistance(-dist / 100), false); 
+    rightMotor.rotate(convertDistance(-dist / 100), false);
     turnBy(-(angle - 45));
   }
 
@@ -764,7 +767,7 @@ public class UltrasonicLocalizer {
 
   /**
    * Reads a value from the US sensor and filters out noise.
-   * 
+   *
    * @return US Sensor reading.
    */
   public static int getDistance() {
@@ -785,10 +788,10 @@ public class UltrasonicLocalizer {
 
   /**
    * Calculates the angle to rotate for zero heading.
-   * 
+   *
    * @param angle1 the first angle found in degrees
    * @param angle2 the second angle found in degrees
-   * 
+   *
    * @return angle required to face 0.
    */
   public static double getAngleToZero(double angle1, double angle2) {
@@ -812,7 +815,7 @@ public class UltrasonicLocalizer {
 
   /**
    * Filters US distance.
-   * 
+   *
    * @return ultrasonic distance
    */
   public static int readUsDistance() {
@@ -822,7 +825,7 @@ public class UltrasonicLocalizer {
 
   /**
    * Reads an unfiltered US distance from the front us Sensor.
-   * 
+   *
    * @return Distance read by the front US sensor in cm.
    */
   public static int frontUSDistance() {
@@ -832,7 +835,7 @@ public class UltrasonicLocalizer {
 
   /**
    * Reads an unfiltered US distance from the front us Sensor.
-   * 
+   *
    * @return Distance read by the front US sensor.
    */
   public static int topUSDistance() {
@@ -842,7 +845,7 @@ public class UltrasonicLocalizer {
 
   /**
    * Rudimentary filter - toss out invalid samples corresponding to null signal.
-   * 
+   *
    * @param distance raw distance measured by the sensor in cm
    * @return the filtered distance in cm
    */

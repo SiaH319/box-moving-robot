@@ -85,7 +85,7 @@ public class Main {
 
   /**
    * Helper method to beep for a given number of times.
-   * 
+   *
    * @param times Number of times to beep.
    */
   public static void beep(int times) {
@@ -100,7 +100,7 @@ public class Main {
   /**
    * Determines if a point is within a given region (in points). True if a point
    * is ON the edge.
-   * 
+   *
    * @param pt Point whose position to check.
    * @param LL Lower left corner of the region (point).
    * @param UR Upper right corner of the region (point).
@@ -116,15 +116,15 @@ public class Main {
    * Example using WifiConnection to communicate with a server and receive data
    * concerning the competition such as the starting corner the robot is placed
    * in.<br>
-   * 
+   *
    * <p>Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
    * code; you must use the WifiConnection class yourself in your own code as
    * appropriate. In this example, we simply show how to get and process different
    * types of data.<br>
-   * 
+   *
    * <p>There are two variables you MUST set manually (in Resources.java) before
    * using this code:
-   * 
+   *
    * <ol>
    * <li>SERVER_IP: The IP address of the computer running the server application.
    * This will be your own laptop, until the beta beta demo or competition where
@@ -132,10 +132,10 @@ public class Main {
    * (indicated in Resources).</li>
    * <li>TEAM_NUMBER: your project team number.</li>
    * </ol>
-   * 
+   *
    * <p>Note: You can disable printing from the Wi-Fi code via
    * ENABLE_DEBUG_WIFI_PRINT.
-   * 
+   *
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
    *         St-Martin Cormier
    */

@@ -62,11 +62,20 @@ public class Navigation {
 
   public static int startCorner;
   public static String closestSzg;
+  
   // Map orientation booleans
   public static boolean upperonmap = false;
   public static boolean leftonmap = false;
   public static boolean horizontaltunnel = false;
 
+  // Key points on map
+  public static Point SZ_dest;
+  public static Point startingCorner;
+  public static double startingHeading;
+  public static Point tunnelReturnPoint;
+  public static double tunnelReturnHeading;
+  public static double tunnelLength;
+  
   /** Do not instantiate this class. */
   private Navigation() {
   }
@@ -155,10 +164,10 @@ public class Navigation {
    * Moves robot to Point(x,y) while scanning for obstacles, rereoutes where necessary
    *
    * @param destination given as point in TILE LENGTHS (e.g., (15, 0))
-   */
-  
+   */ 
   public static void travelToSafely(Point destination) {
-    System.out.println("=> Proceeding to (" + destination.x + ", " + destination.y + ")...");
+    System.out.println("=> Proceeding to (" + String.format("%02.2f", destination.x)
+                       + ", " + String.format("%02.2f", destination.y) + ")...");
 
     // While not at destination, continuously try to navigate there
     boolean atDestination = false;
@@ -170,10 +179,9 @@ public class Navigation {
 
       // Check if at destination
       double distanceToDest = distanceBetween(currentLocation, destination);
-      System.out.println("=> Distance to destination: " + distanceToDest);
       if (distanceToDest < 0.66) {
         // Close enough to destination; simply travelTo()
-        System.out.println("=> Within one tile length. Travelling...");
+        System.out.println("=> Within one tile length. Completing travel...");
 
         travelTo(destination); // NOTE: travelTo assumes odometer is in meters
 
@@ -183,7 +191,7 @@ public class Navigation {
         atDestination = true;
       } else {
         // Not at destination; try to find path...
-        System.out.println("=> Finding best route...");
+        //System.out.println("=> Finding best route...");
 
         // Turn towards destination point
         double destinationTheta = getDestinationAngle(currentLocation, destination);
@@ -197,7 +205,7 @@ public class Navigation {
         // If an obstacle is present, rotate 90 degrees and try again
         boolean obstaclePresent = UltrasonicLocalizer.isObject;
         while (obstaclePresent) {
-          System.out.println("=> Obstacle detected. Re-routing...");
+          System.out.println("Obstacle detected. Re-routing...");
           // Rotate 90 degrees
           turnBy(-90);
 
@@ -415,7 +423,50 @@ public class Navigation {
     leftMotor.setAcceleration(acceleration);
     rightMotor.setAcceleration(acceleration);
   }
+  
+  /**
+   * Sets up the points.
+   */
+  public static void setPoints() {
+    if (isRedTeam) {
+      // Set RED TEAM coordinates
+      lowerLeftSzgX = SZR_LL_x;
+      lowerLeftSzgY = SZR_LL_y;
+      upperRightSzgX = SZR_UR_x;
+      upperRightSzgY = SZR_UR_y;
+      lowerLeftX = Red_LL_x;
+      lowerLeftY = Red_LL_y;
+      upperRightX = Red_UR_x;
+      upperRightY = Red_UR_y;
+      lowerLeftTunnelX = TNR_LL_x;
+      lowerLeftTunnelY = TNR_LL_y;
+      upperRightTunnelX = TNR_UR_x;
+      upperRightTunnelY = TNR_UR_y;
+      lowerLeftRampX = rr.left.x;
+      lowerLeftRampY = rr.left.y;
 
+      startCorner = Resources.redCorner;
+    } else {
+      // Set GREEN TEAM coordinates
+      lowerLeftSzgX = SZG_LL_x;
+      lowerLeftSzgY = SZG_LL_y;
+      upperRightSzgX = SZG_UR_x;
+      upperRightSzgY = SZG_UR_y;
+      lowerLeftX = Green_LL_x;
+      lowerLeftY = Green_LL_y;
+      upperRightX = Green_UR_x;
+      upperRightY = Green_UR_y;
+      lowerLeftTunnelX = TNG_LL_x;
+      lowerLeftTunnelY = TNG_LL_y;
+      upperRightTunnelX = TNG_UR_x;
+      upperRightTunnelY = TNG_UR_y;
+      lowerLeftRampX = gr.left.x;
+      lowerLeftRampY = gr.left.y;
+      startCorner = Resources.greenCorner;
+    }
+  }
+
+  
   /**
    * Finds the point before the tunnel.
    *
@@ -519,57 +570,19 @@ public class Navigation {
       }
 
     }
-
-    // Set odometer to determined destination
+    
+    // Save location of starting corner
+    startingCorner = new Point(x, y);
+    startingHeading = angle;
+    
+     // Set odometer to starting corner (in meters!)
     odometer.setX(x * TILE_SIZE);
     odometer.setY(y * TILE_SIZE);
     odometer.setTheta(angle);
     return dest;
 
   }
-
-  /**
-   * Sets up the points.
-   */
-  public static void setPoints() {
-    if (isRedTeam) {
-      // Set RED TEAM coordinates
-      lowerLeftSzgX = SZR_LL_x;
-      lowerLeftSzgY = SZR_LL_y;
-      upperRightSzgX = SZR_UR_x;
-      upperRightSzgY = SZR_UR_y;
-      lowerLeftX = Red_LL_x;
-      lowerLeftY = Red_LL_y;
-      upperRightX = Red_UR_x;
-      upperRightY = Red_UR_y;
-      lowerLeftTunnelX = TNR_LL_x;
-      lowerLeftTunnelY = TNR_LL_y;
-      upperRightTunnelX = TNR_UR_x;
-      upperRightTunnelY = TNR_UR_y;
-      lowerLeftRampX = rr.left.x;
-      lowerLeftRampY = rr.left.y;
-
-      startCorner = Resources.redCorner;
-    } else {
-      // Set GREEN TEAM coordinates
-      lowerLeftSzgX = SZG_LL_x;
-      lowerLeftSzgY = SZG_LL_y;
-      upperRightSzgX = SZG_UR_x;
-      upperRightSzgY = SZG_UR_y;
-      lowerLeftX = Green_LL_x;
-      lowerLeftY = Green_LL_y;
-      upperRightX = Green_UR_x;
-      upperRightY = Green_UR_y;
-      lowerLeftTunnelX = TNG_LL_x;
-      lowerLeftTunnelY = TNG_LL_y;
-      upperRightTunnelX = TNG_UR_x;
-      upperRightTunnelY = TNG_UR_y;
-      lowerLeftRampX = gr.left.x;
-      lowerLeftRampY = gr.left.y;
-      startCorner = Resources.greenCorner;
-    }
-  }
-
+  
   /**
    * Goes through the tunnel plus 0.4 tile lengths ahead.
    */
@@ -588,19 +601,23 @@ public class Navigation {
         // UPPER-LEFT
         if (horizontaltunnel) {
           turnTo(90);
-          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          tunnelLength = upperRightTunnelX - lowerLeftTunnelX + 1.4;
+          moveStraightFor(tunnelLength);
         } else {
           turnTo(180);
-          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
+          tunnelLength = upperRightTunnelY - lowerLeftTunnelY + 1.4;
+          moveStraightFor(tunnelLength);
         }
       } else {
         // UPPER-RIGHT
         if (horizontaltunnel) {
           turnTo(-90);
-          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          tunnelLength = upperRightTunnelX - lowerLeftTunnelX + 1.4;
+          moveStraightFor(tunnelLength);
         } else {
           turnTo(-180);
-          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
+          tunnelLength = upperRightTunnelY - lowerLeftTunnelY + 1.4;
+          moveStraightFor(tunnelLength);
         }
       }
     } else {
@@ -610,22 +627,30 @@ public class Navigation {
         // LOWER-LEFT
         if (horizontaltunnel) {
           turnTo(90);
-          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          tunnelLength = upperRightTunnelX - lowerLeftTunnelX + 1.4;
+          moveStraightFor(tunnelLength);
         } else {
           turnTo(0);
-          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
+          tunnelLength = upperRightTunnelY - lowerLeftTunnelY + 1.4;
+          moveStraightFor(tunnelLength);
         }
       } else {
         // LOWER-RIGHT
         if (horizontaltunnel) {
           turnTo(-90);
-          moveStraightFor(upperRightTunnelX - lowerLeftTunnelX + 1.4);
+          tunnelLength = upperRightTunnelX - lowerLeftTunnelX + 1.4;
+          moveStraightFor(tunnelLength);
         } else {
           turnTo(0);
-          moveStraightFor(upperRightTunnelY - lowerLeftTunnelY + 1.4);
+          tunnelLength = upperRightTunnelY - lowerLeftTunnelY + 1.4;
+          moveStraightFor(tunnelLength);
         }
       }
     }
+    
+    // Save current location and opposite heading after tunnel (For returning)
+    tunnelReturnPoint = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    tunnelReturnHeading = odometer.getXyt()[2] + 180.0;
   }
 
   /**
@@ -676,7 +701,7 @@ public class Navigation {
     Point[] szCorners = new Point[] { LL_SZ, LR_SZ, UL_SZ, UR_SZ };
 
     // Find closest corner of search zone and set as destination "dest"
-    Point SZ_dest = LL_SZ;
+    SZ_dest = LL_SZ;
     double searchZoneStartAngle = 0;
     for (int i = 0; i < szCorners.length; i++) {
       Point currCorner = szCorners[i];
@@ -717,10 +742,35 @@ public class Navigation {
     // Travel to nearest corner in search zone
     travelToSafely(SZ_dest);
 
-    // Turn to start heading and relocalize
+    // Turn to search zone starting angle
     turnTo(searchZoneStartAngle);
-
-    System.out.println("=> Arrived safely in search zone.");
+  }
+  
+  
+  /**
+   * Moves robot back to tunnel and then back to starting corner.
+   * 
+   */  
+  public static void returnToStart() {
+    System.out.println("[STATUS] Tasks complete. Returning to start...");
+  
+    // Return to starting corner of search zone
+    travelToSafely(SZ_dest);
+    
+    // Return to point before tunnel and correct heading; traverse tunnel
+    System.out.println("[STATUS] Returning through tunnel...");
+    travelToSafely(tunnelReturnPoint);
+    turnTo(tunnelReturnHeading);
+    moveStraightFor(tunnelLength);
+    
+    // Return to starting corner
+    System.out.println("[STATUS] Returning to starting corner...");
+    travelToSafely(startingCorner);
+    relocalize();
+    turnTo(startingHeading);
+    
+    System.out.println("[STATUS] ヽ༼◉ل͜◉༽ﾉ All done ヽ༼◉ل͜◉༽ﾉ");
+    
   }
 
   /**
