@@ -136,23 +136,10 @@ public class Navigation {
     // 10 is used as it is bigger than the possible value top could see within the
     // 7m radius of an obstacle.
   }
-
-  /**
-   *  Travels to the given destination.
-   * @param destination A point represnting the destination.
-   */
-  public static void travelTo(Point destination) {
-    double[] xyt = odometer.getXyt();
-    Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    double currentTheta = xyt[2];
-    double destinationTheta = getDestinationAngle(currentLocation, destination);
-    turnBy(minimalAngle(currentTheta, destinationTheta));
-    moveStraightFor(distanceBetween(currentLocation, destination));
-  }
   
   /**
    *  Travels to the given destination.
-   * @param destination A point represnting the destination.
+   * @param destination A point representing the destination.
    */
   public static void travelTo(Point destination) {
     double[] xyt = odometer.getXyt();
