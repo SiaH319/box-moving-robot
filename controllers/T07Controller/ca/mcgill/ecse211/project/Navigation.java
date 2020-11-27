@@ -150,10 +150,12 @@ public class Navigation {
     moveStraightFor(distanceBetween(currentLocation, destination));
   }
   
+  
   /**
    *  Travels to the given destination.
    * @param destination A point represnting the destination.
    */
+  /*
   public static void travelTo(Point destination) {
     double[] xyt = odometer.getXyt();
     Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
@@ -163,7 +165,7 @@ public class Navigation {
     System.out.println("travelTo(): Turning by " + minimalAngle(currentTheta, destinationTheta));
     turnBy(minimalAngle(currentTheta, destinationTheta));
     moveStraightFor(distanceBetween(currentLocation, destination));
-  }
+  }*/
   
   /**
    * Moves robot to Point(x,y) while scanning for obstacles, rereoutes where necessary
