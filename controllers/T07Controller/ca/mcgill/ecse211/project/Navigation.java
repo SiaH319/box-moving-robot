@@ -577,7 +577,7 @@ public class Navigation {
     // Calculate point before tunnel, then travel to it
     Point destination = getPointBeforetunnel();
     System.out.println("[STATUS] Travelling to tunnel...");
-    travelTo(destination);
+    travelToSafely(destination);
     System.out.println("[STATUS] Arrived at tunnel. Passing through to island...");
 
     // Determine orientation of tunnel based on position of starting zone
