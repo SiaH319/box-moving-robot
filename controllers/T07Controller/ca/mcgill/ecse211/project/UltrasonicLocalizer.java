@@ -86,7 +86,7 @@ public class UltrasonicLocalizer {
    * Collect the LL points of the tiles with a box
    * Collect the LL points of the tiles with obstacle/ramp
    */
-  static Point travelSearch() {
+ public static void travelSearch() {
     initialization();
     System.out.println("closest=" + closestSzg + "current tile LL = " + currPt);
 
