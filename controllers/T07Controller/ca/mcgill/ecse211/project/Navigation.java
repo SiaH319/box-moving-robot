@@ -40,8 +40,12 @@ public class Navigation {
   public static double Island_LL_y = island.ll.y;
   public static double Island_UR_x = island.ur.x;
   public static double Island_UR_y = island.ur.y;
+  public static double RR_RR_x= rr.right.x;
+  public static double RR_RR_y= rr.right.y;
   public static double RR_LL_x= rr.left.x;
   public static double RR_LL_y= rr.left.y;
+  public static double GR_RR_x= gr.right.x;
+  public static double GR_RR_y= gr.right.y;
   public static double GR_LL_x= gr.left.x;
   public static double GR_LL_y= gr.left.y;
   // Team coordinate variables
@@ -59,6 +63,8 @@ public class Navigation {
   public static double upperRightTunnelY = 0;
   public static double lowerLeftRampX = 0;
   public static double lowerLeftRampY = 0;
+  public static double lowerRightRampX = 0;
+  public static double lowerRightRampY = 0;
   
   public static int startCorner;
   public static String closestSzg;
@@ -71,7 +77,39 @@ public class Navigation {
   private Navigation() {
   }
   
-  
+  /**
+   * Pushes a block forward over a fixed distance and returns the average torque.
+   * This methods assumes that we are 1/2 a tile behind the block (in the dir. we
+   * want to push).
+   * 
+   * @param dist Positive distance the block should be pushed over (in m).
+   * @return Average torque over the push period.
+   */
+  public static double pushFor(double dist) {
+    setSpeed(FORWARD_SPEED);
+    moveStraightFor(Resources.PUSH_TRAVEL_OFFSET); // have the bot touching the box
+    System.out.println("pushing for " + dist);
+    final int distTacho = convertDistance(dist);
+    leftMotor.resetTachoCount();
+    rightMotor.resetTachoCount();
+    
+    
+    moveStraightForReturn(dist * 3.28084);
+
+    double avg = 0;
+    int readings = 0;
+    while (Math.abs(leftMotor.getTachoCount()) < Math.abs(distTacho)) {
+      // while distance wasn't reached calculate average torque and wait.
+      double trk = (leftMotor.getTorque() + rightMotor.getTorque()) / 2;
+      avg = (avg * readings + trk) / ++readings;
+   
+      waitUntilNextStep();
+    }
+
+    leftMotor.stop();
+    rightMotor.stop();
+    return avg;
+  } 
 
   /**
    * This function navigates to a given unknown object's position on the map and
@@ -545,27 +583,31 @@ public class Navigation {
       lowerLeftTunnelY = TNR_LL_y;
       upperRightTunnelX = TNR_UR_x;
       upperRightTunnelY = TNR_UR_y;
-      lowerLeftRampX = rr.left.x;
-      lowerLeftRampY = rr.left.y;
+      lowerLeftRampX = RR_LL_x;
+      lowerLeftRampY = RR_LL_y;
+      lowerRightRampX = RR_RR_x;
+      lowerRightRampY = RR_RR_y;
 
       startCorner = Resources.redCorner;
     } else {
       // Set GREEN TEAM coordinates
-      lowerLeftSzgX = SZG_LL_x;
-      lowerLeftSzgY = SZG_LL_y;
-      upperRightSzgX = SZG_UR_x;
-      upperRightSzgY = SZG_UR_y;
-      lowerLeftX = Green_LL_x;
-      lowerLeftY = Green_LL_y;
-      upperRightX = Green_UR_x;
-      upperRightY = Green_UR_y;
-      lowerLeftTunnelX = TNG_LL_x;
-      lowerLeftTunnelY = TNG_LL_y;
-      upperRightTunnelX = TNG_UR_x;
-      upperRightTunnelY = TNG_UR_y;  
-      lowerLeftRampX = gr.left.x;
-      lowerLeftRampY = gr.left.y;
-      startCorner = Resources.greenCorner;
+    	 lowerLeftSzgX = SZG_LL_x;
+         lowerLeftSzgY = SZG_LL_y;
+         upperRightSzgX = SZG_UR_x;
+         upperRightSzgY = SZG_UR_y;
+         lowerLeftX = Green_LL_x;
+         lowerLeftY = Green_LL_y;
+         upperRightX = Green_UR_x;
+         upperRightY = Green_UR_y;
+         lowerLeftTunnelX = TNG_LL_x;
+         lowerLeftTunnelY = TNG_LL_y;
+         upperRightTunnelX = TNG_UR_x;
+         upperRightTunnelY = TNG_UR_y;  
+         lowerLeftRampX = GR_LL_x;
+         lowerLeftRampY = GR_LL_y;
+         lowerRightRampX = GR_RR_x;
+         lowerRightRampY = GR_RR_y;
+         startCorner = Resources.greenCorner;
     }
   }
 
