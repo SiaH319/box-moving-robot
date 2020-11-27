@@ -719,7 +719,6 @@ public class Navigation {
 
     // Turn to start heading and relocalize
     turnTo(searchZoneStartAngle);
-    relocalize();
 
     System.out.println("=> Arrived safely in search zone.");
   }
