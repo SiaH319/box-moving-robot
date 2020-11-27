@@ -93,8 +93,10 @@ public class UltrasonicLocalizer {
    * Collect the LL points of the tiles with a box
    * Collect the LL points of the tiles with obstacle/ramp
    */
-  static void travelSearch() {
+  static Point travelSearch() {
     initialization();
+    
+    Point block = null;
 
     while (true) {
 
@@ -131,7 +133,7 @@ public class UltrasonicLocalizer {
         if (isObject) { //object handling
           moveToObject();
           if (!isObs) { // if box found stop searching
-            boxDetected();
+            block = boxDetected();
             break;
           } else { // if obstacle found, obstacle handling
             break;
@@ -149,6 +151,7 @@ public class UltrasonicLocalizer {
       }
 
     } // second while
+    return block;
   }
 
   public static void avoidObsLtoRDown() {
@@ -196,7 +199,7 @@ public class UltrasonicLocalizer {
     turnBy(90);
   }
 
-  public static void boxDetected() {
+  public static Point boxDetected() {
     boxDetectPt = currPt; // position of the box
     if (isLtoR == 1) {
       boxDetectDir = 90;
@@ -206,6 +209,8 @@ public class UltrasonicLocalizer {
     }
     System.out.println("Robot detects a box when it is at " + boxDetectPt + 
         " and at " + boxDetectDir + " degree");
+    
+    return  boxDetectPt;
   }
 
 
