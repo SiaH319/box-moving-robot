@@ -166,7 +166,8 @@ public class Navigation {
    * @param destination given as point in TILE LENGTHS (e.g., (15, 0))
    */ 
   public static void travelToSafely(Point destination) {
-    System.out.println("=> Proceeding to (" + destination.x + ", " + destination.y + ")...");
+    System.out.println("=> Proceeding to (" + String.format("%02.2f", destination.x)
+                       + ", " + String.format("%02.2f", destination.y) + ")...");
 
     // While not at destination, continuously try to navigate there
     boolean atDestination = false;
@@ -753,18 +754,17 @@ public class Navigation {
   public static void returnToStart() {
     System.out.println("[STATUS] Tasks complete. Returning to start...");
   
-    // Testing  navigation
-    travelToSafely(new Point(14.5, 6.5));
-  
     // Return to starting corner of search zone
     travelToSafely(SZ_dest);
     
     // Return to point before tunnel and correct heading; traverse tunnel
+    System.out.println("[STATUS] Returning through tunnel...");
     travelToSafely(tunnelReturnPoint);
     turnTo(tunnelReturnHeading);
     moveStraightFor(tunnelLength);
     
     // Return to starting corner
+    System.out.println("[STATUS] Returning to starting corner...");
     travelToSafely(startingCorner);
     relocalize();
     turnTo(startingHeading);
