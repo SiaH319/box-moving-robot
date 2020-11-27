@@ -125,7 +125,6 @@ public class UltrasonicLocalizer {
         if (isObject) { //object handling
           moveToObject();
           if (!isObs) { // if box found stop searching
-            block = boxDetected();
             break;
           } else { // if obstacle found, obstacle handling
 
@@ -251,7 +250,6 @@ public class UltrasonicLocalizer {
       }
 
     } // second while
-    return block;
   }
 
 
@@ -307,7 +305,6 @@ public class UltrasonicLocalizer {
     System.out.println("Robot detects a box when it is at " + boxDetectPt +
         " and at " + boxDetectDir + " degree");
 
-    return  boxDetectPt;
   }
 
 
