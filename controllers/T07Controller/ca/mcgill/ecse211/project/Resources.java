@@ -132,6 +132,19 @@ public class Resources {
 
   /** The block width in m. */
   public static final double BLOCK_WIDTH = 0.10; // 10cm
+  
+  /**
+   * The distance the bot needs to travel from the push position offset to touch
+   * the box.
+   */
+  public static final double PUSH_TRAVEL_OFFSET = TILE_SIZE / 10;
+  
+  /** The distance from the actual coord the bot should be to push a box. */
+  public static final double PUSH_POSITION_OFFSET = 0.5;
+  
+  /** The distance from the actual coord the bot should be to push a box. */
+  public static final double NAV_OFFSET = 0.1;
+
 
   // Hardware resources
 

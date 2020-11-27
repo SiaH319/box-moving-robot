@@ -73,14 +73,59 @@ public class Main {
     odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
-    // if (Navigation.inSearchZone() == false) {
+     if (Navigation.inSearchZone() == false) {
     Navigation.goToSearchZone();
-    // }
+     }
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
-    UltrasonicLocalizer.travelSearch();
+   // UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
 
+    // TODO search
+    Point ramp = new Point(lowerLeftRampX + 0.5, lowerLeftRampY - 1);
+    findPath(ramp);
+   
+    //Point blockDetect = boxDetectPt;
+    Point blockDetect = new Point(7,7);
+    Point waypoint  = pushPosition(blockDetect, 0);
+    Point waypoint2  = pushPosition(blockDetect, 90);
+    //travelTo(paths.get(0).startPosition);
+    findPath(waypoint);
+    //turnTo(0);
+   // backWardAdjust();
+    //Point push = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y - 0.5);
+    //Point block = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y);
+    //travelTo(push);
+   // Point start = new Point(paths.get(0).startPosition.x - 0.5, paths.get(0).startPosition.y + 0.5);
+    navigateTo(waypoint2, blockDetect);
+    System.out.println(paths.size());
+    System.out.println(paths.get(1).lenght);
+    System.out.println(paths.get(1).angle);
+    System.out.println(paths.get(1).startPosition.x);
+    System.out.println(paths.get(1).startPosition.y);
+    
+    
+    
+  }
+  
+  /**
+   * Calculates the position the bot should be in to push a given box.
+   * 
+   * @param p     The point for the block's coordinates
+   * @param theta The direction you want to push the block in. Can only be {0, 90,
+   *              180, 270}.
+   * @return Returns the final coordinates of the push position as a point.
+   */
+  public static Point pushPosition(Point p, double theta) {
+    if (theta == 0) { // up
+      return new Point(p.x, p.y - Resources.PUSH_POSITION_OFFSET);
+    } else if (theta == 90) { // right
+      return new Point(p.x - Resources.PUSH_POSITION_OFFSET, p.y);
+    } else if (theta == 180) { // down
+      return new Point(p.x, p.y + Resources.PUSH_POSITION_OFFSET);
+    } else { // 270 degrees //left
+      return new Point(p.x + Resources.PUSH_POSITION_OFFSET, p.y);
+    }
   }
 
   /**
