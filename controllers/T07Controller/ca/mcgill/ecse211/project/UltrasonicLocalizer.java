@@ -70,8 +70,6 @@ public class UltrasonicLocalizer {
   //collect LL point of the tile without any objects (ramp/obstacle/box)
   public static ArrayList<Point> obsPoint = new ArrayList<Point>(); 
   // collect LL point of the tile with ramp/obstacle
-  public static Point boxDetectPt; // point where you detect the box
-  public static int boxDetectDir; // orientation of the robot when detecting the box
 
   public static Point currPt; // current LL point of the tile
   public static Point nextPt;
