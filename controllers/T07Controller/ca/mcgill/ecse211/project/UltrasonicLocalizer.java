@@ -103,6 +103,9 @@ public class UltrasonicLocalizer {
    */
   public static void travelSearch() {
     initialization();
+    System.out.println("current tile LL = " + currPt);
+    cleanPoint.add(currPt);
+    cleanPoint = removeDuplicates(cleanPoint);
 
     while (true) {
       boolean obsTurn = false;
@@ -119,6 +122,7 @@ public class UltrasonicLocalizer {
         obsTurn = false;
         nextPt = new Point(currPt.x + xPt, currPt.y);
         System.out.println("current tile LL = " + currPt);
+        cleanPoint.add(currPt);
         cleanPoint = removeDuplicates(cleanPoint);
 
         /*check near ramp*/
@@ -208,6 +212,7 @@ public class UltrasonicLocalizer {
             moveByOneTile(); // y= y-1
             currPt = new Point(currPt.x, currPt.y + moveY);  
             System.out.println("current tile LL = " + currPt);
+            cleanPoint.add(currPt);
             cleanPoint = removeDuplicates(cleanPoint);
 
             turnBy(-turnAngle);  
@@ -219,6 +224,7 @@ public class UltrasonicLocalizer {
             moveByOneTile();
             currPt = new Point(currPt.x + moveX, currPt.y);  
             System.out.println("current tile LL = " + currPt);
+            cleanPoint.add(currPt);
             cleanPoint = removeDuplicates(cleanPoint);
 
             if (obsTurn) {
@@ -232,6 +238,7 @@ public class UltrasonicLocalizer {
             moveByOneTile();
             currPt = new Point(currPt.x + moveX, currPt.y); 
             System.out.println("current tile LL = " + currPt);
+            cleanPoint.add(currPt);
             cleanPoint = removeDuplicates(cleanPoint);
 
             turnBy(-turnAngle);  
@@ -243,6 +250,7 @@ public class UltrasonicLocalizer {
             moveByOneTile();
             currPt = new Point(currPt.x, currPt.y - moveY); 
             System.out.println("current tile LL = " + currPt);
+            cleanPoint.add(currPt);
             cleanPoint = removeDuplicates(cleanPoint);
             turnBy(turnAngle);
 
@@ -307,6 +315,7 @@ public class UltrasonicLocalizer {
           turnAngle = -90;
         }
 
+        while (obsPoint.contains(new Point(currPt.x, currPt.y + yPt))) {
           setSpeed(FORWARD_SPEED);
           leftMotor.rotate(convertDistance(-TILE_SIZE), true);
           rightMotor.rotate(convertDistance(-TILE_SIZE), false);
@@ -323,12 +332,14 @@ public class UltrasonicLocalizer {
             setSpeed(FORWARD_SPEED);
             leftMotor.rotate(convertDistance(-TILE_SIZE), true);
             rightMotor.rotate(convertDistance(-TILE_SIZE), false);
+            currPt = new Point(currPt.x - xPt, currPt.y);
           }
 
         }
         moveByOneTile();
         currPt = new Point(currPt.x, currPt.y + yPt);
         System.out.println("current tile LL = " + currPt);
+        cleanPoint.add(currPt);
         cleanPoint = removeDuplicates(cleanPoint);
 
         turnBy(turnAngle);
@@ -345,6 +356,18 @@ public class UltrasonicLocalizer {
     } // second while
   }
 
+  /**
+   * Remove duplicate values of the arraylist.
+   * */
+  public static <T> ArrayList<T> removeDuplicates(ArrayList<T> arr) { 
+    ArrayList<T> newArr = new ArrayList<T>(); 
+    for (T element : arr) { 
+      if (!newArr.contains(element)) { 
+        newArr.add(element); 
+      } 
+    } 
+    return newArr; 
+  } 
 
   /**
    * Initialize for obstacle avoidance
