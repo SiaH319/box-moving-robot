@@ -509,9 +509,9 @@ public class Navigation {
     double deltax = destination.x - current.x;
     double deltay = destination.y - current.y;
     if (deltax > 0) {
-      return (toDegrees(atan2(deltax, deltay)));
+      return ((toDegrees(atan2(deltax, deltay))) % 360);
     } else
-      return ((toDegrees(atan2(deltax, deltay))) + 180);
+      return (((toDegrees(atan2(deltax, deltay))) + 180) % 360);
   }
 
   /**
