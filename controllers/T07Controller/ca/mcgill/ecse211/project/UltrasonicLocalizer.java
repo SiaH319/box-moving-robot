@@ -104,7 +104,7 @@ public class UltrasonicLocalizer {
     System.out.println("current tile LL = " + currPt);
     cleanPoint.add(currPt);
     cleanPoint = removeDuplicates(cleanPoint);
-
+    System.out.println("obsPoint = " + obsPoint);
     while (true) {
       boolean obsTurn = false;
       if (isLtoR == 1) {
