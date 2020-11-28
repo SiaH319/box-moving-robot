@@ -96,6 +96,7 @@ public class Main {
     travelTo(paths.get(0).startPosition);
     
     Point push = new Point(7, 7.5);
+    //Point push = new Point(paths.get(0).startPosition.x - 0.5, paths.get(0).startPosition.y + 0.5);
     System.out.println(push.x);
     System.out.println(push.y);
     travelTo(push);
