@@ -713,8 +713,8 @@ public class Navigation {
       lowerLeftTunnelY = TNR_LL_y;
       upperRightTunnelX = TNR_UR_x;
       upperRightTunnelY = TNR_UR_y;
-      lowerLeftRampX = rr.left.x;
-      lowerLeftRampY = rr.left.y;
+      lowerLeftRampX = RR_LL_x;
+      lowerLeftRampY = RR_LL_y;
 
       startCorner = Resources.redCorner;
     } else {
@@ -731,8 +731,8 @@ public class Navigation {
       lowerLeftTunnelY = TNG_LL_y;
       upperRightTunnelX = TNG_UR_x;
       upperRightTunnelY = TNG_UR_y;
-      lowerLeftRampX = gr.left.x;
-      lowerLeftRampY = gr.left.y;
+      lowerLeftRampX = GR_LL_x;
+      lowerLeftRampY = GR_LL_y;
       startCorner = Resources.greenCorner;
     }
   }

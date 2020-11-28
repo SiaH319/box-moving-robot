@@ -74,9 +74,9 @@ public class UltrasonicLocalizer {
   public static Point currPt; // current LL point of the tile
   public static Point nextPt;
 
-  static Point rampLL1 = new Point(lowerLeftRampX, lowerLeftRampY); 
+  public static Point rampLL1; 
   //LL points of the 2 tiles with ramp
-  static Point rampLL2 = new Point(lowerLeftRampX, lowerLeftRampY + 1);
+  public static Point rampLL2;
   public static boolean cannotMove = false;
   static int xPt = 0;
   static int yPt = 0;
@@ -105,6 +105,12 @@ public class UltrasonicLocalizer {
     cleanPoint.add(currPt);
     cleanPoint = removeDuplicates(cleanPoint);
 
+    //obsPoint with ramp points
+    rampLL1 = new Point(lowerLeftRampX, lowerLeftRampY);
+    rampLL2 = new Point(Navigation.lowerLeftRampX, Navigation.lowerLeftRampY + 1);
+    obsPoint.add(rampLL1);
+    obsPoint.add(rampLL2); 
+    
     while (true) {
       boolean obsTurn = false;
       if (isLtoR == 1) {
@@ -415,10 +421,6 @@ public class UltrasonicLocalizer {
    * initialize the lower left corner of the tiles.
    * */
   public static void initialization() {
-    //obsPoint with ramp points
-    obsPoint.add(rampLL1);
-    obsPoint.add(rampLL2);
-
     //Set initial values depending on the position of the robot
     //Once the robot crosses the bridge and gets into the searchzone,
     //it goes to the closest corner of the searchzone (UR, UL, LL, LR of the searchzone)
@@ -478,7 +480,7 @@ public class UltrasonicLocalizer {
           boxFound = true;
         }
       }
-      turnBy(90);
+      //turnBy(90);
     }
   }
 
