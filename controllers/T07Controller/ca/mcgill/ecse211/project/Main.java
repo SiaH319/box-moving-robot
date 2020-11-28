@@ -71,6 +71,20 @@ public class Main {
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     Navigation.goToSearchZone();
+    
+     UltrasonicLocalizer.localize();
+     System.out.println("[STATUS] Performing light localization...");
+     LightLocalizer.forwardLocalize(90);
+     System.out.println("=> Light localization complete.");
+    // beep(3);
+    // NOTE: Odometer will be reset by the following functions
+    // =============== NAVIGATION TO TUNNEL ==============
+     Navigation.goThroughTunnel();
+     odometer.printPosition();
+    // ============ NAVIGATION TO SEARCH ZONE ============
+    // Go to search zone
+     Navigation.goToSearchZone();
+
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
     UltrasonicLocalizer.travelSearch();
@@ -82,7 +96,6 @@ public class Main {
     travelTo(paths.get(0).startPosition);
     
     Point push = new Point(7, 7.5);
-    //Point push = new Point(paths.get(0).startPosition.x - 0.5, paths.get(0).startPosition.y + 0.5);
     System.out.println(push.x);
     System.out.println(push.y);
     travelTo(push);
@@ -120,7 +133,7 @@ public class Main {
     
     backWardAdjust();
     //safely
-    travelTo(waypoint);
+    //travelTo(waypoint);
   
   }
   
