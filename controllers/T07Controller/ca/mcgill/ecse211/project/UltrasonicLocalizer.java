@@ -480,7 +480,7 @@ public class UltrasonicLocalizer {
           boxFound = true;
         }
       }
-      turnBy(90);
+      //turnBy(90);
     }
   }
 
