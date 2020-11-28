@@ -506,7 +506,7 @@ public class Navigation {
    * @return Destination angle.
    */
   public static double getDestinationAngle(Point current, Point destination) {
-    return (toDegrees(atan2(destination.x - current.x, destination.y - current.y))) % 360;
+    return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)));
   }
 
   /**
