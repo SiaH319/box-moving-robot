@@ -506,7 +506,12 @@ public class Navigation {
    * @return Destination angle.
    */
   public static double getDestinationAngle(Point current, Point destination) {
-    return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)));
+    double deltax = destination.x - current.x;
+    double deltay = destination.y - current.y;
+    if (deltax > 0) {
+      return (toDegrees(atan2(deltax, deltay)));
+    } else
+      return ((toDegrees(atan2(deltax, deltay))) + 180);
   }
 
   /**
