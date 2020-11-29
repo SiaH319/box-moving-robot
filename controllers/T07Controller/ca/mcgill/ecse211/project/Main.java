@@ -157,25 +157,28 @@ public class Main {
     	}
     	
     	travelToSafely(waypointPush);
+    	//TODO turnTo() doesnt work properly
     	turnTo(45);
     	findBoxInsideTile();
     	pushFor(distance);
     	backWardAdjust();
     }
     
-    //travelTo off by one tile
+    //TODO off value travelTo()
     push = new Point(pushX+1, pushY+1);
     travelTo(push);
     //faceBlock
+    //TODO turnTo() doesnt work properly
     turnTo(45);
     findBoxInsideTile();
     
     //Using a range to be extra sure that it is correct
     double pushDist = Math.abs((rampX-1.3) - pushX)/3.281;
-    pushFor(pushDist);
-  
     double torque = pushFor(TILE_SIZE);
-     backWardAdjust();
+    pushFor(pushDist);
+
+    backWardAdjust();
+    backWardAdjust();
      
     if(torque >= 0 && torque <= 0.08) {
     	System.out.println("Container with weight 0.5 identified");
@@ -200,17 +203,24 @@ public class Main {
     odometer.setX(((pushX + (pushDist*3.281))/3.281));
     odometer.setY(pushY/3.281);
     
-    Point off = new Point(waypoint.x -1, waypoint.y);
+    //TODO off value travelTo()
+    Point off = new Point(waypoint.x - 1, waypoint.y);
     travelTo(off);
     
     //push to the bin
-    turnTo(45);
+    //TODO turnTo() doesnt work properly
+    turnTo(325);
     findBoxInsideTile();
+    
     Point bin = new Point(rampX + 0.5, rampY + 1);
-    double dist2 = distanceBetween(waypoint, bin);
-    pushFor(dist2);
-    odometer.setX(bin.x/3.281);
-    odometer.setY(bin.y/3.281);
+    pushFor(TILE_SIZE*1.5);
+    backWardAdjust();
+    backWardAdjust();
+    odometer.setX(ramp2.x/3.281);
+    odometer.setY(ramp2.y/3.281);
+    
+    turnBy(180);
+    moveStraightFor(1);
     
     //go back to start
     returnToStart();
