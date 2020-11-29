@@ -101,6 +101,10 @@ public class UltrasonicLocalizer {
    * Collect the LL points of the tiles with obstacle/ramp
    */
   public static void travelSearch() {
+    setSpeed(FORWARD_SPEED);
+    leftMotor.rotate(convertDistance(-TILE_SIZE / 8), true);
+    rightMotor.rotate(convertDistance(-TILE_SIZE / 8), false);
+    
     initialization();
     System.out.println("current tile LL = " + currPt);
     cleanPoint.add(currPt);
@@ -480,7 +484,7 @@ public class UltrasonicLocalizer {
     while (!boxFound) {
       searchObject();
       if (isObject) {
-        moveToObject();
+        moveToObjectInATile();
         if (!isObs) {
           boxFound = true;
         }
@@ -680,21 +684,14 @@ public class UltrasonicLocalizer {
       isObs = false;
       isObjectFurther = false;
 
-      if (!dontStop) {
-        if (newAngleToMove != 0 && newDistToMove != 0) {
-          moveAwayFromObject(newDistToMove, newAngleToMove);
-          isObjectFurther = true;
-        }
-        moveAwayFromObject(oldDistToMove, oldAngleToMove);
-        leftMotor.stop();
-        rightMotor.stop();
-      }   else {
-        if (newAngleToMove != 0 && newDistToMove != 0) {
-          turnBy(-(newAngleToMove - 45));
-        }
-        turnBy(-(oldAngleToMove - 45));
+
+      if (newAngleToMove != 0 && newDistToMove != 0) {
+        moveAwayFromObject(newDistToMove, newAngleToMove);
+        isObjectFurther = true;
       }
-      dontStop = false;
+      moveAwayFromObject(oldDistToMove, oldAngleToMove);
+
+
     } else {
       System.out.println("An obstacle is detected");
       isObs = true;
@@ -708,6 +705,64 @@ public class UltrasonicLocalizer {
     }
   }
 
+
+
+  /**
+   * Once the object is detected, move to the box.
+   * */
+  public static void moveToObjectInATile() {
+    double newAngleToMove = 0;
+    double newDistToMove = 0;
+    double oldAngleToMove = 0;
+    double oldDistToMove = 0;
+
+    oldAngleToMove = angleToMove;
+    oldDistToMove = distToMove;
+
+    turnBy(angleToMove - 45);
+    setSpeed(FORWARD_SPEED);
+    leftMotor.rotate(convertDistance(distToMove / 100), true);
+    rightMotor.rotate(convertDistance(distToMove / 100), false);
+    isObs = false;
+
+    if (distToMove >= 30) {
+      searchObject();
+
+      newAngleToMove = angleToMove;
+      newDistToMove = distToMove - 2.5;
+
+      turnBy(newAngleToMove - 45);
+      setSpeed(FORWARD_SPEED);
+
+      leftMotor.rotate(convertDistance(newDistToMove / 100), true);
+      rightMotor.rotate(convertDistance(newDistToMove / 100), false);
+    }
+
+
+    if (Navigation.blockOrObstacle()) {
+      System.out.println("distToMove = " + distToMove);
+      System.out.println("A block is detected");
+      isObs = false;
+      isObjectFurther = false;
+
+
+      if (newAngleToMove != 0 && newDistToMove != 0) {
+        turnBy(-(newAngleToMove - 45));
+      }
+      turnBy(-(oldAngleToMove - 45));
+
+    } else {
+      System.out.println("An obstacle is detected");
+      isObs = true;
+      isObjectFurther = false;
+
+      if (newAngleToMove != 0 && newDistToMove != 0) {
+        moveAwayFromObject(newDistToMove, newAngleToMove);
+        isObjectFurther = true;
+      }
+      moveAwayFromObject(oldDistToMove, oldAngleToMove);
+    }
+  }
 
   /**
    * reverse moveToObject() method.
