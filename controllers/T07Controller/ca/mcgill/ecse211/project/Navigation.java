@@ -95,14 +95,13 @@ public class Navigation {
     moveStraightFor(Resources.PUSH_TRAVEL_OFFSET); // have the bot touching the box
     System.out.println("pushing for " + dist);
     final int distTacho = convertDistance(dist);
-    leftMotor.resetTachoCount();
-    rightMotor.resetTachoCount();
+    final int leftMotorTacho = leftMotor.getTachoCount();
 
     moveStraightForReturn(dist * 3.28084);
 
     double avg = 0;
     int readings = 0;
-    while (Math.abs(leftMotor.getTachoCount()) < Math.abs(distTacho)) {
+    while (Math.abs((leftMotor.getTachoCount())-leftMotorTacho) < Math.abs(distTacho)) {
       // while distance wasn't reached calculate average torque and wait.
       double trk = (leftMotor.getTorque() + rightMotor.getTorque()) / 2;
       avg = (avg * readings + trk) / ++readings;
