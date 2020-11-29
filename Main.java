@@ -37,7 +37,7 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-/*
+
     if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
@@ -55,89 +55,53 @@ public class Main {
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }
-    */
 
     // Uncomment the parts relevant to the methods/functionality
 
     // ================== LOCALIZATION ===================
-    // UltrasonicLocalizer.localize();
-    // System.out.println("[STATUS] Performing light localization...");
-    // LightLocalizer.forwardLocalize(90);
-    // System.out.println("=> Light localization complete.");
+    UltrasonicLocalizer.localize();
+    System.out.println("[STATUS] Performing light localization...");
+    LightLocalizer.forwardLocalize(90);
+    System.out.println("=> Light localization complete.");
     // beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
-    // Navigation.goThroughTunnel();
-    // odometer.printPosition();
+    Navigation.goThroughTunnel();
+    odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
-    //Navigation.goToSearchZone();
+    Navigation.goToSearchZone();
+
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
-    UltrasonicLocalizer.findBoxInsideTile();
-    /*UltrasonicLocalizer.travelSearch();
+    UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
 
-    Point blockDetect = currPt;
-    Point ramp = new Point(lowerLeftRampX - 0.5, lowerLeftRampY - 0.5);
+    // TODO search
+    /*Point ramp = new Point(lowerLeftRampX + 0.5, lowerLeftRampY - 1);
     findPath(ramp);
-    travelTo(paths.get(0).startPosition);
 
-    Point push = new Point(7, 7.5);
-    System.out.println(push.x);
-    System.out.println(push.y);
-    travelTo(push);
-    turnTo(135);
-    findBoxInsideTile();
-    //relocalize on the line to push straight
-    adjustForward();
+    //Point blockDetect = boxDetectPt;
+    Point blockDetect = new Point(7,7);
+    Point waypoint  = pushPosition(blockDetect, 0);
+    Point waypoint2  = pushPosition(blockDetect, 90);
+    //travelTo(paths.get(0).startPosition);
+    findPath(waypoint);
+    //turnTo(0);
+   // backWardAdjust();
+    //Point push = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y - 0.5);
+    //Point block = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y);
+    //travelTo(push);
+   // Point start = new Point(paths.get(0).startPosition.x - 0.5, paths.get(0).startPosition.y + 0.5);
+    navigateTo(waypoint2, blockDetect);
+    System.out.println(paths.size());
+    System.out.println(paths.get(1).lenght);
+    System.out.println(paths.get(1).angle);
+    System.out.println(paths.get(1).startPosition.x);
+    System.out.println(paths.get(1).startPosition.y);
 
-    //Torque
-    double dist = Math.abs((lowerLeftRampX-0.5) - push.x)/3.281;
-    pushFor(dist);
 
-
-    double torque = round(pushFor(TILE_SIZE), 2);
-    System.out.println(torque);
-    //retest Torque
-    if(torque == 0.15) {
-      System.out.println("Container with weight 1 identified");
-
-    }
-    else if(torque == 0.22) {
-      System.out.println("Container with weight 2 identified");
-
-    }
-    else if(torque == 0.32) {
-      System.out.println("Container with weight 3 identified");
-
-    }
-    else if(torque == 0.44) {
-      System.out.println("Container with weight 4 identified");
-
-    }
-    Point ramp2 = new Point(lowerLeftRampX + 0.5, lowerLeftRampY - 0.5);
-    Point waypoint  = pushPosition(ramp2, 0);
-
-    backWardAdjust();
-    //safely
-    //travelTo(waypoint);
-*/
-  }
-
-  /**
-   * Method took from stack overflow
-   * @param value
-   * @param places
-   * @return
-   */
-  public static double round(double value, int places) {
-    if (places < 0) throw new IllegalArgumentException();
-
-    long factor = (long) Math.pow(10, places);
-    value = value * factor;
-    long tmp = Math.round(value);
-    return (double) tmp / factor;
+     */ 
   }
 
   /**

@@ -88,6 +88,7 @@ public class UltrasonicLocalizer {
   public static int turnAngle = 0;
   public static int moveX = 0;
   public static int moveY = 0;
+  public static boolean dontStop = true;
 
 
 
@@ -110,7 +111,7 @@ public class UltrasonicLocalizer {
     rampLL2 = new Point(Navigation.lowerLeftRampX, Navigation.lowerLeftRampY + 1);
     obsPoint.add(rampLL1);
     obsPoint.add(rampLL2); 
-    
+
     while (true) {
       boolean obsTurn = false;
       if (isLtoR == 1) {
@@ -417,6 +418,7 @@ public class UltrasonicLocalizer {
     System.out.println("Move backward a bit");
   }
 
+
   /**
    * initialize the lower left corner of the tiles.
    * */
@@ -469,6 +471,9 @@ public class UltrasonicLocalizer {
 
   /**
    * Robot inside a tile finds box of 4 near tiles.
+   * The robot should be in the middle of the current tile in order to use this method.
+   * The angle of the robot should be one of the following:
+   *  0, 90, 180, 270 (basically north, south, east, west)
    * */
   public static void findBoxInsideTile() {
     boolean boxFound = false;
@@ -479,8 +484,18 @@ public class UltrasonicLocalizer {
         if (!isObs) {
           boxFound = true;
         }
+      } else {
+        setSpeed(FORWARD_SPEED);
+        leftMotor.rotate(convertDistance(TILE_SIZE / 8), true);
+        rightMotor.rotate(convertDistance(TILE_SIZE / 8), false);
+        System.out.println("Move forward a bit");      
+
+        turnBy(90);
+        setSpeed(FORWARD_SPEED);
+        leftMotor.rotate(convertDistance(-TILE_SIZE / 8), true);
+        rightMotor.rotate(convertDistance(-TILE_SIZE / 8), false);
+        System.out.println("Move backward a bit");  
       }
-      //turnBy(90);
     }
   }
 
@@ -665,14 +680,21 @@ public class UltrasonicLocalizer {
       isObs = false;
       isObjectFurther = false;
 
-      if (newAngleToMove != 0 && newDistToMove != 0) {
-        moveAwayFromObject(newDistToMove, newAngleToMove);
-        isObjectFurther = true;
+      if (!dontStop) {
+        if (newAngleToMove != 0 && newDistToMove != 0) {
+          moveAwayFromObject(newDistToMove, newAngleToMove);
+          isObjectFurther = true;
+        }
+        moveAwayFromObject(oldDistToMove, oldAngleToMove);
+        leftMotor.stop();
+        rightMotor.stop();
+      }   else {
+        if (newAngleToMove != 0 && newDistToMove != 0) {
+          turnBy(-(newAngleToMove - 45));
+        }
+        turnBy(-(oldAngleToMove - 45));
       }
-      moveAwayFromObject(oldDistToMove, oldAngleToMove);
-      leftMotor.stop();
-      rightMotor.stop();
-
+      dontStop = false;
     } else {
       System.out.println("An obstacle is detected");
       isObs = true;
