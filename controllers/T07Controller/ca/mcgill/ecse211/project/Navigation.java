@@ -83,138 +83,6 @@ public class Navigation {
   }
 
   /**
-   * Drives the bot to the closet edge of a block then navigates around it to
-   * reach a destination point.
-   * 
-   * @param destination Final waypoint around a block.
-   * @param blockPos    Position of the block itself.
-   */
-  public static void navigateTo(Point destination, Point blockPos) {
-    // go to the closest point on the block
-
-    double[] xyt = odometer.getXyt();
-    Point current = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
-    Point intermediate = closestEdge(current, blockPos);
-    System.out.println("Current is " + current.x + " " + current.y);
-    System.out.println("intermediate is " + intermediate.x + " " + intermediate.y);
-    System.out.println("Dest is " + destination.x + " " + destination.y);
-    travelTo(intermediate);
-
-    // face the block
-    setSpeed(LOCAL_SPEED);
-    System.out.println(getDestinationAngle(intermediate, blockPos));
-    turnTo(getDestinationAngle(intermediate, blockPos));
-
-    // end if the destination waypoint the same as the farest point
-    if (!intermediate.equals(destination)) {
-      // navigate around the block
-      avoidBlock(intermediate, destination, blockPos);
-      // finish facing the block again
-      turnTo(getDestinationAngle(destination, blockPos));
-    }
-  }
-
-  /**
-   * Returns the closest point around a block to the current position.
-   * 
-   * @param current  Current position of the bot (point)
-   * @param blockPos Position of the block (point)
-   * @return Closest point one bot distance away from the edge of the block to the
-   *         current bot position
-   */
-  public static Point closestEdge(Point current, Point blockPos) {
-    // calculate the 4 points around the block (up down left right)
-    // these points should be offset from the block by PUSH_POSITION_OFFSET in tiles
-    // find the closest point of the 4 to the current position
-    // return the closest point
-    Point[] blockPoints;
-    blockPoints = new Point[4];
-    blockPoints[0] = new Point(blockPos.x, blockPos.y + PUSH_POSITION_OFFSET); // up
-    blockPoints[1] = new Point(blockPos.x, blockPos.y - PUSH_POSITION_OFFSET); // down
-    blockPoints[2] = new Point(blockPos.x - PUSH_POSITION_OFFSET, blockPos.y); // left
-    blockPoints[3] = new Point(blockPos.x + PUSH_POSITION_OFFSET, blockPos.y); // right
-
-    double[] distances = new double[4];
-    for (int i = 0; i < 4; i++) {
-      distances[i] = distanceBetween(current, blockPoints[i]);
-    }
-
-    int index = 0;
-    double min = distances[index];
-    for (int i = 1; i < distances.length; i++) {
-      if (distances[i] < min) {
-        min = distances[i];
-        index = i;
-      }
-    }
-
-    Point closestPoint = blockPoints[index];
-    return closestPoint;
-  }
-
-  /**
-   * Navigates from a far waypoint to the block to a final waypoint without
-   * touching the block. The bot will always start by facing the block at the
-   * start position.
-   * 
-   * @param start       Current position of the bot (point)
-   * @param destination Target position of the bot (point)
-   * @param blockPos    Position of the block (point)
-   */
-  public static void avoidBlock(Point start, Point destination, Point blockPos) {
-    double blockAngle = Math.toDegrees(getDestinationAngle(start, blockPos));
-    double destAngle = Math.toDegrees(getDestinationAngle(start, destination));
-    System.out.println("base case angle: " + ((int) (destAngle - blockAngle) + 360) % 360);
-    if ((int) (destAngle - blockAngle) == 0) {
-      // points are along the same axis, so 4 rotations and 3 travels are required
-      setSpeed(LOCAL_SPEED);
-      turnBy(-90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
-      setSpeed(LOCAL_SPEED);
-      turnBy(90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor((2 * PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
-      setSpeed(LOCAL_SPEED);
-      turnBy(90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
-      setSpeed(LOCAL_SPEED);
-      turnBy(90);
-    } else if (((int) (destAngle - blockAngle) + 360) % 360 > 180) {
-      // actual angle should be about 315 degrees when mod 360
-      // point is on the clockwise adjacent side (left)
-      setSpeed(LOCAL_SPEED);
-      turnBy(-90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
-      setSpeed(LOCAL_SPEED);
-      turnBy(90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor(PUSH_POSITION_OFFSET * TILE_SIZE);
-      setSpeed(LOCAL_SPEED);
-      turnBy(90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor(NAV_OFFSET * TILE_SIZE);
-    } else {
-      // actual angle should be about 45 degrees when mod 360
-      // point is on the counter-clockwise adjacent side (right)
-      setSpeed(LOCAL_SPEED);
-      turnBy(90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor((PUSH_POSITION_OFFSET + NAV_OFFSET) * TILE_SIZE);
-      setSpeed(LOCAL_SPEED);
-      turnBy(-90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor(PUSH_POSITION_OFFSET * TILE_SIZE);
-      setSpeed(LOCAL_SPEED);
-      turnBy(-90);
-      setSpeed(ROTATE_SPEED);
-      moveStraightFor(NAV_OFFSET * TILE_SIZE);
-    }
-  }
-
-  /**
    * Pushes a block forward over a fixed distance and returns the average torque.
    * This methods assumes that we are 1/2 a tile behind the block (in the dir. we
    * want to push).
@@ -317,8 +185,6 @@ public class Navigation {
    * @param destination A point representing the destination.
    */
   public static void travelTo(Point destination) {
-    leftMotor.setSpeed(FORWARD_SPEED);
-    rightMotor.setSpeed(FORWARD_SPEED);
     double[] xyt = odometer.getXyt();
     Point currentLocation = new Point(xyt[0] / TILE_SIZE, xyt[1] / TILE_SIZE);
     double currentTheta = xyt[2];
@@ -506,12 +372,7 @@ public class Navigation {
    * @return Destination angle.
    */
   public static double getDestinationAngle(Point current, Point destination) {
-    double deltax = destination.x - current.x;
-    double deltay = destination.y - current.y;
-    if (deltax > 0) {
-      return ((toDegrees(atan2(deltax, deltay))) % 360);
-    } else
-      return (((toDegrees(atan2(deltax, deltay))) + 180) % 360);
+	  return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;  
   }
 
   /**
