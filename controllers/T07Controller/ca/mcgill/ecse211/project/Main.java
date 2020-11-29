@@ -37,7 +37,7 @@ public class Main {
 
     // Start the odometer thread
     new Thread(odometer).start();
-/*
+
     if (TEAM_NUMBER == redTeam) {
       isRedTeam = true;
     } else if (TEAM_NUMBER == greenTeam) {
@@ -55,74 +55,137 @@ public class Main {
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }
-    */
+    
 
     // Uncomment the parts relevant to the methods/functionality
 
     // ================== LOCALIZATION ===================
-    // UltrasonicLocalizer.localize();
-    // System.out.println("[STATUS] Performing light localization...");
-    // LightLocalizer.forwardLocalize(90);
-    // System.out.println("=> Light localization complete.");
+     UltrasonicLocalizer.localize();
+     System.out.println("[STATUS] Performing light localization...");
+     LightLocalizer.forwardLocalize(90);
+     System.out.println("=> Light localization complete.");
     // beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
-    // Navigation.goThroughTunnel();
-    // odometer.printPosition();
+     Navigation.goThroughTunnel();
+     odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
-    //Navigation.goToSearchZone();
+    Navigation.goToSearchZone();
     // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
-    UltrasonicLocalizer.findBoxInsideTile();
-    /*UltrasonicLocalizer.travelSearch();
+    UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
-
-    Point blockDetect = currPt;
-    Point ramp = new Point(lowerLeftRampX - 0.5, lowerLeftRampY - 0.5);
-    findPath(ramp);
+    
+    /*backWardAdjust();
+     Point point  = new Point(7.5, 7.5);
+    travelTo(point);*/
+   
+    
+   /* odometer.printPosition();
+    pushFor(TILE_SIZE);
+    odometer.printPosition();*/
+    
+    Point block = currPt;
+    
+    //determine if block is on the right or left of the ramp
+    Point ramp = null;
+    boolean left = false;
+    boolean right = false;
+    double rampX = 0;
+    double rampY = 0;
+    
+    if(currPt.x < lowerLeftRampX) {
+    	left = true;
+    	rampX = lowerLeftRampX;
+    	rampY = lowerLeftRampY;
+    	ramp = new Point(rampX - 0.5, rampY - 0.5);
+    }
+    else if(currPt.x > lowerLeftRampX) {
+    	right = true;
+    	rampX = rr.right.x;
+    	rampY = rr.right.y;
+    	ramp = new Point(rampX + 0.5, rampY - 0.5);
+    }
+    
+     findPath(ramp);
     travelTo(paths.get(0).startPosition);
-
-    Point push = new Point(7, 7.5);
-    System.out.println(push.x);
-    System.out.println(push.y);
+    
+    //point to start pushing
+    Point push = null;
+    double pushX = 0;
+    double pushY = 0;
+    
+    if(left) {
+    	pushX = Math.round(paths.get(0).startPosition.x) - 0.5;
+    	if(currPt.y < lowerLeftRampY) {
+    		pushY = Math.round(paths.get(0).startPosition.y) + 0.5;
+    	}
+    	else if(currPt.y > lowerLeftRampY) {
+    		pushY = paths.get(0).startPosition.y - 0.5;
+    	}
+    	push = new Point(pushX, pushY);
+    }
+    
+    if(right) {
+    	pushX = paths.get(0).startPosition.x + 0.5;
+    	if(currPt.y < rr.right.y) {
+    		pushY = paths.get(0).startPosition.y + 0.5;
+    	}
+    	else if(currPt.y > rr.right.y) {
+    		pushY = paths.get(0).startPosition.y - 0.5;
+    	}
+    	push = new Point(pushX, pushY);
+    }
+    
+    if(push.y != rampY) {
+    	double diff = Math.abs(rampY - pushY)/3.281;
+    	findBoxInsideTile();
+    	pushFor(diff);
+    	backWardAdjust();
+    }
+    
+    //TODO fix travelTo
+    push = new Point(pushX+1, pushY+1);
     travelTo(push);
-    turnTo(135);
+    //faceBlock
     findBoxInsideTile();
-    //relocalize on the line to push straight
-    adjustForward();
-
-    //Torque
-    double dist = Math.abs((lowerLeftRampX-0.5) - push.x)/3.281;
-    pushFor(dist);
-
-
-    double torque = round(pushFor(TILE_SIZE), 2);
-    System.out.println(torque);
-    //retest Torque
-    if(torque == 0.15) {
-      System.out.println("Container with weight 1 identified");
-
+    
+    //Using a range to be extra sure that it is correct
+    double torque = pushFor(TILE_SIZE);
+    if(torque >= 0 && torque <= 0.08) {
+    	System.out.println("Container with weight 0.5 identified");
+    		
     }
-    else if(torque == 0.22) {
-      System.out.println("Container with weight 2 identified");
-
+    else if(torque >= 0.09 && torque <= 0.18) {
+    	System.out.println("Container with weight 1 identified");
+    		
     }
-    else if(torque == 0.32) {
-      System.out.println("Container with weight 3 identified");
-
+    else if(torque >= 0.19 && torque <= 0.28) {
+    	System.out.println("Container with weight 2 identified");
+    		
     }
-    else if(torque == 0.44) {
-      System.out.println("Container with weight 4 identified");
-
+    else if(torque >= 0.29 && torque <= 0.40) {
+    	System.out.println("Container with weight 3 identified");
+    		
     }
-    Point ramp2 = new Point(lowerLeftRampX + 0.5, lowerLeftRampY - 0.5);
+    
+    //in front of ramp
+    Point ramp2 = new Point(rampX + 0.5, rampY - 0.5);
     Point waypoint  = pushPosition(ramp2, 0);
-
+    
     backWardAdjust();
     //safely
-    //travelTo(waypoint);
-*/
+    travelTo(waypoint);
+    
+    //push to the bin
+    Point bin = new Point(rampX + 0.5, rampY + 1);
+    double dist2 = distanceBetween(waypoint, bin);
+    pushFor(dist2);
+    
+    //go back to start
+    returnToStart();
+    
   }
 
   /**
