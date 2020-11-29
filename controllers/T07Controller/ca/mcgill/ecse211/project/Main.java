@@ -77,7 +77,13 @@ public class Main {
     System.out.println("=> First box is found.");
     Point block = currPt;
     
-    //determine if block is on the right or left of the ramp
+    //PUSHING TEST
+    adjustForward();
+    pushFor(TILE_SIZE);
+    odometer.printPosition();
+    System.out.println("X in feet :" + odometer.getXyt()[0]*3.281);
+    System.out.println("Y in feet :" + odometer.getXyt()[1]*3.281);
+   /* //determine if block is on the right or left of the ramp
     Point ramp = null;
     boolean left = false;
     boolean right = false;
@@ -180,7 +186,7 @@ public class Main {
     
     //go back to start
     returnToStart();
-  
+  */
   }
   
   /**
