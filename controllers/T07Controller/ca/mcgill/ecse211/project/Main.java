@@ -34,7 +34,7 @@ public class Main {
    */
   public static void main(String[] args) {
     initialize();
-
+     
     // Start the odometer thread
     new Thread(odometer).start();
 
@@ -154,22 +154,22 @@ public class Main {
     //Torque (wrong values)
     double dist = distanceBetween(push, ramp);
     pushFor(dist);
-    
-    double torque = round(pushFor(TILE_SIZE), 2);
-    if(torque == 0.15) {
+    //Using a range to be extra sure that it is correct
+    double torque = pushFor(TILE_SIZE);
+    if(torque >= 0 && torque <= 0.08) {
+    	System.out.println("Container with weight 0.5 identified");
+    		
+    }
+    else if(torque >= 0.09 && torque <= 0.18) {
     	System.out.println("Container with weight 1 identified");
     		
     }
-    else if(torque == 0.22) {
+    else if(torque >= 0.19 && torque <= 0.28) {
     	System.out.println("Container with weight 2 identified");
     		
     }
-    else if(torque == 0.32) {
+    else if(torque >= 0.29 && torque <= 0.40) {
     	System.out.println("Container with weight 3 identified");
-    		
-    }
-    else if(torque == 0.44) {
-    	System.out.println("Container with weight 4 identified");
     		
     }
     
@@ -186,7 +186,8 @@ public class Main {
     
     //go back to start
     returnToStart();
-  */
+    */
+  
   }
   
   /**
