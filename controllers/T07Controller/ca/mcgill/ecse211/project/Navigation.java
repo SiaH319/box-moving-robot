@@ -96,6 +96,7 @@ public class Navigation {
     System.out.println("pushing for " + dist);
     final int distTacho = convertDistance(dist);
     final int leftMotorTacho = leftMotor.getTachoCount();
+    System.out.println(leftMotorTacho);
 
     moveStraightForReturn(dist * 3.28084);
 
