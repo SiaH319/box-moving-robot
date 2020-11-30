@@ -208,7 +208,11 @@ public class Main {
       System.out.println("Container with weight 3 identified");
 
     }
-
+    
+    // [NOTE] The issue here is likely the odometer.setX() and odometer.setY()
+    // calls. The code will work if we can ensure that the odometer is accurate
+    // after pushing/searching.
+    
     // in front of ramp
     Point ramp2 = new Point(rampX + 0.5, rampY - 0.5);
     Point waypoint = pushPosition(ramp2, 0);
@@ -229,8 +233,8 @@ public class Main {
     backWardAdjust();
     backWardAdjust();
     Point returnBack = new Point(rampX + 0.5, rampY - 0.5);
-    odometer.setX(returnBack.x);
-    odometer.setY(returnBack.y);
+    odometer.setX(returnBack.x * TILE_SIZE);
+    odometer.setY(returnBack.y * TILE_SIZE);
 
     turnBy(180);
     moveStraightFor(1);
