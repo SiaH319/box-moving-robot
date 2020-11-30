@@ -930,8 +930,6 @@ public class Navigation {
     System.out.println("[STATUS] ヽ༼◉ل͜◉༽ﾉ All done ヽ༼◉ل͜◉༽ﾉ");
   }
 
-  }
-
   /**
    * Sorts an ArrayList of Points based on their distance to a given point.
    *
