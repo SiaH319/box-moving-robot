@@ -88,7 +88,7 @@ public class Main {
     System.out.println("[STATUS] Performing light localization...");
     LightLocalizer.forwardLocalize(90);
     System.out.println("=> Light localization complete.");
-    // beep(3);
+    beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
     Navigation.goThroughTunnel();
@@ -96,7 +96,7 @@ public class Main {
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     Navigation.goToSearchZone();
-    // beep(3);
+    beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
     UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
@@ -239,7 +239,7 @@ public class Main {
 
     // go back to start
     returnToStart();
-
+    beep(5);
   }
 
   /**
