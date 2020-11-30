@@ -74,8 +74,7 @@ public class Main {
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
       System.out.println("Green Team Number in Wifi: " + greenTeam);
       System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the " 
-          + "simulation with the appropriate values.");
+      System.out.println("Stopping the program. Please restart the " + "simulation with the appropriate values.");
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
@@ -101,7 +100,7 @@ public class Main {
     UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
 
-    //Point block = currPt;
+    // Point block = currPt;
 
     // determine if block is on the right or left of the ramp
     Point ramp = null;
@@ -225,7 +224,7 @@ public class Main {
     turnTo(325);
     findBoxInsideTile();
 
-    //Point bin = new Point(rampX + 0.5, rampY + 1);
+    // Point bin = new Point(rampX + 0.5, rampY + 1);
     pushFor(TILE_SIZE * 1.5);
     backWardAdjust();
     backWardAdjust();
@@ -236,17 +235,17 @@ public class Main {
     turnBy(180);
     moveStraightFor(1);
     odometer.setTheta(180);
-
+    odometer.printPosition();
     // go back to start
     returnToStart();
     beep(5);
   }
 
   /**
-   * Rounds a number to the specified decimal places.
-   * Method inspired by stack overflow.
+   * Rounds a number to the specified decimal places. Method inspired by stack
+   * overflow.
    * 
-   * @param value value to round
+   * @param value  value to round
    * @param places decimal places
    * @return
    */
@@ -314,12 +313,14 @@ public class Main {
    * concerning the competition such as the starting corner the robot is placed
    * in.<br>
    *
-   * <p>Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
+   * <p>
+   * Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
    * code; you must use the WifiConnection class yourself in your own code as
    * appropriate. In this example, we simply show how to get and process different
    * types of data.<br>
    *
-   * <p>There are two variables you MUST set manually (in Resources.java) before
+   * <p>
+   * There are two variables you MUST set manually (in Resources.java) before
    * using this code:
    *
    * <ol>
@@ -330,7 +331,8 @@ public class Main {
    * <li>TEAM_NUMBER: your project team number.</li>
    * </ol>
    *
-   * <p>Note: You can disable printing from the Wi-Fi code via
+   * <p>
+   * Note: You can disable printing from the Wi-Fi code via
    * ENABLE_DEBUG_WIFI_PRINT.
    *
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
