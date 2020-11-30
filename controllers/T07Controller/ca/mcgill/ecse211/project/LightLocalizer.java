@@ -1,7 +1,18 @@
 package ca.mcgill.ecse211.project;
 
-import static ca.mcgill.ecse211.project.Navigation.*;
-import static ca.mcgill.ecse211.project.Resources.*;
+import static ca.mcgill.ecse211.project.Navigation.convertDistance;
+import static ca.mcgill.ecse211.project.Navigation.moveStraightForMeters;
+import static ca.mcgill.ecse211.project.Navigation.setSpeed;
+import static ca.mcgill.ecse211.project.Navigation.stopMotors;
+import static ca.mcgill.ecse211.project.Navigation.turnBy;
+import static ca.mcgill.ecse211.project.Resources.COLOR_SENSOR_TO_WHEEL_DIST;
+import static ca.mcgill.ecse211.project.Resources.LOCAL_SPEED;
+import static ca.mcgill.ecse211.project.Resources.TILE_SIZE;
+import static ca.mcgill.ecse211.project.Resources.colorSensorL;
+import static ca.mcgill.ecse211.project.Resources.colorSensorR;
+import static ca.mcgill.ecse211.project.Resources.leftMotor;
+import static ca.mcgill.ecse211.project.Resources.odometer;
+import static ca.mcgill.ecse211.project.Resources.rightMotor;
 import static simlejos.ExecutionController.waitUntilNextStep;
 
 public class LightLocalizer {
@@ -89,7 +100,8 @@ public class LightLocalizer {
     setSpeed(LOCAL_SPEED);
     Navigation.turnBy(-90);
 
-    odometer.setXyt(Math.round(xyt[0] / TILE_SIZE) * TILE_SIZE, Math.round(xyt[1] / TILE_SIZE) * TILE_SIZE, 0);
+    odometer.setXyt(Math.round(xyt[0] / TILE_SIZE) * TILE_SIZE, 
+          Math.round(xyt[1] / TILE_SIZE) * TILE_SIZE, 0);
     xyt = odometer.getXyt();
     // System.out.println(xyt[0] + " " + xyt[1] + " " + xyt[2]);
   }

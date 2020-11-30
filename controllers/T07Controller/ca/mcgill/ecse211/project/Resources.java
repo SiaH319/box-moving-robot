@@ -1,15 +1,15 @@
 package ca.mcgill.ecse211.project;
 
-import java.math.BigDecimal;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Map;
 import ca.mcgill.ecse211.playingfield.Block;
 import ca.mcgill.ecse211.playingfield.Point;
 import ca.mcgill.ecse211.playingfield.RampEdge;
 import ca.mcgill.ecse211.playingfield.Region;
 import ca.mcgill.ecse211.wificlient.WifiConnection;
+import java.math.BigDecimal;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Map;
 import simlejos.hardware.motor.Motor;
 import simlejos.hardware.port.SensorPort;
 import simlejos.hardware.sensor.EV3ColorSensor;
@@ -41,8 +41,7 @@ public class Resources {
    * The IP address of the server that sends data to the robot. For the beta demo
    * and competition, replace this line with
    * 
-   * <p>
-   * {@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
+   * <p>{@code public static final String SERVER_IP = DEFAULT_SERVER_IP;}
    */
   // 192.168.1.105
   public static final String SERVER_IP = "127.0.0.1"; // = DEFAULT_SERVER_IP;
@@ -132,19 +131,18 @@ public class Resources {
 
   /** The block width in m. */
   public static final double BLOCK_WIDTH = 0.10; // 10cm
-  
+
   /**
    * The distance the bot needs to travel from the push position offset to touch
    * the box.
    */
   public static final double PUSH_TRAVEL_OFFSET = TILE_SIZE / 10;
-  
+
   /** The distance from the actual coord the bot should be to push a box. */
   public static final double PUSH_POSITION_OFFSET = 0.5;
-  
+
   /** The distance from the actual coord the bot should be to push a box. */
   public static final double NAV_OFFSET = 0.1;
-
 
   // Hardware resources
 

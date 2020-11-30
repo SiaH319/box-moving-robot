@@ -1,14 +1,39 @@
 package ca.mcgill.ecse211.project;
 
-import static ca.mcgill.ecse211.project.Resources.*;
-import static ca.mcgill.ecse211.project.Main.*;
 import static ca.mcgill.ecse211.project.LightLocalizer.relocalize;
-import java.util.ArrayList;
-import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
-import static java.lang.Math.*;
+import static ca.mcgill.ecse211.project.Resources.BASE_WIDTH;
+import static ca.mcgill.ecse211.project.Resources.BLOCK_WIDTH;
+import static ca.mcgill.ecse211.project.Resources.FORWARD_SPEED;
+import static ca.mcgill.ecse211.project.Resources.ROTATE_SPEED;
+import static ca.mcgill.ecse211.project.Resources.TILE_SIZE;
+import static ca.mcgill.ecse211.project.Resources.WHEEL_RAD;
+import static ca.mcgill.ecse211.project.Resources.blocks;
+import static ca.mcgill.ecse211.project.Resources.gr;
+import static ca.mcgill.ecse211.project.Resources.green;
+import static ca.mcgill.ecse211.project.Resources.isRedTeam;
+import static ca.mcgill.ecse211.project.Resources.island;
+import static ca.mcgill.ecse211.project.Resources.leftMotor;
+import static ca.mcgill.ecse211.project.Resources.obstacles;
+import static ca.mcgill.ecse211.project.Resources.odometer;
+import static ca.mcgill.ecse211.project.Resources.red;
+import static ca.mcgill.ecse211.project.Resources.rightMotor;
+import static ca.mcgill.ecse211.project.Resources.rr;
+import static ca.mcgill.ecse211.project.Resources.szg;
+import static ca.mcgill.ecse211.project.Resources.szr;
+import static ca.mcgill.ecse211.project.Resources.tng;
+import static ca.mcgill.ecse211.project.Resources.tnr;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.frontUSDistance;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.topUSDistance;
+import static java.lang.Math.atan2;
+import static java.lang.Math.sqrt;
+import static java.lang.Math.toDegrees;
+import static java.lang.Math.toRadians;
+import static simlejos.ExecutionController.waitUntilNextStep;
 
-import ca.mcgill.ecse211.playingfield.*;
-import static simlejos.ExecutionController.*;
+import ca.mcgill.ecse211.playingfield.Block;
+import ca.mcgill.ecse211.playingfield.Point;
+import ca.mcgill.ecse211.playingfield.Region;
+import java.util.ArrayList;
 
 public class Navigation {
   // Coordinate variables from WiFi class
@@ -102,7 +127,7 @@ public class Navigation {
 
     double avg = 0;
     int readings = 0;
-    while (Math.abs((leftMotor.getTachoCount())-leftMotorTacho) < Math.abs(distTacho)) {
+    while (Math.abs((leftMotor.getTachoCount()) - leftMotorTacho) < Math.abs(distTacho)) {
       // while distance wasn't reached calculate average torque and wait.
       double trk = (leftMotor.getTorque() + rightMotor.getTorque()) / 2;
       avg = (avg * readings + trk) / ++readings;
@@ -196,7 +221,7 @@ public class Navigation {
 
   /**
    * Moves robot to Point(x,y) while scanning for obstacles, rereoutes where
-   * necessary
+   * necessary.
    *
    * @param destination given as point in TILE LENGTHS (e.g., (15, 0))
    */
@@ -235,7 +260,8 @@ public class Navigation {
         // Check if path is clear (sweep tile in front and validate any object)
         double originalTheta = odometer.getXyt()[2]; // Save odometer heading
         UltrasonicLocalizer.searchObject();
-        odometer.setTheta(originalTheta); // Restore odometer heading (corrects reset in searchObject())
+        odometer.setTheta(originalTheta); 
+        // Restore odometer heading (corrects reset in searchObject())
 
         // If an obstacle is present, rotate 90 degrees and try again
         boolean obstaclePresent = UltrasonicLocalizer.isObject;
@@ -261,7 +287,7 @@ public class Navigation {
 
   /**
    * Moves robot to Point(x,y) while scanning for obstacles, rereoutes where
-   * necessary
+   * necessary.
    *
    * @param destination given as point in TILE LENGTHS (e.g., (15, 0))
    */
@@ -373,7 +399,7 @@ public class Navigation {
    * @return Destination angle.
    */
   public static double getDestinationAngle(Point current, Point destination) {
-	  return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;  
+    return (toDegrees(atan2(destination.x - current.x, destination.y - current.y)) + 360) % 360;
   }
 
   /**
@@ -781,7 +807,8 @@ public class Navigation {
     }
 
     // Save current location and opposite heading after tunnel (For returning)
-    tunnelReturnPoint = new Point(odometer.getXyt()[0] / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
+    tunnelReturnPoint = new Point(odometer.getXyt()[0] 
+        / TILE_SIZE, odometer.getXyt()[1] / TILE_SIZE);
     tunnelReturnHeading = odometer.getXyt()[2] + 180.0;
   }
 
@@ -794,7 +821,8 @@ public class Navigation {
     if (isRedTeam) {
       // If RED TEAM, use RED SEARCH ZONE coordinates
       if (odometer.getXyt()[0] / TILE_SIZE > SZR_LL_x && odometer.getXyt()[0] / TILE_SIZE < SZR_UR_x
-          && odometer.getXyt()[1] / TILE_SIZE > SZR_LL_y && odometer.getXyt()[1] / TILE_SIZE < SZR_UR_y) {
+          && odometer.getXyt()[1] / TILE_SIZE > SZR_LL_y 
+          && odometer.getXyt()[1] / TILE_SIZE < SZR_UR_y) {
         return true;
       } else {
         return false;
@@ -802,7 +830,8 @@ public class Navigation {
     } else {
       // If GREEN TEAM, use GREEN SEARCH ZONE coordinates
       if (odometer.getXyt()[0] / TILE_SIZE > SZG_LL_x && odometer.getXyt()[0] / TILE_SIZE < SZG_UR_x
-          && odometer.getXyt()[1] / TILE_SIZE > SZG_LL_y && odometer.getXyt()[1] / TILE_SIZE < SZG_UR_y) {
+          && odometer.getXyt()[1] / TILE_SIZE > SZG_LL_y 
+          && odometer.getXyt()[1] / TILE_SIZE < SZG_UR_y) {
         return true;
       } else {
         return false;
@@ -835,7 +864,8 @@ public class Navigation {
     double searchZoneStartAngle = 0;
     for (int i = 0; i < szCorners.length; i++) {
       Point currCorner = szCorners[i];
-      if (distanceBetween(currentLocation, currCorner) <= distanceBetween(currentLocation, SZ_dest)) {
+      if (distanceBetween(currentLocation, currCorner) 
+          <= distanceBetween(currentLocation, SZ_dest)) {
         // Closest point found; set appropriate offset
         if (i == 0) {
           // Lower-left corner
