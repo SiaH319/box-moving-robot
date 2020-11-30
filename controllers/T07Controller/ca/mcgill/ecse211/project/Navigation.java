@@ -913,7 +913,7 @@ public class Navigation {
     System.out.println("[STATUS] Tasks complete. Returning to start...");
 
     // Return to starting corner of search zone
-    travelToSafely(SZ_dest);
+    // travelToSafely(SZ_dest);
 
     // Return to point before tunnel and correct heading; traverse tunnel
     System.out.println("[STATUS] Returning through tunnel...");
