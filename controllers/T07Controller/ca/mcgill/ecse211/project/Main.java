@@ -31,7 +31,7 @@ public class Main {
 
   /** Main entry point of the program.
    * @param args Typical argument for Main.
-  */
+   */
   public static void main(String[] args) {
     initialize();
 
@@ -53,48 +53,202 @@ public class Main {
           + "simulation with the appropriate values.");
       return;
     } else {
-      System.out.println("[STATUS] Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
+      System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }
-    
-    //UltrasonicLocalizer.searchObject();
-    
-    //odometer.setXyt(14.0 * TILE_SIZE, 1.0 * TILE_SIZE, -90);
-    //travelToSafely(new Point(13, 2));
-    
+
 
     // Uncomment the parts relevant to the methods/functionality
-
+    
     // ================== LOCALIZATION ===================
     UltrasonicLocalizer.localize();
     System.out.println("[STATUS] Performing light localization...");
     LightLocalizer.forwardLocalize(90);
     System.out.println("=> Light localization complete.");
-    beep(3);
+    // beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
     Navigation.goThroughTunnel();
+    odometer.printPosition();
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
-    if (Navigation.inSearchZone() == false) {
-      Navigation.goToSearchZone();
-    }
-    beep(3);
+    Navigation.goToSearchZone();
+    // beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
-    System.out.println("[STATUS] Skipping search.");
-    // UltrasonicLocalizer.travelSearch();
-    // System.out.println("=> First box is found.");
-    // ===================== PUSHING =====================
-    System.out.println("[STATUS] Skipping pushing.");
-    // TODO pushing
-    // ==================== RETURNING ====================
-    // Return to the tunnel and traverse; then return to starting corner
-    Navigation.returnToStart();
-    beep(5);
+    UltrasonicLocalizer.travelSearch();
+    System.out.println("=> First box is found.");
+  
+    Point block = currPt;
+    
+    //determine if block is on the right or left of the ramp
+    Point ramp = null;
+    boolean left = false;
+    boolean right = false;
+    double rampX = 0;
+    double rampY = 0;
+    
+    if(currPt.x < lowerLeftRampX) {
+    	left = true;
+    	rampX = lowerLeftRampX;
+    	rampY = lowerLeftRampY;
+    	ramp = new Point(rampX - 0.5, rampY - 0.5);
+    }
+    else if(currPt.x > lowerLeftRampX) {
+    	right = true;
+    	rampX = rr.right.x;
+    	rampY = rr.right.y;
+    	ramp = new Point(rampX + 0.5, rampY - 0.5);
+    }
+    
+    findPath(ramp);
+    travelTo(paths.get(0).startPosition);
+    
+    //point to start pushing
+    Point push = null;
+    double pushX = 0;
+    double pushY = 0;
+    
+    if(left) {
+    	pushX = Math.round(paths.get(0).startPosition.x) - 0.5;
+    	if(currPt.y < lowerLeftRampY) {
+    		pushY = Math.round(paths.get(0).startPosition.y) + 0.5;
+    	}
+    	else if(currPt.y > lowerLeftRampY) {
+    		pushY = paths.get(0).startPosition.y - 0.5;
+    	}
+    	push = new Point(pushX, pushY);
+    }
+    
+    if(right) {
+    	pushX = paths.get(0).startPosition.x + 0.5;
+    	if(currPt.y < rr.right.y) {
+    		pushY = paths.get(0).startPosition.y + 0.5;
+    	}
+    	else if(currPt.y > rr.right.y) {
+    		pushY = paths.get(0).startPosition.y - 0.5;
+    	}
+    	push = new Point(pushX, pushY);
+    }
+   
+    double diff = Math.floor(rampY - pushY);
+    if(diff != 0) {
+    	Point waypointPush = null;
+    	boolean up = false;
+    	Point approx = null;
+    	
+    	//block needs to go down
+    	if(diff < 0) {
+    		approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y - 0.5);
+    		waypointPush = pushPosition(approx, 180);
+    		
+    	}
+    	//block needs to go up
+    	else if(diff > 0) {
+    		approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y + 0.5);
+    		waypointPush = pushPosition(approx, 0);
+    		up  = true;
+    	}
+    	
+    	double distance = Math.abs(rampY - waypointPush.y)/3.281;
+    	if(up) {
+    		pushY = pushY+distance;
+    	}
+    	else {
+    		pushY = pushY-distance;
+    	}
+    	
+    	travelToSafely(waypointPush);
+    	turnTo(45);
+    	findBoxInsideTile();
+    	pushFor(distance);
+    	backWardAdjust();
+    }
+    
+    //travelTo off by one tile
+    push = new Point(pushX+1, pushY+1);
+    travelTo(push);
+    //faceBlock
+    turnTo(45);
+    findBoxInsideTile();
+    
+    //Using a range to be extra sure that it is correct
+    double pushDist = Math.abs((rampX-1.3) - pushX)/3.281;
+    pushFor(pushDist);
+  
+    double torque = pushFor(TILE_SIZE);
+     backWardAdjust();
+     
+    if(torque >= 0 && torque <= 0.08) {
+    	System.out.println("Container with weight 0.5 identified");
+    		
+    }
+    else if(torque >= 0.09 && torque <= 0.18) {
+    	System.out.println("Container with weight 1 identified");
+    		
+    }
+    else if(torque >= 0.19 && torque <= 0.28) {
+    	System.out.println("Container with weight 2 identified");
+    		
+    }
+    else if(torque >= 0.29 && torque <= 0.40) {
+    	System.out.println("Container with weight 3 identified");
+    		
+    }
+    
+    //in front of ramp
+    Point ramp2 = new Point(rampX + 0.5, rampY - 0.5);
+    Point waypoint  = pushPosition(ramp2, 0);
+    odometer.setX(((pushX + (pushDist*3.281))/3.281));
+    odometer.setY(pushY/3.281);
+    
+    Point off = new Point(waypoint.x -1, waypoint.y);
+    travelTo(off);
+    
+    //push to the bin
+    turnTo(45);
+    findBoxInsideTile();
+    Point bin = new Point(rampX + 0.5, rampY + 1);
+    double dist2 = distanceBetween(waypoint, bin);
+    pushFor(dist2);
+    odometer.setX(bin.x/3.281);
+    odometer.setY(bin.y/3.281);
+    
+    //go back to start
+    returnToStart();
+  
+  }
+
+  public static double round(double value, int places) {
+    if (places < 0) throw new IllegalArgumentException();
+
+    long factor = (long) Math.pow(10, places);
+    value = value * factor;
+    long tmp = Math.round(value);
+    return (double) tmp / factor;
+  }
+
+  /**
+   * Calculates the position the bot should be in to push a given box.
+   * 
+   * @param p     The point for the block's coordinates
+   * @param theta The direction you want to push the block in. Can only be {0, 90,
+   *              180, 270}.
+   * @return Returns the final coordinates of the push position as a point.
+   */
+  public static Point pushPosition(Point p, double theta) {
+    if (theta == 0) { // up
+      return new Point(p.x, p.y - Resources.PUSH_POSITION_OFFSET);
+    } else if (theta == 90) { // right
+      return new Point(p.x - Resources.PUSH_POSITION_OFFSET, p.y);
+    } else if (theta == 180) { // down
+      return new Point(p.x, p.y + Resources.PUSH_POSITION_OFFSET);
+    } else { // 270 degrees //left
+      return new Point(p.x + Resources.PUSH_POSITION_OFFSET, p.y);
+    }
   }
 
   /**
    * Helper method to beep for a given number of times.
-   * 
+   *
    * @param times Number of times to beep.
    */
   public static void beep(int times) {
@@ -109,7 +263,7 @@ public class Main {
   /**
    * Determines if a point is within a given region (in points). True if a point
    * is ON the edge.
-   * 
+   *
    * @param pt Point whose position to check.
    * @param LL Lower left corner of the region (point).
    * @param UR Upper right corner of the region (point).
@@ -125,15 +279,15 @@ public class Main {
    * Example using WifiConnection to communicate with a server and receive data
    * concerning the competition such as the starting corner the robot is placed
    * in.<br>
-   * 
+   *
    * <p>Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
    * code; you must use the WifiConnection class yourself in your own code as
    * appropriate. In this example, we simply show how to get and process different
    * types of data.<br>
-   * 
+   *
    * <p>There are two variables you MUST set manually (in Resources.java) before
    * using this code:
-   * 
+   *
    * <ol>
    * <li>SERVER_IP: The IP address of the computer running the server application.
    * This will be your own laptop, until the beta beta demo or competition where
@@ -141,10 +295,10 @@ public class Main {
    * (indicated in Resources).</li>
    * <li>TEAM_NUMBER: your project team number.</li>
    * </ol>
-   * 
+   *
    * <p>Note: You can disable printing from the Wi-Fi code via
    * ENABLE_DEBUG_WIFI_PRINT.
-   * 
+   *
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
    *         St-Martin Cormier
    */
