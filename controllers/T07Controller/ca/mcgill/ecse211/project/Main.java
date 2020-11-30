@@ -158,7 +158,7 @@ public class Main {
     	
     	travelToSafely(waypointPush);
     	//TODO turnTo() doesnt work properly
-    	turnTo(45);
+    	turnTo(Math.toRadians(90));
     	findBoxInsideTile();
     	pushFor(distance);
     	backWardAdjust();
@@ -169,7 +169,7 @@ public class Main {
     travelTo(push);
     //faceBlock
     //TODO turnTo() doesnt work properly
-    turnTo(45);
+    turnTo(Math.toRadians(90));
     findBoxInsideTile();
     
     //Using a range to be extra sure that it is correct
@@ -209,18 +209,20 @@ public class Main {
     
     //push to the bin
     //TODO turnTo() doesnt work properly
-    turnTo(325);
+    turnTo(Math.toRadians(90));
     findBoxInsideTile();
     
     Point bin = new Point(rampX + 0.5, rampY + 1);
     pushFor(TILE_SIZE*1.5);
     backWardAdjust();
     backWardAdjust();
-    odometer.setX(ramp2.x/3.281);
-    odometer.setY(ramp2.y/3.281);
+    Point returnBack = new Point(rampX + 0.5, rampY - 0.5);
+    odometer.setX(returnBack.x);
+    odometer.setY(returnBack.y);
     
     turnBy(180);
     moveStraightFor(1);
+    odometer.setTheta(180);
     
     //go back to start
     returnToStart();

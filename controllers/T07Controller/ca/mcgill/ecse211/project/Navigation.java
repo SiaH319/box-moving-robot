@@ -112,6 +112,7 @@ public class Navigation {
 
     leftMotor.stop();
     rightMotor.stop();
+    odometer.printPosition();
     return avg;
   }
 
