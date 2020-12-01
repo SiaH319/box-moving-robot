@@ -34,6 +34,7 @@ import java.util.ArrayList;
 public class UltrasonicLocalizer {
   /** Buffer (array) to store US samples. */
   private static float[] usData = new float[usSensor.sampleSize()];
+  /** Buffer (array) to store US samples. */
   private static float[] usDataTop = new float[usSensorTop.sampleSize()];
   // Ideal distance to wall
   static int d = 17;

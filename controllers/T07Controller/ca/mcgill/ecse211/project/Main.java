@@ -1,25 +1,47 @@
 package ca.mcgill.ecse211.project;
 
-import static ca.mcgill.ecse211.project.Resources.*;
-import static ca.mcgill.ecse211.project.UltrasonicLocalizer.*;
-import static ca.mcgill.ecse211.project.LightLocalizer.*;
-import static ca.mcgill.ecse211.project.Navigation.*;
-import static simlejos.ExecutionController.*;
+import static ca.mcgill.ecse211.project.Navigation.distanceBetween;
+import static ca.mcgill.ecse211.project.Navigation.findPath;
+import static ca.mcgill.ecse211.project.Navigation.lowerLeftRampX;
+import static ca.mcgill.ecse211.project.Navigation.lowerLeftRampY;
+import static ca.mcgill.ecse211.project.Navigation.paths;
+import static ca.mcgill.ecse211.project.Navigation.pushFor;
+import static ca.mcgill.ecse211.project.Navigation.returnToStart;
+import static ca.mcgill.ecse211.project.Navigation.travelTo;
+import static ca.mcgill.ecse211.project.Navigation.travelToSafely;
+import static ca.mcgill.ecse211.project.Navigation.turnTo;
+import static ca.mcgill.ecse211.project.Resources.PHYSICS_STEP_PERIOD;
+import static ca.mcgill.ecse211.project.Resources.TEAM_NUMBER;
+import static ca.mcgill.ecse211.project.Resources.TILE_SIZE;
+import static ca.mcgill.ecse211.project.Resources.green;
+import static ca.mcgill.ecse211.project.Resources.greenTeam;
+import static ca.mcgill.ecse211.project.Resources.isRedTeam;
+import static ca.mcgill.ecse211.project.Resources.island;
+import static ca.mcgill.ecse211.project.Resources.odometer;
+import static ca.mcgill.ecse211.project.Resources.redTeam;
+import static ca.mcgill.ecse211.project.Resources.rr;
+import static ca.mcgill.ecse211.project.Resources.szg;
+import static ca.mcgill.ecse211.project.Resources.tnr;
+import static ca.mcgill.ecse211.project.Resources.wifiParameters;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.backWardAdjust;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.currPt;
+import static ca.mcgill.ecse211.project.UltrasonicLocalizer.findBoxInsideTile;
+import static simlejos.ExecutionController.performPhysicsStep;
+import static simlejos.ExecutionController.setNumberOfParties;
+import static simlejos.ExecutionController.sleepFor;
+import static simlejos.ExecutionController.waitUntilNextStep;
 
-import java.lang.Thread;
-import java.util.ArrayList;
-import ca.mcgill.ecse211.playingfield.*;
-
+import ca.mcgill.ecse211.playingfield.Point;
 import simlejos.hardware.ev3.LocalEV3;
 
 /**
- * Main class of the program.
- * The robot will first localize to the nearest tile corner and beep.
- * Next, it will navigate to the entry of the tunnel and cross it.
- * After exiting the tunnel, it will beep again.
- * The robot will then navigate to the search zone and begin searching for blocks.
- * Once the blocks are found, the robot will begin pushing them into the bins.
- * Once time is almost up, the robot will return to the tunnel and to the initial starting position.
+ * Main class of the program. The robot will first localize to the nearest tile
+ * corner and beep. Next, it will navigate to the entry of the tunnel and cross
+ * it. After exiting the tunnel, it will beep again. The robot will then
+ * navigate to the search zone and begin searching for blocks. Once the blocks
+ * are found, the robot will begin pushing them into the bins. Once time is
+ * almost up, the robot will return to the tunnel and to the initial starting
+ * position.
  */
 public class Main {
 
@@ -29,7 +51,9 @@ public class Main {
    */
   public static final int NUMBER_OF_THREADS = 2;
 
-  /** Main entry point of the program.
+  /**
+   * Main entry point of the program.
+   * 
    * @param args Typical argument for Main.
    */
   public static void main(String[] args) {
@@ -49,16 +73,15 @@ public class Main {
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
       System.out.println("Green Team Number in Wifi: " + greenTeam);
       System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the "
+      System.out.println("Stopping the program. Please restart the " 
           + "simulation with the appropriate values.");
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }
 
-
     // Uncomment the parts relevant to the methods/functionality
-    
+
     // ================== LOCALIZATION ===================
     UltrasonicLocalizer.localize();
     System.out.println("[STATUS] Performing light localization...");
@@ -76,150 +99,146 @@ public class Main {
     // ========== SEARCHING AND BLOCK DETECTION ==========
     UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
-  
-    Point block = currPt;
-    
-    //determine if block is on the right or left of the ramp
+
+    // determine if block is on the right or left of the ramp
     Point ramp = null;
     boolean left = false;
     boolean right = false;
     double rampX = 0;
     double rampY = 0;
-    
-    if(currPt.x < lowerLeftRampX) {
-    	left = true;
-    	rampX = lowerLeftRampX;
-    	rampY = lowerLeftRampY;
-    	ramp = new Point(rampX - 0.5, rampY - 0.5);
+
+    if (currPt.x < lowerLeftRampX) {
+      left = true;
+      rampX = lowerLeftRampX;
+      rampY = lowerLeftRampY;
+      ramp = new Point(rampX - 0.5, rampY - 0.5);
+    } else if (currPt.x > lowerLeftRampX) {
+      right = true;
+      rampX = rr.right.x;
+      rampY = rr.right.y;
+      ramp = new Point(rampX + 0.5, rampY - 0.5);
     }
-    else if(currPt.x > lowerLeftRampX) {
-    	right = true;
-    	rampX = rr.right.x;
-    	rampY = rr.right.y;
-    	ramp = new Point(rampX + 0.5, rampY - 0.5);
-    }
-    
+
     findPath(ramp);
     travelTo(paths.get(0).startPosition);
-    
-    //point to start pushing
+
+    // point to start pushing
     Point push = null;
     double pushX = 0;
     double pushY = 0;
-    
-    if(left) {
-    	pushX = Math.round(paths.get(0).startPosition.x) - 0.5;
-    	if(currPt.y < lowerLeftRampY) {
-    		pushY = Math.round(paths.get(0).startPosition.y) + 0.5;
-    	}
-    	else if(currPt.y > lowerLeftRampY) {
-    		pushY = paths.get(0).startPosition.y - 0.5;
-    	}
-    	push = new Point(pushX, pushY);
+
+    if (left) {
+      pushX = Math.round(paths.get(0).startPosition.x) - 0.5;
+      if (currPt.y < lowerLeftRampY) {
+        pushY = Math.round(paths.get(0).startPosition.y) + 0.5;
+      } else if (currPt.y > lowerLeftRampY) {
+        pushY = paths.get(0).startPosition.y - 0.5;
+      }
+      push = new Point(pushX, pushY);
     }
-    
-    if(right) {
-    	pushX = paths.get(0).startPosition.x + 0.5;
-    	if(currPt.y < rr.right.y) {
-    		pushY = paths.get(0).startPosition.y + 0.5;
-    	}
-    	else if(currPt.y > rr.right.y) {
-    		pushY = paths.get(0).startPosition.y - 0.5;
-    	}
-    	push = new Point(pushX, pushY);
+
+    if (right) {
+      pushX = paths.get(0).startPosition.x + 0.5;
+      if (currPt.y < rr.right.y) {
+        pushY = paths.get(0).startPosition.y + 0.5;
+      } else if (currPt.y > rr.right.y) {
+        pushY = paths.get(0).startPosition.y - 0.5;
+      }
+      push = new Point(pushX, pushY);
     }
-   
+
     double diff = Math.floor(rampY - pushY);
-    if(diff != 0) {
-    	Point waypointPush = null;
-    	boolean up = false;
-    	Point approx = null;
-    	
-    	//block needs to go down
-    	if(diff < 0) {
-    		approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y - 0.5);
-    		waypointPush = pushPosition(approx, 180);
-    		
-    	}
-    	//block needs to go up
-    	else if(diff > 0) {
-    		approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y + 0.5);
-    		waypointPush = pushPosition(approx, 0);
-    		up  = true;
-    	}
-    	
-    	double distance = Math.abs(rampY - waypointPush.y)/3.281;
-    	if(up) {
-    		pushY = pushY+distance;
-    	}
-    	else {
-    		pushY = pushY-distance;
-    	}
-    	
-    	travelToSafely(waypointPush);
-    	turnTo(45);
-    	findBoxInsideTile();
-    	pushFor(distance);
-    	backWardAdjust();
+    if (diff != 0) {
+      Point waypointPush = null;
+      boolean up = false;
+      Point approx = null;
+
+      // block needs to go down
+      if (diff < 0) {
+        approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y - 0.5);
+        waypointPush = pushPosition(approx, 180);
+
+      } else if (diff > 0) { // block needs to go up
+        approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y + 0.5);
+        waypointPush = pushPosition(approx, 0);
+        up = true;
+      }
+
+      double distance = Math.abs(rampY - waypointPush.y) / 3.281;
+      if (up) {
+        pushY = pushY + distance;
+      } else {
+        pushY = pushY - distance;
+      }
+
+      travelToSafely(waypointPush);
+      turnTo(45);
+      findBoxInsideTile();
+      pushFor(distance);
+      backWardAdjust();
     }
-    
-    //travelTo off by one tile
-    push = new Point(pushX+1, pushY+1);
+
+    // travelTo off by one tile
+    push = new Point(pushX + 1, pushY + 1);
     travelTo(push);
-    //faceBlock
+    // faceBlock
     turnTo(45);
     findBoxInsideTile();
-    
-    //Using a range to be extra sure that it is correct
-    double pushDist = Math.abs((rampX-1.3) - pushX)/3.281;
+
+    // Using a range to be extra sure that it is correct
+    double pushDist = Math.abs((rampX - 1.3) - pushX) / 3.281;
     pushFor(pushDist);
-  
+
     double torque = pushFor(TILE_SIZE);
-     backWardAdjust();
-     
-    if(torque >= 0 && torque <= 0.08) {
-    	System.out.println("Container with weight 0.5 identified");
-    		
+    backWardAdjust();
+
+    if (torque >= 0 && torque <= 0.08) {
+      System.out.println("Container with weight 0.5 identified");
+
+    } else if (torque >= 0.09 && torque <= 0.18) {
+      System.out.println("Container with weight 1 identified");
+
+    } else if (torque >= 0.19 && torque <= 0.28) {
+      System.out.println("Container with weight 2 identified");
+
+    } else if (torque >= 0.29 && torque <= 0.40) {
+      System.out.println("Container with weight 3 identified");
+
     }
-    else if(torque >= 0.09 && torque <= 0.18) {
-    	System.out.println("Container with weight 1 identified");
-    		
-    }
-    else if(torque >= 0.19 && torque <= 0.28) {
-    	System.out.println("Container with weight 2 identified");
-    		
-    }
-    else if(torque >= 0.29 && torque <= 0.40) {
-    	System.out.println("Container with weight 3 identified");
-    		
-    }
-    
-    //in front of ramp
+
+    // in front of ramp
     Point ramp2 = new Point(rampX + 0.5, rampY - 0.5);
-    Point waypoint  = pushPosition(ramp2, 0);
-    odometer.setX(((pushX + (pushDist*3.281))/3.281));
-    odometer.setY(pushY/3.281);
-    
-    Point off = new Point(waypoint.x -1, waypoint.y);
+    Point waypoint = pushPosition(ramp2, 0);
+    odometer.setX(((pushX + (pushDist * 3.281)) / 3.281));
+    odometer.setY(pushY / 3.281);
+
+    Point off = new Point(waypoint.x - 1, waypoint.y);
     travelTo(off);
-    
-    //push to the bin
+
+    // push to the bin
     turnTo(45);
     findBoxInsideTile();
     Point bin = new Point(rampX + 0.5, rampY + 1);
     double dist2 = distanceBetween(waypoint, bin);
     pushFor(dist2);
-    odometer.setX(bin.x/3.281);
-    odometer.setY(bin.y/3.281);
-    
-    //go back to start
+    odometer.setX(bin.x / 3.281);
+    odometer.setY(bin.y / 3.281);
+
+    // go back to start
     returnToStart();
-  
+
   }
 
+  /**
+   * Rounds a number to the specified decimal place.
+   * @param value Number to be rounded.
+   * @param places Decimal places.
+   * @return
+   */
   public static double round(double value, int places) {
-    if (places < 0) throw new IllegalArgumentException();
-
+    if (places < 0) {
+      throw new IllegalArgumentException();
+    }
     long factor = (long) Math.pow(10, places);
     value = value * factor;
     long tmp = Math.round(value);

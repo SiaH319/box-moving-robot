@@ -345,7 +345,8 @@ public class Navigation {
         // Check if path is clear (sweep tile in front and validate any object)
         double originalTheta = odometer.getXyt()[2]; // Save odometer heading
         UltrasonicLocalizer.searchObject();
-        odometer.setTheta(originalTheta); // Restore odometer heading (corrects reset in searchObject())
+        odometer.setTheta(originalTheta);
+        // Restore odometer heading (corrects reset in searchObject())
 
         // If an obstacle is present, rotate 90 degrees and try again
         boolean obstaclePresent = UltrasonicLocalizer.isObject;
@@ -849,7 +850,6 @@ public class Navigation {
     // Get current location from odometer; set as Point
     double[] xyt = odometer.getXyt();
     Point currentLocation = new Point(xyt[0], xyt[1]);
-    double currentTheta = xyt[2];
     // System.out.println(currentLocation.x + ", " + currentLocation.y);
 
     // Get search zone corner coordinates
