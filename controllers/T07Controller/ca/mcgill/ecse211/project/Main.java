@@ -6,7 +6,6 @@ import static ca.mcgill.ecse211.project.Navigation.lowerLeftRampX;
 import static ca.mcgill.ecse211.project.Navigation.lowerLeftRampY;
 import static ca.mcgill.ecse211.project.Navigation.paths;
 import static ca.mcgill.ecse211.project.Navigation.pushFor;
-import static ca.mcgill.ecse211.project.Navigation.returnToStart;
 import static ca.mcgill.ecse211.project.Navigation.travelTo;
 import static ca.mcgill.ecse211.project.Navigation.travelToSafely;
 import static ca.mcgill.ecse211.project.Navigation.turnTo;
@@ -73,7 +72,8 @@ public class Main {
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
       System.out.println("Green Team Number in Wifi: " + greenTeam);
       System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the " + "simulation with the appropriate values.");
+      System.out.println("Stopping the program. Please restart the " 
+          + "simulation with the appropriate values.");
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
@@ -305,14 +305,12 @@ public class Main {
    * concerning the competition such as the starting corner the robot is placed
    * in.<br>
    *
-   * <p>
-   * Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
+   * <p>Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
    * code; you must use the WifiConnection class yourself in your own code as
    * appropriate. In this example, we simply show how to get and process different
    * types of data.<br>
    *
-   * <p>
-   * There are two variables you MUST set manually (in Resources.java) before
+   * <p>There are two variables you MUST set manually (in Resources.java) before
    * using this code:
    *
    * <ol>
@@ -323,8 +321,7 @@ public class Main {
    * <li>TEAM_NUMBER: your project team number.</li>
    * </ol>
    *
-   * <p>
-   * Note: You can disable printing from the Wi-Fi code via
+   * <p>Note: You can disable printing from the Wi-Fi code via
    * ENABLE_DEBUG_WIFI_PRINT.
    *
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
