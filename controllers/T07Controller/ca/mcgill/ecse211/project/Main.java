@@ -73,8 +73,7 @@ public class Main {
       System.out.println("Current team in Resources: " + TEAM_NUMBER);
       System.out.println("Green Team Number in Wifi: " + greenTeam);
       System.out.println("Red Team Number in Wifi: " + redTeam);
-      System.out.println("Stopping the program. Please restart the " 
-          + "simulation with the appropriate values.");
+      System.out.println("Stopping the program. Please restart the " + "simulation with the appropriate values.");
       return;
     } else {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
@@ -87,7 +86,7 @@ public class Main {
     System.out.println("[STATUS] Performing light localization...");
     LightLocalizer.forwardLocalize(90);
     System.out.println("=> Light localization complete.");
-    // beep(3);
+    beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
     Navigation.goThroughTunnel();
@@ -95,12 +94,17 @@ public class Main {
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     Navigation.goToSearchZone();
-    // beep(3);
+    System.out.println("=> Arrived in search zone.");
+    beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
+    System.out.println("[STATUS] Searching...");
     UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
+    // ===================== PUSHING =====================
+    System.out.println("[STATUS] Pushing...");
+    Point block = currPt;
 
-    // determine if block is on the right or left of the ramp
+    // Determine if block is on the right or left of the ramp
     Point ramp = null;
     boolean left = false;
     boolean right = false;
@@ -122,7 +126,7 @@ public class Main {
     findPath(ramp);
     travelTo(paths.get(0).startPosition);
 
-    // point to start pushing
+    // Point to start pushing
     Point push = null;
     double pushX = 0;
     double pushY = 0;
@@ -193,16 +197,16 @@ public class Main {
     backWardAdjust();
 
     if (torque >= 0 && torque <= 0.08) {
-      System.out.println("Container with weight 0.5 identified");
+      System.out.println("=> Container with weight 0.5 identified");
 
     } else if (torque >= 0.09 && torque <= 0.18) {
-      System.out.println("Container with weight 1 identified");
+      System.out.println("=> Container with weight 1 identified");
 
     } else if (torque >= 0.19 && torque <= 0.28) {
-      System.out.println("Container with weight 2 identified");
+      System.out.println("=> Container with weight 2 identified");
 
     } else if (torque >= 0.29 && torque <= 0.40) {
-      System.out.println("Container with weight 3 identified");
+      System.out.println("=> Container with weight 3 identified");
 
     }
 
@@ -224,14 +228,16 @@ public class Main {
     odometer.setX(bin.x / 3.281);
     odometer.setY(bin.y / 3.281);
 
-    // go back to start
-    returnToStart();
-
+    // ==================== RETURNING ====================
+    // Return to the tunnel and traverse; then return to starting corner
+    Navigation.returnToStart();
+    beep(5);
   }
 
   /**
    * Rounds a number to the specified decimal place.
-   * @param value Number to be rounded.
+   * 
+   * @param value  Number to be rounded.
    * @param places Decimal places.
    * @return
    */
@@ -299,12 +305,14 @@ public class Main {
    * concerning the competition such as the starting corner the robot is placed
    * in.<br>
    *
-   * <p>Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
+   * <p>
+   * Keep in mind that this class is an <b>example</b> of how to use the Wi-Fi
    * code; you must use the WifiConnection class yourself in your own code as
    * appropriate. In this example, we simply show how to get and process different
    * types of data.<br>
    *
-   * <p>There are two variables you MUST set manually (in Resources.java) before
+   * <p>
+   * There are two variables you MUST set manually (in Resources.java) before
    * using this code:
    *
    * <ol>
@@ -315,7 +323,8 @@ public class Main {
    * <li>TEAM_NUMBER: your project team number.</li>
    * </ol>
    *
-   * <p>Note: You can disable printing from the Wi-Fi code via
+   * <p>
+   * Note: You can disable printing from the Wi-Fi code via
    * ENABLE_DEBUG_WIFI_PRINT.
    *
    * @author Michael Smith, Tharsan Ponnampalam, Younes Boubekeur, Olivier
