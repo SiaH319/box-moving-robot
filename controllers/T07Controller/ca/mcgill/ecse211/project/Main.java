@@ -56,7 +56,6 @@ public class Main {
       System.out.println("Identified team as being " + (isRedTeam ? "RED." : "GREEN."));
     }
 
-
     // Uncomment the parts relevant to the methods/functionality
     
     // ================== LOCALIZATION ===================
@@ -64,7 +63,7 @@ public class Main {
     System.out.println("[STATUS] Performing light localization...");
     LightLocalizer.forwardLocalize(90);
     System.out.println("=> Light localization complete.");
-    // beep(3);
+    beep(3);
     // NOTE: Odometer will be reset by the following functions
     // =============== NAVIGATION TO TUNNEL ==============
     Navigation.goThroughTunnel();
@@ -72,14 +71,17 @@ public class Main {
     // ============ NAVIGATION TO SEARCH ZONE ============
     // Go to search zone
     Navigation.goToSearchZone();
-    // beep(3);
+    System.out.println("=> Arrived in search zone.");
+    beep(3);
     // ========== SEARCHING AND BLOCK DETECTION ==========
+    System.out.println("[STATUS] Searching...");
     UltrasonicLocalizer.travelSearch();
     System.out.println("=> First box is found.");
-  
+    // ===================== PUSHING =====================
+    System.out.println("[STATUS] Pushing...");
     Point block = currPt;
     
-    //determine if block is on the right or left of the ramp
+    // Determine if block is on the right or left of the ramp
     Point ramp = null;
     boolean left = false;
     boolean right = false;
@@ -102,7 +104,7 @@ public class Main {
     findPath(ramp);
     travelTo(paths.get(0).startPosition);
     
-    //point to start pushing
+    // Point to start pushing
     Point push = null;
     double pushX = 0;
     double pushY = 0;
@@ -135,13 +137,13 @@ public class Main {
     	boolean up = false;
     	Point approx = null;
     	
-    	//block needs to go down
+    	// Block needs to go down
     	if(diff < 0) {
     		approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y - 0.5);
     		waypointPush = pushPosition(approx, 180);
     		
     	}
-    	//block needs to go up
+    	// Block needs to go up
     	else if(diff > 0) {
     		approx = new Point(paths.get(0).startPosition.x, paths.get(0).startPosition.y + 0.5);
     		waypointPush = pushPosition(approx, 0);
@@ -163,14 +165,14 @@ public class Main {
     	backWardAdjust();
     }
     
-    //travelTo off by one tile
+    // travelTo off by one tile
     push = new Point(pushX+1, pushY+1);
     travelTo(push);
     //faceBlock
     turnTo(45);
     findBoxInsideTile();
     
-    //Using a range to be extra sure that it is correct
+    // Using a range to be extra sure that it is correct
     double pushDist = Math.abs((rampX-1.3) - pushX)/3.281;
     pushFor(pushDist);
   
@@ -178,19 +180,19 @@ public class Main {
      backWardAdjust();
      
     if(torque >= 0 && torque <= 0.08) {
-    	System.out.println("Container with weight 0.5 identified");
+    	System.out.println("=> Container with weight 0.5 identified");
     		
     }
     else if(torque >= 0.09 && torque <= 0.18) {
-    	System.out.println("Container with weight 1 identified");
+    	System.out.println("=> Container with weight 1 identified");
     		
     }
     else if(torque >= 0.19 && torque <= 0.28) {
-    	System.out.println("Container with weight 2 identified");
+    	System.out.println("=> Container with weight 2 identified");
     		
     }
     else if(torque >= 0.29 && torque <= 0.40) {
-    	System.out.println("Container with weight 3 identified");
+    	System.out.println("=> Container with weight 3 identified");
     		
     }
     
@@ -212,9 +214,10 @@ public class Main {
     odometer.setX(bin.x/3.281);
     odometer.setY(bin.y/3.281);
     
-    //go back to start
-    returnToStart();
-  
+    // ==================== RETURNING ====================
+    // Return to the tunnel and traverse; then return to starting corner
+    Navigation.returnToStart();
+    beep(5);
   }
 
   public static double round(double value, int places) {
